@@ -494,6 +494,16 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
   const bulletResistShred = combineShred(bulletShredParts);
   const spiritResistShred = combineShred(spiritShredParts);
 
+  // Deadlock resist: damage taken = raw x (1 - resist), and shred subtracts
+  // straight off the target's resist rather than being its own multiplier
+  // (deadlock.wiki/Damage_Resistance). Enemy Resist defaults to 0, which is
+  // the strawman the app always assumed — shred alone then reads as pure
+  // negative resist, exactly reproducing the pre-Enemy-Resist numbers.
+  // Floored at 0 so an over-resisted target can't show negative damage.
+  const enemyResist = Math.max(0, Math.min(100, build.enemyResistPct ?? 0)) / 100;
+  const bulletResistMul = Math.max(0, 1 - enemyResist + bulletResistShred);
+  const spiritResistMul = Math.max(0, 1 - enemyResist + spiritResistShred);
+
   // -------------------------------------------------------------- weapon ---
   const bulletDamage =
     (baseGunDamage + statValue(itemStats, "weaponDamageFlat")) *
@@ -606,18 +616,21 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
     procWeaponPerBullet += weaponPart;
     procSpiritPerBullet += spiritPart;
     const dps =
-      (weaponPart * (1 + bulletResistShred) + spiritPart * (1 + spiritResistShred)) *
+      (weaponPart * bulletResistMul + spiritPart * spiritResistMul) *
       bulletsPerSecond *
       damageMultiplier;
     if (dps > 0) expectedProcDps.push({ label: r.item.name, dps });
   }
 
   // ------------------------------------------------------- damage rollups ---
+  // "raw" is the no-shred toggle: the target's own Enemy Resist still
+  // applies (it's their stat, not yours), just none of your shred sources —
+  // bullet and spirit see the same figure since Enemy Resist is one slider.
+  const noShredMul = Math.max(0, 1 - enemyResist);
   /** Combines a bullet's weapon and spirit damage under their own resists. */
   const mkDamage = (weapon: number, spirit: number): DamageSet => ({
-    raw: (weapon + spirit) * damageMultiplier,
-    shredded:
-      (weapon * (1 + bulletResistShred) + spirit * (1 + spiritResistShred)) * damageMultiplier,
+    raw: (weapon + spirit) * noShredMul * damageMultiplier,
+    shredded: (weapon * bulletResistMul + spirit * spiritResistMul) * damageMultiplier,
   });
   const scaleSet = (s: DamageSet, k: number): DamageSet => ({
     raw: s.raw * k,
@@ -717,11 +730,11 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
     const damageMul = 1 + statValue(imbue.bag, "abilityDamagePct") / 100;
 
     const isSpirit = (a.damageType ?? "spirit") === "spirit";
-    const shredMul =
-      a.damageType === "none" ? 1 : isSpirit ? 1 + spiritResistShred : 1 + bulletResistShred;
+    const resistMul = a.damageType === "none" ? 1 : isSpirit ? spiritResistMul : bulletResistMul;
+    const resistMulNoShred = a.damageType === "none" ? 1 : noShredMul;
     const ampMul = isSpirit ? 1 + spiritAmp : 1;
-    const rawScale = ampMul * damageMultiplier * damageMul;
-    const shreddedScale = rawScale * shredMul;
+    const rawScale = ampMul * damageMultiplier * damageMul * resistMulNoShred;
+    const shreddedScale = ampMul * damageMultiplier * damageMul * resistMul;
 
     // An ability with its own headshot bonus (Assassinate's +20%) earns it at
     // the same rate the gun does. Note this is the ability's own figure, not
@@ -774,10 +787,13 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
     const abilityDamageMul = 1 + statValue(imbue.bag, "abilityDamagePct") / 100;
 
     const isSpirit = (a.damageType ?? "spirit") === "spirit";
-    const shredMul =
-      a.damageType === "none" ? 1 : isSpirit ? 1 + spiritResistShred : 1 + bulletResistShred;
-    const raw = (isSpirit ? 1 + spiritAmp : 1) * damageMultiplier * abilityDamageMul;
-    const scale: DamageSet = { raw, shredded: raw * shredMul };
+    const resistMul = a.damageType === "none" ? 1 : isSpirit ? spiritResistMul : bulletResistMul;
+    const resistMulNoShred = a.damageType === "none" ? 1 : noShredMul;
+    const ampMul = (isSpirit ? 1 + spiritAmp : 1) * damageMultiplier * abilityDamageMul;
+    const scale: DamageSet = {
+      raw: ampMul * resistMulNoShred,
+      shredded: ampMul * resistMul,
+    };
 
     const baseAmount =
       r.damage + statValue(imbue.bag, "abilityBonusDamage") + a.spiritScaling * abilitySpirit;

@@ -352,6 +352,44 @@ describe("hero configuration", () => {
     ).toBeCloseTo(factor, 6);
   });
 
+  it("applies Enemy Resist per deadlock.wiki/Damage_Resistance: damage x (1 - (resist - shred))", () => {
+    // Crow Familiar's own passive shred (always on) gives a known, non-zero
+    // bulletResistShred to test against, independent of any items.
+    const ctx = { hero: SEED_HERO, items: SEED_ITEMS, progression: SEED_PROGRESSION };
+    const enemyResistPct = 52;
+    const bare = calculateBuild(createBuild({ boons: 27, enemyResistPct: 0 }), ctx);
+    const resisted = calculateBuild(createBuild({ boons: 27, enemyResistPct }), ctx);
+
+    // Shred itself (how much you strip) doesn't depend on the enemy's resist.
+    expect(resisted.bulletResistShred).toBeGreaterThan(0);
+    expect(resisted.bulletResistShred).toBeCloseTo(bare.bulletResistShred, 6);
+
+    const expectedMul = 1 - enemyResistPct / 100 + resisted.bulletResistShred;
+    expect(resisted.perBulletParts.ground.weapon.shredded).toBeCloseTo(
+      resisted.bulletDamage * expectedMul,
+      6,
+    );
+    // At 0% Enemy Resist (the default), this reproduces the app's original
+    // shred-as-pure-amp behaviour exactly.
+    expect(bare.perBulletParts.ground.weapon.shredded).toBeCloseTo(
+      bare.bulletDamage * (1 + bare.bulletResistShred),
+      6,
+    );
+    // Raising the slider should always cost DPS, never gain it.
+    expect(resisted.groundDps).toBeLessThan(bare.groundDps);
+  });
+
+  it("never lets Enemy Resist push damage negative, even maxed out with no shred", () => {
+    const ctx = { hero: SEED_HERO, items: SEED_ITEMS, progression: SEED_PROGRESSION };
+    const r = calculateBuild(createBuild({ boons: 27, enemyResistPct: 100 }), ctx);
+    // Only Crow's always-on passive shred (6%) counters the full 100% resist
+    // on a bare build, so ground DPS should land near that residual, not at
+    // zero and never negative.
+    const expectedMul = 1 - 1 + r.bulletResistShred;
+    expect(r.groundDps).toBeCloseTo(r.bulletDamage * r.bulletsPerSecond * expectedMul, 6);
+    expect(r.groundDps).toBeGreaterThan(0);
+  });
+
   it("applies item cooldown reduction after ability-tier cooldown deltas, not before", () => {
     // Stake: 40s base, -22s at T2 = 18s. A 50% item CDR must multiply that 18s
     // (-> 9s), not the original 40s.

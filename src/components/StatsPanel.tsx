@@ -161,7 +161,15 @@ function DamageProfile({
   );
 }
 
-export function StatsPanel({ result }: { result: CalcResult }) {
+export function StatsPanel({
+  result,
+  enemyResistPct,
+  onEnemyResistChange,
+}: {
+  result: CalcResult;
+  enemyResistPct: number;
+  onEnemyResistChange: (pct: number) => void;
+}) {
   const [shred, setShred] = useState(true);
   const pick = (set: DamageSet) => (shred ? set.shredded : set.raw);
   const procTotal = result.expectedProcDps.reduce((s, p) => s + p.dps, 0);
@@ -193,6 +201,32 @@ export function StatsPanel({ result }: { result: CalcResult }) {
           {shred ? "with shred" : "no shred"}
         </button>
       </header>
+
+      <label className="block px-3 pt-2">
+        <span className="mb-1 flex items-baseline justify-between text-[10px] uppercase tracking-wider text-ink-300">
+          <span>
+            Enemy resist{" "}
+            <span className="tnum ml-1 text-[13px] font-semibold text-ink-100">
+              {enemyResistPct}%
+            </span>
+          </span>
+          <span
+            className="normal-case tracking-normal text-ink-500"
+            title="The target's own bullet/spirit resist before your shred. Resist and shred each stack multiplicatively, then shred subtracts from resist (deadlock.wiki/Damage Resistance)."
+          >
+            defaults to 0
+          </span>
+        </span>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          step={1}
+          value={enemyResistPct}
+          onChange={(e) => onEnemyResistChange(Number(e.target.value))}
+          className="h-1.5 w-full accent-[var(--color-amber-brand)]"
+        />
+      </label>
 
       <div className="grid grid-cols-2 gap-2 p-3">
         <Headline

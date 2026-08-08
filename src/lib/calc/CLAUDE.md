@@ -29,6 +29,22 @@ proc window → defaults **off**. Without one it is a state you hold → default
 different resists and must be shredded separately. Resist shred stacks
 multiplicatively: `1 - Π(1 - shred)`.
 
+**Enemy Resist and shred are two different numbers that combine before they
+touch damage.** Per deadlock.wiki/Damage_Resistance: the target's own resist
+and your shred each stack multiplicatively *within themselves*, then shred is
+*subtracted* from resist, and `damage taken = raw × (1 − (resist − shred))`.
+`build.enemyResistPct` (slider default 0, one value for both damage types) is
+the target's resist; `bulletResistShred`/`spiritResistShred` remain pure
+"how much you strip," untouched by the slider. The two combine into
+`bulletResistMul`/`spiritResistMul` right where the old `(1 + shred)` used to
+be, floored at 0 so an over-resisted target can't show negative damage. At
+the default 0% this is arithmetically identical to the app's original
+formula — shred alone, read as negative resist — which is why every existing
+test still passes unmodified. **Escalating Exposure's spirit amp is not
+resist shred** — it multiplies the *raw* damage before the resist/shred term
+is applied at all (spiritAmp lives in `mkDamage`'s `spirit` input, upstream
+of `bulletResistMul`/`spiritResistMul`), same as any other spirit-amp source.
+
 **Assassinate is entirely spirit damage**, fired from the gun but not weapon
 damage — base shot and the execute bonus against targets below 50% health are
 both spirit-scaled and both get spirit resist shred and spirit amp (e.g.

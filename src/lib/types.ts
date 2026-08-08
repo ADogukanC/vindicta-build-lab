@@ -291,6 +291,15 @@ export interface Build {
   /** Share of bullets that hit the head, 0-100. */
   headshotRate: number;
   /**
+   * The target's own bullet/spirit resist, 0-100, before your shred is
+   * subtracted from it. Deadlock resist and shred each stack multiplicatively
+   * within themselves, then shred is subtracted from resist — see
+   * deadlock.wiki/Damage_Resistance. Defaults to 0, which reproduces the
+   * app's original behaviour (shred read as pure damage amp against an
+   * unarmored target).
+   */
+  enemyResistPct: number;
+  /**
    * Which ability upgrades are taken, as `{ abilityKey: [t1, t2, t3] }`.
    * Replaces the old crowT3 / flightT3 / snipeT3 booleans.
    */

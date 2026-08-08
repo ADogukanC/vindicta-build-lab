@@ -241,7 +241,11 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
 
         <div className="xl:col-span-4">
           <div className="xl:sticky xl:top-[4.5rem]">
-            <StatsPanel result={result} />
+            <StatsPanel
+              result={result}
+              enemyResistPct={build.enemyResistPct}
+              onEnemyResistChange={(enemyResistPct) => store.updateActive({ enemyResistPct })}
+            />
           </div>
         </div>
       </div>

@@ -37,13 +37,15 @@ export function setUpgradeTier(taken: boolean[], index: number): boolean[] {
 }
 
 /**
- * The workbook assumed Flight's magazine upgrade (T1) and its bonus damage
- * (T3). Because upgrades are sequential, taking T3 means taking T2 as well —
- * T2 is only +10s duration, so it changes no numbers, just the point cost.
+ * A new build starts with no ability points spent — the player hasn't
+ * played the match yet. (The workbook's own reference build assumed Flight
+ * fully upgraded, but that's specific to that one sample build, not a sane
+ * default for every build someone creates; see `WORKBOOK_UPGRADES` in
+ * `engine.test.ts` for that.)
  */
 export const DEFAULT_ABILITY_UPGRADES: Record<string, boolean[]> = {
   stake: [false, false, false],
-  flight: [true, true, true],
+  flight: [false, false, false],
   "crow-familiar": [false, false, false],
   assassinate: [false, false, false],
 };
@@ -61,6 +63,7 @@ export function createBuild(partial: Partial<Build> = {}): Build {
     boonsFromSouls: true,
     snipeStacks: 5,
     headshotRate: 0,
+    enemyResistPct: 0,
     abilityUpgrades: structuredCloneUpgrades(DEFAULT_ABILITY_UPGRADES),
     crowShredActive: true,
     // In game, spirit items do raise Vindicta's bullet damage. The workbook fed

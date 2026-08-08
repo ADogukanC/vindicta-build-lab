@@ -44,6 +44,9 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   // Headshot rate is an assumption about play, so it has to be the same for
   // every build or the comparison is measuring two different players.
   const [headshotRate, setHeadshotRate] = useState(0);
+  // Same reasoning for the target's resist: it describes who you're fighting,
+  // not any one build, so every build has to be measured against the same one.
+  const [enemyResistPct, setEnemyResistPct] = useState(0);
 
   useEffect(() => {
     void store.hydrate();
@@ -62,10 +65,10 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   const rows = useMemo(
     () =>
       selected.map((build) => {
-        const at = { ...build, soulsEarned: souls, headshotRate };
+        const at = { ...build, soulsEarned: souls, headshotRate, enemyResistPct };
         return { build: at, result: calculateBuild(at, ctx) };
       }),
-    [selected, ctx, souls, headshotRate],
+    [selected, ctx, souls, headshotRate, enemyResistPct],
   );
 
   /**
@@ -80,14 +83,14 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
       const row: Record<string, number> = { souls: s };
       for (const build of selected) {
         row[build.name] = metric.get(
-          calculateBuild({ ...build, soulsEarned: s, headshotRate }, ctx),
+          calculateBuild({ ...build, soulsEarned: s, headshotRate, enemyResistPct }, ctx),
         );
       }
       points.push(row);
     }
     return points;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected, ctx, metricKey, headshotRate]);
+  }, [selected, ctx, metricKey, headshotRate, enemyResistPct]);
 
   const itemsBySlug = useMemo(() => new Map(ctx.items.map((i) => [i.slug, i])), [ctx.items]);
 
@@ -207,30 +210,58 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
           }
         />
 
-        <label className="block">
-          <span className="mb-1 flex items-baseline justify-between text-[10px] uppercase tracking-wider text-ink-300">
-            <span>
-              Headshots{" "}
-              <span className="tnum ml-1 text-[13px] font-semibold text-ink-100">
-                {headshotRate}%
+        <div className="flex flex-col justify-center gap-3">
+          <label className="block">
+            <span className="mb-1 flex items-baseline justify-between text-[10px] uppercase tracking-wider text-ink-300">
+              <span>
+                Headshots{" "}
+                <span className="tnum ml-1 text-[13px] font-semibold text-ink-100">
+                  {headshotRate}%
+                </span>
+              </span>
+              <span className="normal-case tracking-normal text-ink-500">all builds</span>
+            </span>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              step={1}
+              value={headshotRate}
+              onChange={(e) => setHeadshotRate(Number(e.target.value))}
+              className="h-1.5 w-full accent-[var(--color-amber-brand)]"
+            />
+            <span className="mt-1 flex justify-between text-[9px] text-ink-600">
+              <span>body only</span>
+              <span>every shot</span>
+            </span>
+          </label>
+
+          <label className="block">
+            <span className="mb-1 flex items-baseline justify-between text-[10px] uppercase tracking-wider text-ink-300">
+              <span>
+                Enemy resist{" "}
+                <span className="tnum ml-1 text-[13px] font-semibold text-ink-100">
+                  {enemyResistPct}%
+                </span>
+              </span>
+              <span
+                className="normal-case tracking-normal text-ink-500"
+                title="The target's own bullet/spirit resist before your shred (deadlock.wiki/Damage Resistance)."
+              >
+                all builds
               </span>
             </span>
-            <span className="normal-case tracking-normal text-ink-500">all builds</span>
-          </span>
-          <input
-            type="range"
-            min={0}
-            max={100}
-            step={1}
-            value={headshotRate}
-            onChange={(e) => setHeadshotRate(Number(e.target.value))}
-            className="h-1.5 w-full accent-[var(--color-amber-brand)]"
-          />
-          <span className="mt-1 flex justify-between text-[9px] text-ink-600">
-            <span>body only</span>
-            <span>every shot</span>
-          </span>
-        </label>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              step={1}
+              value={enemyResistPct}
+              onChange={(e) => setEnemyResistPct(Number(e.target.value))}
+              className="h-1.5 w-full accent-[var(--color-amber-brand)]"
+            />
+          </label>
+        </div>
       </section>
 
       <section className="panel">

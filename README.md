@@ -1,5 +1,9 @@
 # Vindicta Build Lab
 
+> Unofficial fan project, not affiliated with, endorsed by, or sponsored by
+> Valve Corporation. Deadlock, Vindicta, and all associated names, images, and
+> data are trademarks and/or copyrighted material of Valve Corporation.
+
 A web version of *Zag's Gundicta DPS Calculator* for Deadlock: build Vindicta
 loadouts, see gun and spirit damage update live, save as many builds as you
 like, and compare them on value per soul.
