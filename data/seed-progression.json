@@ -1,0 +1,294 @@
+{
+  "investment": [
+    {
+      "souls": 0,
+      "weaponPct": 0,
+      "vitalityPct": 0,
+      "spiritFlat": 0
+    },
+    {
+      "souls": 800,
+      "weaponPct": 0.09,
+      "vitalityPct": 0.09,
+      "spiritFlat": 7
+    },
+    {
+      "souls": 1600,
+      "weaponPct": 0.12,
+      "vitalityPct": 0.12,
+      "spiritFlat": 11
+    },
+    {
+      "souls": 2400,
+      "weaponPct": 0.15,
+      "vitalityPct": 0.15,
+      "spiritFlat": 15
+    },
+    {
+      "souls": 3200,
+      "weaponPct": 0.18,
+      "vitalityPct": 0.2,
+      "spiritFlat": 19
+    },
+    {
+      "souls": 4800,
+      "weaponPct": 0.46,
+      "vitalityPct": 0.38,
+      "spiritFlat": 38
+    },
+    {
+      "souls": 6400,
+      "weaponPct": 0.54,
+      "vitalityPct": 0.42,
+      "spiritFlat": 45
+    },
+    {
+      "souls": 8000,
+      "weaponPct": 0.62,
+      "vitalityPct": 0.46,
+      "spiritFlat": 52
+    },
+    {
+      "souls": 11200,
+      "weaponPct": 0.74,
+      "vitalityPct": 0.5,
+      "spiritFlat": 59
+    },
+    {
+      "souls": 16000,
+      "weaponPct": 0.86,
+      "vitalityPct": 0.54,
+      "spiritFlat": 66
+    },
+    {
+      "souls": 22400,
+      "weaponPct": 1,
+      "vitalityPct": 0.64,
+      "spiritFlat": 75
+    },
+    {
+      "souls": 28800,
+      "weaponPct": 1.15,
+      "vitalityPct": 0.7,
+      "spiritFlat": 100
+    }
+  ],
+  "boons": [
+    {
+      "souls": 600,
+      "boons": 0,
+      "abilityPoints": 0,
+      "note": null
+    },
+    {
+      "souls": 800,
+      "boons": 1,
+      "abilityPoints": 1,
+      "note": "Put 1 Point in Stake"
+    },
+    {
+      "souls": 1100,
+      "boons": 2,
+      "abilityPoints": 1,
+      "note": null
+    },
+    {
+      "souls": 1500,
+      "boons": 3,
+      "abilityPoints": 2,
+      "note": null
+    },
+    {
+      "souls": 2000,
+      "boons": 4,
+      "abilityPoints": 2,
+      "note": null
+    },
+    {
+      "souls": 2600,
+      "boons": 5,
+      "abilityPoints": 3,
+      "note": "T2 Stake"
+    },
+    {
+      "souls": 3200,
+      "boons": 6,
+      "abilityPoints": 4,
+      "note": null
+    },
+    {
+      "souls": 3800,
+      "boons": 7,
+      "abilityPoints": 4,
+      "note": "Snipe Unlock"
+    },
+    {
+      "souls": 4500,
+      "boons": 8,
+      "abilityPoints": 5,
+      "note": null
+    },
+    {
+      "souls": 5200,
+      "boons": 9,
+      "abilityPoints": 6,
+      "note": "T2 Stake T2 Snipe"
+    },
+    {
+      "souls": 5900,
+      "boons": 10,
+      "abilityPoints": 7,
+      "note": null
+    },
+    {
+      "souls": 6600,
+      "boons": 11,
+      "abilityPoints": 8,
+      "note": null
+    },
+    {
+      "souls": 7400,
+      "boons": 12,
+      "abilityPoints": 9,
+      "note": null
+    },
+    {
+      "souls": 8200,
+      "boons": 13,
+      "abilityPoints": 10,
+      "note": null
+    },
+    {
+      "souls": 9000,
+      "boons": 14,
+      "abilityPoints": 11,
+      "note": null
+    },
+    {
+      "souls": 9800,
+      "boons": 15,
+      "abilityPoints": 12,
+      "note": null
+    },
+    {
+      "souls": 10700,
+      "boons": 16,
+      "abilityPoints": 13,
+      "note": null
+    },
+    {
+      "souls": 11600,
+      "boons": 17,
+      "abilityPoints": 14,
+      "note": "T2 Stake, T2 Snipe, T3 Flight"
+    },
+    {
+      "souls": 12500,
+      "boons": 18,
+      "abilityPoints": 15,
+      "note": null
+    },
+    {
+      "souls": 13400,
+      "boons": 19,
+      "abilityPoints": 16,
+      "note": null
+    },
+    {
+      "souls": 14400,
+      "boons": 20,
+      "abilityPoints": 17,
+      "note": null
+    },
+    {
+      "souls": 15500,
+      "boons": 21,
+      "abilityPoints": 18,
+      "note": null
+    },
+    {
+      "souls": 16700,
+      "boons": 22,
+      "abilityPoints": 19,
+      "note": null
+    },
+    {
+      "souls": 18000,
+      "boons": 23,
+      "abilityPoints": 20,
+      "note": null
+    },
+    {
+      "souls": 19500,
+      "boons": 24,
+      "abilityPoints": 21,
+      "note": null
+    },
+    {
+      "souls": 21200,
+      "boons": 25,
+      "abilityPoints": 22,
+      "note": null
+    },
+    {
+      "souls": 23100,
+      "boons": 26,
+      "abilityPoints": 23,
+      "note": null
+    },
+    {
+      "souls": 25200,
+      "boons": 27,
+      "abilityPoints": 24,
+      "note": null
+    },
+    {
+      "souls": 27500,
+      "boons": 28,
+      "abilityPoints": 25,
+      "note": null
+    },
+    {
+      "souls": 30000,
+      "boons": 29,
+      "abilityPoints": 26,
+      "note": null
+    },
+    {
+      "souls": 32700,
+      "boons": 30,
+      "abilityPoints": 27,
+      "note": null
+    },
+    {
+      "souls": 35600,
+      "boons": 31,
+      "abilityPoints": 28,
+      "note": null
+    },
+    {
+      "souls": 38700,
+      "boons": 32,
+      "abilityPoints": 29,
+      "note": null
+    },
+    {
+      "souls": 42000,
+      "boons": 33,
+      "abilityPoints": 30,
+      "note": null
+    },
+    {
+      "souls": 45500,
+      "boons": 34,
+      "abilityPoints": 31,
+      "note": null
+    },
+    {
+      "souls": 49200,
+      "boons": 35,
+      "abilityPoints": 32,
+      "note": null
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "slug": "vindicta",
+  "name": "Vindicta",
+  "maxBoons": 35,
+  "gunDamageSpiritScaling": 0.022,
+  "headshotBonusPct": 65,
+  "base": {
+    "gunDamage": 12.33,
+    "bulletsPerSecond": 4.33,
+    "ammo": 19,
+    "reloadTime": 2.91,
+    "bulletVelocity": 660,
+    "spiritPower": 0,
+    "health": 755,
+    "healthRegen": 2,
+    "lightMelee": 50,
+    "heavyMelee": 116,
+    "moveSpeed": 7.9,
+    "sprintSpeed": 1.6,
+    "dashSpeed": 14.7,
+    "stamina": 2,
+    "staminaCooldown": 4.5,
+    "falloffMin": 20,
+    "falloffMax": 64,
+    "falloffValue": 0.9
+  },
+  "perBoon": {
+    "gunDamage": 0.495,
+    "spiritPower": 1.1,
+    "health": 28,
+    "lightMelee": 1.58,
+    "heavyMelee": 3.67
+  },
+  "abilities": [
+    {
+      "key": "stake",
+      "name": "Stake",
+      "slot": 1,
+      "baseDamage": 40,
+      "spiritScaling": 0.5,
+      "cooldown": 40,
+      "charges": 1,
+      "duration": 1.75,
+      "damageType": "spirit",
+      "notes": "Throw a stake that tethers enemies to where it lands. 9m capture radius, 9m tether length, 40% move speed while tethered.",
+      "upgrades": [
+        { "tier": 1, "cost": 1, "description": "+65 Damage", "damageDelta": 65 },
+        { "tier": 2, "cost": 2, "description": "-22s Cooldown", "cooldownDelta": -22 },
+        {
+          "tier": 3,
+          "cost": 5,
+          "description": "+0.75s Tether Duration and +2m Capture Radius"
+        }
+      ]
+    },
+    {
+      "key": "flight",
+      "name": "Flight",
+      "slot": 2,
+      "baseDamage": 0,
+      "spiritScaling": 0,
+      "cooldown": 42,
+      "charges": 1,
+      "castTime": 0.2,
+      "duration": 13,
+      "damageType": "none",
+      "effects": { "flightBaseDamage": 10, "flightSpiritScaling": 0.18 },
+      "notes": "While flying your weapon deals bonus spirit damage per bullet and your items gain 50% range.",
+      "upgrades": [
+        {
+          "tier": 1,
+          "cost": 1,
+          "description": "+50% base Ammo while flying",
+          "effects": { "flightAmmoMultiplier": 1.5 }
+        },
+        { "tier": 2, "cost": 2, "description": "+10s Duration" },
+        {
+          "tier": 3,
+          "cost": 5,
+          "description": "Hero kills refresh duration. +10 Spirit Damage with increased Spirit scaling",
+          "effects": { "flightBaseDamage": 20, "flightSpiritScaling": 0.28 }
+        }
+      ]
+    },
+    {
+      "key": "crow-familiar",
+      "name": "Crow Familiar",
+      "slot": 3,
+      "baseDamage": 40,
+      "spiritScaling": 0.744,
+      "dotTargetHealthPctPerSecond": 2.2,
+      "dotDuration": 5,
+      "cooldown": 32,
+      "charges": 1,
+      "damageType": "spirit",
+      "effects": { "bulletResistShred": 0.06, "spiritResistShred": 0.06 },
+      "notes": "Impact damage plus a bleed dealing a percentage of the target's current health. Also strips bullet and spirit resist.",
+      "upgrades": [
+        { "tier": 1, "cost": 1, "description": "Applies -35% Healing Reduction" },
+        {
+          "tier": 2,
+          "cost": 2,
+          "description": "+0.5% Bleed Damage, -16s Cooldown",
+          "cooldownDelta": -16
+        },
+        {
+          "tier": 3,
+          "cost": 5,
+          "description": "+2s Duration, -8% Bullet Resist, -8% Spirit Resist",
+          "effects": { "bulletResistShred": 0.14, "spiritResistShred": 0.14 }
+        }
+      ]
+    },
+    {
+      "key": "assassinate",
+      "name": "Assassinate",
+      "slot": 4,
+      "baseDamage": 90,
+      "spiritScaling": 0.93,
+      "bonusDamage": 90,
+      "bonusSpiritScaling": 2.3,
+      "bonusLabel": "Target below 50% health",
+      "headshotBonusPct": 20,
+      "noChargeDamagePct": 50,
+      "chargeTime": 1,
+      "cooldown": 55,
+      "charges": 2,
+      "castTime": 2.5,
+      "damageType": "spirit",
+      "effects": { "gunDamagePerStack": 0.06 },
+      "notes": "Scoped shot with a 1s full charge (50% damage uncharged) and +20% headshot damage, applied to the total. Purely spirit damage - base plus bonus, both spirit-scaled. Bonus damage up to 90 (x2.3 spirit) against targets below 50% health. Kills grant +6% weapon damage per stack to the regular gun, not to Assassinate itself.",
+      "upgrades": [
+        { "tier": 1, "cost": 1, "description": "-15s Cooldown", "cooldownDelta": -15 },
+        {
+          "tier": 2,
+          "cost": 2,
+          "description": "+80 Max Bonus Damage",
+          "bonusDamageDelta": 80
+        },
+        {
+          "tier": 3,
+          "cost": 5,
+          "description": "+4% Weapon Damage Per Kill",
+          "effects": { "gunDamagePerStack": 0.1 }
+        }
+      ]
+    }
+  ]
+}

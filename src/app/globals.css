@@ -1,0 +1,135 @@
+﻿@import "tailwindcss";
+
+@theme {
+  --color-ink-950: #0b0a0f;
+  --color-ink-900: #101016;
+  --color-ink-850: #16151d;
+  --color-ink-800: #1c1b25;
+  --color-ink-700: #272533;
+  --color-ink-600: #363347;
+  --color-ink-500: #4d4960;
+  --color-ink-300: #8e89a3;
+  --color-ink-200: #b6b1c7;
+  --color-ink-100: #e6e3ef;
+
+  --color-amber-brand: #f0a24b;
+  --color-weapon: #e8834a;
+  --color-vitality: #6bbf59;
+  --color-spirit: #a879e6;
+
+  --font-sans: ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, monospace;
+}
+
+html,
+body {
+  background: var(--color-ink-950);
+  color: var(--color-ink-100);
+  font-family: var(--font-sans);
+}
+
+/* Tabular numerals keep stat columns from jittering as values update. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+@layer components {
+  .panel {
+    background: var(--color-ink-900);
+    border: 1px solid var(--color-ink-700);
+    border-radius: 0.75rem;
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.75rem 0.875rem;
+    border-bottom: 1px solid var(--color-ink-700);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-400);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-ink-600);
+    background: var(--color-ink-800);
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-ink-100);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease;
+  }
+  .btn:hover:not(:disabled) {
+    background: var(--color-ink-700);
+    border-color: var(--color-ink-500);
+  }
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .btn-primary {
+    background: var(--color-amber-brand);
+    border-color: var(--color-amber-brand);
+    color: #201503;
+    font-weight: 600;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: #ffb765;
+    border-color: #ffb765;
+  }
+  .btn-danger:hover:not(:disabled) {
+    background: #45222a;
+    border-color: #7d3a45;
+  }
+
+  .input {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-ink-600);
+    background: var(--color-ink-950);
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8125rem;
+    color: var(--color-ink-100);
+  }
+  .input:focus {
+    outline: 2px solid var(--color-amber-brand);
+    outline-offset: -1px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-ink-600);
+    padding: 0.125rem 0.5rem;
+    font-size: 0.6875rem;
+    color: var(--color-ink-200);
+  }
+}
+
+/* Firefox/WebKit scrollbars inside scrolling panels. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-ink-600) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--color-ink-700);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
