@@ -33,9 +33,11 @@ multiplicatively: `1 - Π(1 - shred)`.
 touch damage.** Per deadlock.wiki/Damage_Resistance: the target's own resist
 and your shred each stack multiplicatively *within themselves*, then shred is
 *subtracted* from resist, and `damage taken = raw × (1 − (resist − shred))`.
-`build.enemyResistPct` (slider default 0, one value for both damage types) is
-the target's resist; `bulletResistShred`/`spiritResistShred` remain pure
-"how much you strip," untouched by the slider. The two combine into
+`build.enemyBulletResistPct`/`enemySpiritResistPct` (two sliders, default 0
+each — a target can be built to resist one and not the other, same as your
+own shred is tracked per type) are the target's resist;
+`bulletResistShred`/`spiritResistShred` remain pure "how much you strip,"
+untouched by the sliders. The two combine into
 `bulletResistMul`/`spiritResistMul` right where the old `(1 + shred)` used to
 be, floored at 0 so an over-resisted target can't show negative damage. At
 the default 0% this is arithmetically identical to the app's original

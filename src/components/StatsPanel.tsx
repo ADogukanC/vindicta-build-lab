@@ -163,12 +163,14 @@ function DamageProfile({
 
 export function StatsPanel({
   result,
-  enemyResistPct,
+  enemyBulletResistPct,
+  enemySpiritResistPct,
   onEnemyResistChange,
 }: {
   result: CalcResult;
-  enemyResistPct: number;
-  onEnemyResistChange: (pct: number) => void;
+  enemyBulletResistPct: number;
+  enemySpiritResistPct: number;
+  onEnemyResistChange: (patch: { enemyBulletResistPct?: number; enemySpiritResistPct?: number }) => void;
 }) {
   const [shred, setShred] = useState(true);
   const pick = (set: DamageSet) => (shred ? set.shredded : set.raw);
@@ -202,31 +204,49 @@ export function StatsPanel({
         </button>
       </header>
 
-      <label className="block px-3 pt-2">
-        <span className="mb-1 flex items-baseline justify-between text-[10px] uppercase tracking-wider text-ink-300">
-          <span>
-            Enemy resist{" "}
-            <span className="tnum ml-1 text-[13px] font-semibold text-ink-100">
-              {enemyResistPct}%
+      <div
+        className="grid grid-cols-2 gap-3 px-3 pt-2"
+        title="The target's own resist before your shred. Resist and shred each stack multiplicatively, then shred subtracts from resist (deadlock.wiki/Damage Resistance)."
+      >
+        <label className="block">
+          <span className="mb-1 flex items-baseline justify-between text-[10px] uppercase tracking-wider text-ink-300">
+            <span>
+              Enemy bullet resist{" "}
+              <span className="tnum ml-1 text-[13px] font-semibold text-ink-100">
+                {enemyBulletResistPct}%
+              </span>
             </span>
           </span>
-          <span
-            className="normal-case tracking-normal text-ink-500"
-            title="The target's own bullet/spirit resist before your shred. Resist and shred each stack multiplicatively, then shred subtracts from resist (deadlock.wiki/Damage Resistance)."
-          >
-            defaults to 0
+          <input
+            type="range"
+            min={0}
+            max={100}
+            step={1}
+            value={enemyBulletResistPct}
+            onChange={(e) => onEnemyResistChange({ enemyBulletResistPct: Number(e.target.value) })}
+            className="h-1.5 w-full accent-[var(--color-weapon)]"
+          />
+        </label>
+        <label className="block">
+          <span className="mb-1 flex items-baseline justify-between text-[10px] uppercase tracking-wider text-ink-300">
+            <span>
+              Enemy spirit resist{" "}
+              <span className="tnum ml-1 text-[13px] font-semibold text-ink-100">
+                {enemySpiritResistPct}%
+              </span>
+            </span>
           </span>
-        </span>
-        <input
-          type="range"
-          min={0}
-          max={100}
-          step={1}
-          value={enemyResistPct}
-          onChange={(e) => onEnemyResistChange(Number(e.target.value))}
-          className="h-1.5 w-full accent-[var(--color-amber-brand)]"
-        />
-      </label>
+          <input
+            type="range"
+            min={0}
+            max={100}
+            step={1}
+            value={enemySpiritResistPct}
+            onChange={(e) => onEnemyResistChange({ enemySpiritResistPct: Number(e.target.value) })}
+            className="h-1.5 w-full accent-[var(--color-spirit)]"
+          />
+        </label>
+      </div>
 
       <div className="grid grid-cols-2 gap-2 p-3">
         <Headline

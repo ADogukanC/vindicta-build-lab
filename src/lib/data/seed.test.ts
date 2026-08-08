@@ -356,15 +356,15 @@ describe("hero configuration", () => {
     // Crow Familiar's own passive shred (always on) gives a known, non-zero
     // bulletResistShred to test against, independent of any items.
     const ctx = { hero: SEED_HERO, items: SEED_ITEMS, progression: SEED_PROGRESSION };
-    const enemyResistPct = 52;
-    const bare = calculateBuild(createBuild({ boons: 27, enemyResistPct: 0 }), ctx);
-    const resisted = calculateBuild(createBuild({ boons: 27, enemyResistPct }), ctx);
+    const enemyBulletResistPct = 52;
+    const bare = calculateBuild(createBuild({ boons: 27 }), ctx);
+    const resisted = calculateBuild(createBuild({ boons: 27, enemyBulletResistPct }), ctx);
 
     // Shred itself (how much you strip) doesn't depend on the enemy's resist.
     expect(resisted.bulletResistShred).toBeGreaterThan(0);
     expect(resisted.bulletResistShred).toBeCloseTo(bare.bulletResistShred, 6);
 
-    const expectedMul = 1 - enemyResistPct / 100 + resisted.bulletResistShred;
+    const expectedMul = 1 - enemyBulletResistPct / 100 + resisted.bulletResistShred;
     expect(resisted.perBulletParts.ground.weapon.shredded).toBeCloseTo(
       resisted.bulletDamage * expectedMul,
       6,
@@ -379,9 +379,45 @@ describe("hero configuration", () => {
     expect(resisted.groundDps).toBeLessThan(bare.groundDps);
   });
 
+  it("tracks Enemy Resist separately for bullet and spirit, since a target can be built to resist one and not the other", () => {
+    // Stake is spirit damage, so it only reads enemySpiritResistPct. A high
+    // bullet resist alone must not touch it, and vice versa for a weapon
+    // number like the gun's own bullet damage.
+    const ctx = { hero: SEED_HERO, items: SEED_ITEMS, progression: SEED_PROGRESSION };
+    const bare = calculateBuild(createBuild({ boons: 27 }), ctx);
+    const bulletOnly = calculateBuild(
+      createBuild({ boons: 27, enemyBulletResistPct: 80 }),
+      ctx,
+    );
+    const spiritOnly = calculateBuild(
+      createBuild({ boons: 27, enemySpiritResistPct: 80 }),
+      ctx,
+    );
+
+    const stakeBare = bare.abilities.find((a) => a.key === "stake")!;
+    const stakeBulletOnly = bulletOnly.abilities.find((a) => a.key === "stake")!;
+    const stakeSpiritOnly = spiritOnly.abilities.find((a) => a.key === "stake")!;
+
+    // 80% bullet resist doesn't touch Stake's (spirit) damage at all...
+    expect(stakeBulletOnly.totalDamage.shredded).toBeCloseTo(stakeBare.totalDamage.shredded, 6);
+    // ...but 80% spirit resist does.
+    expect(stakeSpiritOnly.totalDamage.shredded).toBeLessThan(stakeBare.totalDamage.shredded);
+
+    // Symmetrically, 80% spirit resist doesn't touch the regular gun's bullet
+    // damage, but 80% bullet resist does.
+    expect(spiritOnly.bulletDamage).toBeCloseTo(bare.bulletDamage, 6);
+    expect(spiritOnly.perBulletParts.ground.weapon.shredded).toBeCloseTo(
+      bare.perBulletParts.ground.weapon.shredded,
+      6,
+    );
+    expect(bulletOnly.perBulletParts.ground.weapon.shredded).toBeLessThan(
+      bare.perBulletParts.ground.weapon.shredded,
+    );
+  });
+
   it("never lets Enemy Resist push damage negative, even maxed out with no shred", () => {
     const ctx = { hero: SEED_HERO, items: SEED_ITEMS, progression: SEED_PROGRESSION };
-    const r = calculateBuild(createBuild({ boons: 27, enemyResistPct: 100 }), ctx);
+    const r = calculateBuild(createBuild({ boons: 27, enemyBulletResistPct: 100 }), ctx);
     // Only Crow's always-on passive shred (6%) counters the full 100% resist
     // on a bare build, so ground DPS should land near that residual, not at
     // zero and never negative.

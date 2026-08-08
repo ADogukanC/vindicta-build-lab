@@ -46,7 +46,8 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   const [headshotRate, setHeadshotRate] = useState(0);
   // Same reasoning for the target's resist: it describes who you're fighting,
   // not any one build, so every build has to be measured against the same one.
-  const [enemyResistPct, setEnemyResistPct] = useState(0);
+  const [enemyBulletResistPct, setEnemyBulletResistPct] = useState(0);
+  const [enemySpiritResistPct, setEnemySpiritResistPct] = useState(0);
 
   useEffect(() => {
     void store.hydrate();
@@ -65,10 +66,10 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   const rows = useMemo(
     () =>
       selected.map((build) => {
-        const at = { ...build, soulsEarned: souls, headshotRate, enemyResistPct };
+        const at = { ...build, soulsEarned: souls, headshotRate, enemyBulletResistPct, enemySpiritResistPct };
         return { build: at, result: calculateBuild(at, ctx) };
       }),
-    [selected, ctx, souls, headshotRate, enemyResistPct],
+    [selected, ctx, souls, headshotRate, enemyBulletResistPct, enemySpiritResistPct],
   );
 
   /**
@@ -83,14 +84,17 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
       const row: Record<string, number> = { souls: s };
       for (const build of selected) {
         row[build.name] = metric.get(
-          calculateBuild({ ...build, soulsEarned: s, headshotRate, enemyResistPct }, ctx),
+          calculateBuild(
+            { ...build, soulsEarned: s, headshotRate, enemyBulletResistPct, enemySpiritResistPct },
+            ctx,
+          ),
         );
       }
       points.push(row);
     }
     return points;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected, ctx, metricKey, headshotRate, enemyResistPct]);
+  }, [selected, ctx, metricKey, headshotRate, enemyBulletResistPct, enemySpiritResistPct]);
 
   const itemsBySlug = useMemo(() => new Map(ctx.items.map((i) => [i.slug, i])), [ctx.items]);
 
@@ -236,31 +240,49 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
             </span>
           </label>
 
-          <label className="block">
-            <span className="mb-1 flex items-baseline justify-between text-[10px] uppercase tracking-wider text-ink-300">
-              <span>
-                Enemy resist{" "}
-                <span className="tnum ml-1 text-[13px] font-semibold text-ink-100">
-                  {enemyResistPct}%
+          <div
+            className="grid grid-cols-2 gap-3"
+            title="The target's own resist before your shred (deadlock.wiki/Damage Resistance)."
+          >
+            <label className="block">
+              <span className="mb-1 flex items-baseline justify-between text-[10px] uppercase tracking-wider text-ink-300">
+                <span>
+                  Enemy bullet resist{" "}
+                  <span className="tnum ml-1 text-[13px] font-semibold text-ink-100">
+                    {enemyBulletResistPct}%
+                  </span>
                 </span>
               </span>
-              <span
-                className="normal-case tracking-normal text-ink-500"
-                title="The target's own bullet/spirit resist before your shred (deadlock.wiki/Damage Resistance)."
-              >
-                all builds
+              <input
+                type="range"
+                min={0}
+                max={100}
+                step={1}
+                value={enemyBulletResistPct}
+                onChange={(e) => setEnemyBulletResistPct(Number(e.target.value))}
+                className="h-1.5 w-full accent-[var(--color-weapon)]"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1 flex items-baseline justify-between text-[10px] uppercase tracking-wider text-ink-300">
+                <span>
+                  Enemy spirit resist{" "}
+                  <span className="tnum ml-1 text-[13px] font-semibold text-ink-100">
+                    {enemySpiritResistPct}%
+                  </span>
+                </span>
               </span>
-            </span>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              step={1}
-              value={enemyResistPct}
-              onChange={(e) => setEnemyResistPct(Number(e.target.value))}
-              className="h-1.5 w-full accent-[var(--color-amber-brand)]"
-            />
-          </label>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                step={1}
+                value={enemySpiritResistPct}
+                onChange={(e) => setEnemySpiritResistPct(Number(e.target.value))}
+                className="h-1.5 w-full accent-[var(--color-spirit)]"
+              />
+            </label>
+          </div>
         </div>
       </section>
 

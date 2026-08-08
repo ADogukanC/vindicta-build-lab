@@ -496,13 +496,19 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
 
   // Deadlock resist: damage taken = raw x (1 - resist), and shred subtracts
   // straight off the target's resist rather than being its own multiplier
-  // (deadlock.wiki/Damage_Resistance). Enemy Resist defaults to 0, which is
-  // the strawman the app always assumed — shred alone then reads as pure
-  // negative resist, exactly reproducing the pre-Enemy-Resist numbers.
-  // Floored at 0 so an over-resisted target can't show negative damage.
-  const enemyResist = Math.max(0, Math.min(100, build.enemyResistPct ?? 0)) / 100;
-  const bulletResistMul = Math.max(0, 1 - enemyResist + bulletResistShred);
-  const spiritResistMul = Math.max(0, 1 - enemyResist + spiritResistShred);
+  // (deadlock.wiki/Damage_Resistance). Bullet and spirit are tracked
+  // separately, same as shred — a target can resist one and not the other.
+  // Enemy Resist defaults to 0, which is the strawman the app always
+  // assumed — shred alone then reads as pure negative resist, exactly
+  // reproducing the pre-Enemy-Resist numbers. Floored at 0 so an
+  // over-resisted target can't show negative damage.
+  const clampResist = (pct: number | undefined) => Math.max(0, Math.min(100, pct ?? 0)) / 100;
+  const enemyBulletResist = clampResist(build.enemyBulletResistPct);
+  const enemySpiritResist = clampResist(build.enemySpiritResistPct);
+  const bulletResistMul = Math.max(0, 1 - enemyBulletResist + bulletResistShred);
+  const spiritResistMul = Math.max(0, 1 - enemySpiritResist + spiritResistShred);
+  const bulletNoShredMul = Math.max(0, 1 - enemyBulletResist);
+  const spiritNoShredMul = Math.max(0, 1 - enemySpiritResist);
 
   // -------------------------------------------------------------- weapon ---
   const bulletDamage =
@@ -624,12 +630,10 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
 
   // ------------------------------------------------------- damage rollups ---
   // "raw" is the no-shred toggle: the target's own Enemy Resist still
-  // applies (it's their stat, not yours), just none of your shred sources —
-  // bullet and spirit see the same figure since Enemy Resist is one slider.
-  const noShredMul = Math.max(0, 1 - enemyResist);
+  // applies (it's their stat, not yours), just none of your shred sources.
   /** Combines a bullet's weapon and spirit damage under their own resists. */
   const mkDamage = (weapon: number, spirit: number): DamageSet => ({
-    raw: (weapon + spirit) * noShredMul * damageMultiplier,
+    raw: (weapon * bulletNoShredMul + spirit * spiritNoShredMul) * damageMultiplier,
     shredded: (weapon * bulletResistMul + spirit * spiritResistMul) * damageMultiplier,
   });
   const scaleSet = (s: DamageSet, k: number): DamageSet => ({
@@ -731,7 +735,8 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
 
     const isSpirit = (a.damageType ?? "spirit") === "spirit";
     const resistMul = a.damageType === "none" ? 1 : isSpirit ? spiritResistMul : bulletResistMul;
-    const resistMulNoShred = a.damageType === "none" ? 1 : noShredMul;
+    const resistMulNoShred =
+      a.damageType === "none" ? 1 : isSpirit ? spiritNoShredMul : bulletNoShredMul;
     const ampMul = isSpirit ? 1 + spiritAmp : 1;
     const rawScale = ampMul * damageMultiplier * damageMul * resistMulNoShred;
     const shreddedScale = ampMul * damageMultiplier * damageMul * resistMul;
@@ -788,7 +793,8 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
 
     const isSpirit = (a.damageType ?? "spirit") === "spirit";
     const resistMul = a.damageType === "none" ? 1 : isSpirit ? spiritResistMul : bulletResistMul;
-    const resistMulNoShred = a.damageType === "none" ? 1 : noShredMul;
+    const resistMulNoShred =
+      a.damageType === "none" ? 1 : isSpirit ? spiritNoShredMul : bulletNoShredMul;
     const ampMul = (isSpirit ? 1 + spiritAmp : 1) * damageMultiplier * abilityDamageMul;
     const scale: DamageSet = {
       raw: ampMul * resistMulNoShred,

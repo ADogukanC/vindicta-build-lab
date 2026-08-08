@@ -63,7 +63,8 @@ export function createBuild(partial: Partial<Build> = {}): Build {
     boonsFromSouls: true,
     snipeStacks: 5,
     headshotRate: 0,
-    enemyResistPct: 0,
+    enemyBulletResistPct: 0,
+    enemySpiritResistPct: 0,
     abilityUpgrades: structuredCloneUpgrades(DEFAULT_ABILITY_UPGRADES),
     crowShredActive: true,
     // In game, spirit items do raise Vindicta's bullet damage. The workbook fed
