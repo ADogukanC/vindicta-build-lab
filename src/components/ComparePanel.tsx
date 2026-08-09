@@ -7,6 +7,7 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
+  LabelList,
   Legend,
   Line,
   LineChart,
@@ -33,6 +34,9 @@ const CHART_TOOLTIP = {
 } as const;
 
 const axis = { stroke: "#4d4960", fontSize: 11 };
+// The DPS comparison charts are the main event on this page, so their ticks
+// read a size up from every other chart's.
+const bigAxis = { stroke: "#4d4960", fontSize: 12 };
 
 export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   const store = useBuilds();
@@ -44,6 +48,10 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   // Headshot rate is an assumption about play, so it has to be the same for
   // every build or the comparison is measuring two different players.
   const [headshotRate, setHeadshotRate] = useState(0);
+  // Same reasoning for snipe stacks: how many kills you've banked is a
+  // playstyle/match assumption, not something one build "has" and another
+  // doesn't, so every build is measured holding the same count.
+  const [snipeStacks, setSnipeStacks] = useState(5);
   // Same reasoning for the target's resist: it describes who you're fighting,
   // not any one build, so every build has to be measured against the same one.
   const [enemyBulletResistPct, setEnemyBulletResistPct] = useState(0);
@@ -66,10 +74,17 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   const rows = useMemo(
     () =>
       selected.map((build) => {
-        const at = { ...build, soulsEarned: souls, headshotRate, enemyBulletResistPct, enemySpiritResistPct };
+        const at = {
+          ...build,
+          soulsEarned: souls,
+          headshotRate,
+          enemyBulletResistPct,
+          enemySpiritResistPct,
+          snipeStacks,
+        };
         return { build: at, result: calculateBuild(at, ctx) };
       }),
-    [selected, ctx, souls, headshotRate, enemyBulletResistPct, enemySpiritResistPct],
+    [selected, ctx, souls, headshotRate, enemyBulletResistPct, enemySpiritResistPct, snipeStacks],
   );
 
   /**
@@ -85,7 +100,14 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
       for (const build of selected) {
         row[build.name] = metric.get(
           calculateBuild(
-            { ...build, soulsEarned: s, headshotRate, enemyBulletResistPct, enemySpiritResistPct },
+            {
+              ...build,
+              soulsEarned: s,
+              headshotRate,
+              enemyBulletResistPct,
+              enemySpiritResistPct,
+              snipeStacks,
+            },
             ctx,
           ),
         );
@@ -94,7 +116,7 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
     }
     return points;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected, ctx, metricKey, headshotRate, enemyBulletResistPct, enemySpiritResistPct]);
+  }, [selected, ctx, metricKey, headshotRate, enemyBulletResistPct, enemySpiritResistPct, snipeStacks]);
 
   const itemsBySlug = useMemo(() => new Map(ctx.items.map((i) => [i.slug, i])), [ctx.items]);
 
@@ -117,9 +139,16 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   const valueBuild = useMemo(
     () =>
       valueBuildRaw
-        ? { ...valueBuildRaw, soulsEarned: souls, headshotRate, enemyBulletResistPct, enemySpiritResistPct }
+        ? {
+            ...valueBuildRaw,
+            soulsEarned: souls,
+            headshotRate,
+            enemyBulletResistPct,
+            enemySpiritResistPct,
+            snipeStacks,
+          }
         : null,
-    [valueBuildRaw, souls, headshotRate, enemyBulletResistPct, enemySpiritResistPct],
+    [valueBuildRaw, souls, headshotRate, enemyBulletResistPct, enemySpiritResistPct, snipeStacks],
   );
 
   const contributions = useMemo(
@@ -227,6 +256,25 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
         <div className="flex flex-col justify-center gap-3">
           <label className="block">
             <span className="mb-1 flex items-baseline justify-between text-[10px] uppercase tracking-wider text-ink-300">
+              <span>Assassinate stacks</span>
+              <span className="normal-case tracking-normal text-ink-500">all builds</span>
+            </span>
+            <input
+              type="number"
+              min={0}
+              step={1}
+              value={snipeStacks}
+              onChange={(e) => {
+                const next = Number(e.target.value);
+                if (Number.isNaN(next)) return;
+                setSnipeStacks(Math.max(0, next));
+              }}
+              className="input tnum max-w-32"
+            />
+          </label>
+
+          <label className="block">
+            <span className="mb-1 flex items-baseline justify-between text-[10px] uppercase tracking-wider text-ink-300">
               <span>
                 Headshots{" "}
                 <span className="tnum ml-1 text-[13px] font-semibold text-ink-100">
@@ -321,23 +369,23 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
             Drives the charts below and the value-per-soul section further down the page.
           </span>
         </div>
-        <div className="grid gap-3 p-3 lg:grid-cols-2">
+        <div className="flex flex-col gap-6 p-4">
           <div>
-            <h3 className="mb-1 text-[11px] uppercase tracking-wider text-ink-300">
+            <h3 className="mb-2 text-[12px] uppercase tracking-wider text-ink-300">
               {metric.label} by build
             </h3>
-            <div className="h-56">
+            <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={barData} layout="vertical" margin={{ left: 8, right: 24 }}>
+                <BarChart data={barData} layout="vertical" margin={{ left: 8, right: 32 }}>
                   <CartesianGrid stroke="#272533" strokeDasharray="3 3" horizontal={false} />
-                  <XAxis type="number" tick={axis} tickLine={false} axisLine={{ stroke: "#272533" }} />
+                  <XAxis type="number" tick={bigAxis} tickLine={false} axisLine={{ stroke: "#272533" }} />
                   <YAxis
                     type="category"
                     dataKey="name"
-                    tick={axis}
+                    tick={bigAxis}
                     tickLine={false}
                     axisLine={{ stroke: "#272533" }}
-                    width={110}
+                    width={130}
                   />
                   <Tooltip
                     contentStyle={CHART_TOOLTIP}
@@ -348,6 +396,13 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                     {barData.map((d) => (
                       <Cell key={d.name} fill={d.color} />
                     ))}
+                    <LabelList
+                      dataKey="value"
+                      position="right"
+                      formatter={(v: number) => formatMetric(metric, v)}
+                      fill="#e6e3ef"
+                      fontSize={12}
+                    />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -355,27 +410,29 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
           </div>
 
           <div>
-            <h3 className="mb-1 text-[11px] uppercase tracking-wider text-ink-300">
+            <h3 className="mb-2 text-[12px] uppercase tracking-wider text-ink-300">
               {metric.label} across the whole game
             </h3>
-            <div className="h-56">
+            <div className="h-[420px]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={progression} margin={{ left: 8, right: 16, top: 8, bottom: 4 }}>
+                <LineChart data={progression} margin={{ left: 8, right: 24, top: 8, bottom: 4 }}>
                   <CartesianGrid stroke="#272533" strokeDasharray="3 3" />
                   <XAxis
                     dataKey="souls"
                     type="number"
                     domain={[0, MAX_SOULS]}
-                    tick={axis}
+                    tick={bigAxis}
                     tickLine={false}
                     axisLine={{ stroke: "#272533" }}
+                    tickCount={17}
                     tickFormatter={(v: number) => `${Math.round(v / 1000)}k`}
                   />
                   <YAxis
-                    tick={axis}
+                    tick={bigAxis}
                     tickLine={false}
                     axisLine={{ stroke: "#272533" }}
-                    width={56}
+                    width={64}
+                    tickCount={10}
                     tickFormatter={(v: number) => fmtInt(v)}
                   />
                   <Tooltip
@@ -383,11 +440,12 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                     labelFormatter={(v) => `${fmtInt(Number(v))} souls earned`}
                     formatter={(v: number, name: string) => [formatMetric(metric, v), name]}
                   />
+                  <Legend wrapperStyle={{ fontSize: 12 }} />
                   <ReferenceLine
                     x={souls}
                     stroke="#f0a24b"
                     strokeDasharray="4 4"
-                    label={{ value: "now", fill: "#f0a24b", fontSize: 10, position: "top" }}
+                    label={{ value: "now", fill: "#f0a24b", fontSize: 11, position: "top" }}
                   />
                   {rows.map(({ build }) => (
                     <Line
@@ -395,7 +453,7 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                       type="stepAfter"
                       dataKey={build.name}
                       stroke={build.color}
-                      strokeWidth={2}
+                      strokeWidth={2.5}
                       dot={false}
                       isAnimationActive={false}
                     />
@@ -403,7 +461,7 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                 </LineChart>
               </ResponsiveContainer>
             </div>
-            <p className="mt-1 text-[11px] text-ink-500">
+            <p className="mt-2 text-[11px] text-ink-500">
               Every build re-bought from scratch at each point, so crossovers show exactly
               where one plan overtakes another.
             </p>
@@ -415,21 +473,21 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
         <header className="panel-header">
           <span>Ground DPS vs distance</span>
         </header>
-        <div className="h-64 p-2">
+        <div className="h-96 p-3">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={falloffData} margin={{ top: 8, right: 16, bottom: 4, left: 4 }}>
+            <LineChart data={falloffData} margin={{ top: 8, right: 24, bottom: 4, left: 8 }}>
               <CartesianGrid stroke="#272533" strokeDasharray="3 3" />
-              <XAxis dataKey="distance" unit="m" tick={axis} tickLine={false} axisLine={{ stroke: "#272533" }} />
-              <YAxis tick={axis} tickLine={false} axisLine={{ stroke: "#272533" }} width={56} />
+              <XAxis dataKey="distance" unit="m" tick={bigAxis} tickLine={false} axisLine={{ stroke: "#272533" }} />
+              <YAxis tick={bigAxis} tickLine={false} axisLine={{ stroke: "#272533" }} width={64} tickCount={10} />
               <Tooltip contentStyle={CHART_TOOLTIP} labelFormatter={(v) => `${v} m`} formatter={(v: number) => fmtInt(v)} />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Legend wrapperStyle={{ fontSize: 12 }} />
               {rows.map(({ build }) => (
                 <Line
                   key={build.id}
                   type="monotone"
                   dataKey={build.name}
                   stroke={build.color}
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   dot={false}
                 />
               ))}
@@ -570,7 +628,9 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
               </h3>
               <p className="mb-2 text-[11px] text-ink-500">
                 Every unowned item simulated on top of this build, ranked by {metric.label.toLowerCase()}{" "}
-                gained per 1,000 souls.
+                gained per 1,000 souls — weighted for what's actually worth buying at{" "}
+                {fmtInt(souls)} souls, so a cheap item's ratio doesn't outrank a pricier one
+                unless it truly earns it.
               </p>
               <ul className="space-y-1.5">
                 {candidates.map((c, i) => (

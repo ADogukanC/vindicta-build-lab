@@ -9,7 +9,14 @@
 import { describe, expect, it } from "vitest";
 import { SEED_HERO, SEED_ITEMS, SEED_PROGRESSION } from "../data/seed";
 import { createBuild, createBuildItem } from "../build";
-import { itemContributions, purchaseCandidates } from "./metrics";
+import type { Item } from "../types";
+import {
+  itemContributions,
+  purchaseCandidates,
+  rankPurchaseCandidates,
+  sensiblePurchaseCostFloor,
+  type ItemContribution,
+} from "./metrics";
 
 const ctx = { hero: SEED_HERO, items: SEED_ITEMS, progression: SEED_PROGRESSION };
 const bySlug = new Map(SEED_ITEMS.map((i) => [i.slug, i]));
@@ -79,5 +86,70 @@ describe("purchaseCandidates", () => {
     // by more than a single copy of the item's own bonus could explain.
     expect(withoutBump.delta).toBeLessThan(300);
     expect(withoutBump.delta).toBeGreaterThan(0);
+  });
+});
+
+function fakeItem(slug: string, cost: number): Item {
+  return {
+    id: slug,
+    slug,
+    name: slug,
+    category: "Weapon",
+    cost,
+    tier: 1,
+    activation: "Passive",
+    iconUrl: null,
+    components: [],
+    shopFilters: [],
+    stats: {},
+    enabled: true,
+    sortOrder: 0,
+  };
+}
+
+function fakeRow(slug: string, cost: number, delta: number): ItemContribution {
+  return { item: fakeItem(slug, cost), delta, deltaPer1kSouls: (delta / cost) * 1000, cost };
+}
+
+describe("sensiblePurchaseCostFloor", () => {
+  it("is a no-op at the cheapest tier below ~12.5k souls and rises to the 6400 tier above ~35k", () => {
+    expect(sensiblePurchaseCostFloor(0)).toBe(800);
+    expect(sensiblePurchaseCostFloor(12500)).toBe(800);
+    expect(sensiblePurchaseCostFloor(35000)).toBe(6400);
+    expect(sensiblePurchaseCostFloor(100000)).toBe(6400);
+    // Midpoint of the ramp lands on the midpoint of the two floors.
+    expect(sensiblePurchaseCostFloor((12500 + 35000) / 2)).toBeCloseTo((800 + 6400) / 2, 6);
+  });
+});
+
+describe("rankPurchaseCandidates", () => {
+  it("lets a cheap item's better raw ratio win early, but not once its cost tier has passed", () => {
+    // Naive per-1k-souls ratio: cheap (12.5) beats pricey (9.375).
+    const cheap = fakeRow("cheap", 800, 10);
+    const pricey = fakeRow("pricey", 6400, 60);
+    expect(cheap.deltaPer1kSouls).toBeGreaterThan(pricey.deltaPer1kSouls);
+
+    // Below the 12.5k anchor the floor is a no-op (800), so the cheap item's
+    // real cost is used as-is and its better ratio still wins.
+    expect(rankPurchaseCandidates([cheap, pricey], 5000)[0].item.slug).toBe("cheap");
+
+    // Above the 35k anchor the floor rises to the 6400 tier: the cheap item
+    // is judged as if it cost 6400 (10/6400*1000 = 1.5625), well under the
+    // pricier item's untouched 9.375, flipping the order.
+    expect(rankPurchaseCandidates([cheap, pricey], 40000)[0].item.slug).toBe("pricey");
+  });
+
+  it("still lets an exceptional cheap item win late, per the exception the floor leaves room for", () => {
+    const cheap = fakeRow("cheap", 800, 100); // 100/6400*1000 = 15.625 even floored
+    const pricey = fakeRow("pricey", 6400, 60); // 60/6400*1000 = 9.375
+    expect(rankPurchaseCandidates([cheap, pricey], 40000)[0].item.slug).toBe("cheap");
+  });
+
+  it("never lowers an item's own cost, so a purchase already at or above the floor is judged on its true ratio", () => {
+    // Both items are already priced at the 40k-souls floor (6400), so the
+    // floor cannot touch either one - the higher true ratio simply wins.
+    const strong = fakeRow("strong", 6400, 40); // 40/6400*1000 = 6.25
+    const weak = fakeRow("weak", 6400, 20); // 20/6400*1000 = 3.125
+    expect(rankPurchaseCandidates([weak, strong], 40000)[0].item.slug).toBe("strong");
   });
 });
