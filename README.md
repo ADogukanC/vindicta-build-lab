@@ -16,10 +16,11 @@ reproduces).
 
 The **item catalogue and Vindicta's stats come from
 [deadlock.wiki](https://deadlock.wiki)**, which mirrors the game's own data
-tables. That means all 173 live items (not just the workbook's 71), with real
+tables. That means all 156 live items (not just the workbook's 71), with real
 component trees, activation types, and the game's own flags for which bonuses
-are conditional. Disabled and unreleased entries are dropped at import. See
-[Refreshing the data](#refreshing-the-data-after-a-patch).
+are conditional. Disabled, unreleased, and Street Brawl-only entries are
+dropped at import — the last of those can't be bought in Standard or Ranked.
+See [Refreshing the data](#refreshing-the-data-after-a-patch).
 
 ---
 
@@ -123,7 +124,7 @@ tab), duplicate, delete, and tick the coloured dot to add a build to the
 comparison. Items are added by clicking them in the shop, and reordered with the
 ▲▼ arrows on each row.
 
-The shop covers all 173 items, filtered by category, tier, the game's own shop
+The shop covers all 156 items buyable in Standard or Ranked, filtered by category, tier, the game's own shop
 tags, and an actives-only switch. Cards show the activation type and cooldown,
 the components an item builds from, and mark conditional bonuses with a ◇.
 Components are absorbed when their upgrade is reached on the timeline, exactly

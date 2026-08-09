@@ -109,8 +109,18 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
     [selected, ctx, itemsBySlug],
   );
 
-  const valueBuild =
+  const valueBuildRaw =
     store.builds.find((b) => b.id === valueBuildId) ?? selected[0] ?? store.builds[0] ?? null;
+  // Measured at the same souls/headshot/resist figures as every other section
+  // on this page, so "best next purchase" answers the same question the
+  // charts above are already showing, not whatever this build was last saved at.
+  const valueBuild = useMemo(
+    () =>
+      valueBuildRaw
+        ? { ...valueBuildRaw, soulsEarned: souls, headshotRate, enemyBulletResistPct, enemySpiritResistPct }
+        : null,
+    [valueBuildRaw, souls, headshotRate, enemyBulletResistPct, enemySpiritResistPct],
+  );
 
   const contributions = useMemo(
     () => (valueBuild ? itemContributions(valueBuild, ctx, metricKey) : []),
@@ -287,10 +297,13 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
       </section>
 
       <section className="panel">
-        <header className="panel-header">
-          <span>Focus metric</span>
+        <div className="flex flex-wrap items-center gap-3 rounded-t-xl border border-amber-brand/30 bg-amber-brand/10 px-4 py-3">
+          <label htmlFor="focus-metric" className="text-[12px] font-bold uppercase tracking-widest text-amber-brand">
+            Focus metric
+          </label>
           <select
-            className="input max-w-64 py-1 text-xs normal-case tracking-normal"
+            id="focus-metric"
+            className="input flex-1 min-w-[220px] max-w-sm border-amber-brand/50 bg-ink-900 py-2 text-[14px] font-semibold normal-case tracking-normal text-ink-100 shadow-[0_0_0_1px_rgba(240,162,75,0.15)] focus:outline-2 focus:outline-amber-brand"
             value={metricKey}
             onChange={(e) => setMetricKey(e.target.value)}
           >
@@ -304,7 +317,10 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
               </optgroup>
             ))}
           </select>
-        </header>
+          <span className="text-[11px] text-ink-400">
+            Drives the charts below and the value-per-soul section further down the page.
+          </span>
+        </div>
         <div className="grid gap-3 p-3 lg:grid-cols-2">
           <div>
             <h3 className="mb-1 text-[11px] uppercase tracking-wider text-ink-300">
@@ -498,7 +514,12 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
       {valueBuild && (
         <section className="panel">
           <header className="panel-header">
-            <span>Value per soul</span>
+            <span className="flex items-baseline gap-2">
+              Value per soul
+              <span className="normal-case tracking-normal text-ink-500">
+                at {fmtInt(souls)} souls earned, {headshotRate}% headshots
+              </span>
+            </span>
             <select
               className="input max-w-52 py-1 text-xs normal-case tracking-normal"
               value={valueBuild.id}

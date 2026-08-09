@@ -175,6 +175,11 @@ SCALING_OVERRIDES = {
     "mercurial-magnum": {"perSpirit": {"bulletSpiritDamagePctOfBase": 0.49}},
 }
 
+# Armor Piercing Rounds' ProcChance means "chance to ignore Bullet Resistance
+# entirely", not "chance of bonus damage" like every other ProcChance item -
+# the export gives no way to tell those apart, so it is opted in per item.
+IGNORES_BULLET_RESIST = {"upgrade_aprounds"}
+
 CONDITION_LABELS = [
     ("LongRangeBonusWeaponPower", "Beyond minimum range"),
     ("CloseRangeBonusWeaponPower", "Within close range"),
@@ -242,10 +247,16 @@ def add(bag, key, value):
 def main():
     raw = json.load(open(SRC, encoding="utf-8"))
     # Disabled and unreleased entries are dead weight in the shop and in admin.
+    # Street Brawl-only items are excluded too: that mode has its own shop and
+    # these can't be bought in Standard or Ranked, so recommending them there
+    # would send the player to a shop that doesn't have them.
     records = [
         v
         for v in raw.values()
-        if v.get("Name") and v.get("Cost") is not None and not v.get("IsDisabled")
+        if v.get("Name")
+        and v.get("Cost") is not None
+        and not v.get("IsDisabled")
+        and not v.get("StreetBrawl")
     ]
 
     # Two items ship under the same name (an active "Silencer" and a disabled
@@ -425,6 +436,8 @@ def main():
 
         if rec["Key"] in IMBUED_BONUS_DAMAGE:
             add(imbued_stats, "abilityBonusDamage", IMBUED_BONUS_DAMAGE[rec["Key"]])
+        if rec["Key"] in IGNORES_BULLET_RESIST:
+            item["ignoresBulletResist"] = True
         if imbued_stats:
             item["imbuedStats"] = imbued_stats
         if conditional_stats:

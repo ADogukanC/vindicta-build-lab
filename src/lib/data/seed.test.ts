@@ -22,9 +22,9 @@ const live = SEED_ITEMS.filter((i) => i.enabled);
 
 describe("item catalogue", () => {
   it("carries only live items", () => {
-    // Disabled and unreleased entries are dropped at import; nothing in the
-    // catalogue should be dead weight.
-    expect(SEED_ITEMS.length).toBeGreaterThan(160);
+    // Disabled, unreleased, and Street Brawl-only entries are dropped at
+    // import; nothing in the catalogue should be dead weight.
+    expect(SEED_ITEMS.length).toBeGreaterThan(140);
     expect(live.length).toBe(SEED_ITEMS.length);
     expect(SEED_ITEMS.filter((i) => !i.enabled)).toEqual([]);
     expect(SEED_ITEMS.some((i) => i.name.includes("Disabled"))).toBe(false);
@@ -160,7 +160,6 @@ describe("item catalogue", () => {
     expect(bySlug.get("surge-of-power")!.stats.spiritPowerFlat ?? 0).toBe(0);
     expect(bySlug.get("compress-cooldown")!.imbuedStats?.cooldownReductionPct).toBe(18);
     expect(bySlug.get("compress-cooldown")!.stats.cooldownReductionPct ?? 0).toBe(0);
-    expect(bySlug.get("frostbite-charm")!.imbuedStats?.spiritPowerFlat).toBe(70);
 
     // Quicksilver Reload and Mercurial Magnum charge up the imbued ability.
     expect(bySlug.get("quicksilver-reload")!.imbuedStats?.abilityBonusDamage).toBe(44);
@@ -192,7 +191,9 @@ describe("item catalogue", () => {
     expect(new Set(live.map((i) => i.category))).toEqual(
       new Set(["Weapon", "Vitality", "Spirit"]),
     );
-    expect(new Set(live.map((i) => i.tier))).toEqual(new Set([1, 2, 3, 4, 5]));
+    // Tier 5 ("Legendary") is exclusively Street Brawl's 9999-cost items, so
+    // it is dropped at import along with the rest of that mode's catalogue.
+    expect(new Set(live.map((i) => i.tier))).toEqual(new Set([1, 2, 3, 4]));
   });
 
   it("keeps the stats the workbook independently derived", () => {
@@ -377,6 +378,51 @@ describe("hero configuration", () => {
     );
     // Raising the slider should always cost DPS, never gain it.
     expect(resisted.groundDps).toBeLessThan(bare.groundDps);
+  });
+
+  it("lets Armor Piercing Rounds' proc bypass Enemy Bullet Resist on the gun's weapon damage", () => {
+    // The item's own ProcChance (55%) means something different from every
+    // other proc item: a chance for the bullet to ignore Bullet Resistance
+    // entirely, not a chance of bonus damage. Folded in as an expected-value
+    // blend of the resist multiplier toward 1 (fully unresisted).
+    const ctx = { hero: SEED_HERO, items: SEED_ITEMS, progression: SEED_PROGRESSION };
+    const apRounds = bySlug.get("armor-piercing-rounds")!;
+    expect(apRounds.ignoresBulletResist).toBe(true);
+    const chance = apRounds.stats.procChancePct! / 100;
+
+    const enemyBulletResistPct = 60;
+    const bare = calculateBuild(createBuild({ boons: 27, enemyBulletResistPct }), ctx);
+    const withItem = calculateBuild(
+      addItemToBuild(createBuild({ boons: 27, enemyBulletResistPct }), apRounds),
+      ctx,
+    );
+
+    const bareMul = 1 - enemyBulletResistPct / 100 + bare.bulletResistShred;
+    const expectedMul = bareMul + chance * (1 - bareMul);
+    expect(withItem.perBulletParts.ground.weapon.shredded).toBeCloseTo(
+      withItem.bulletDamage * expectedMul,
+      6,
+    );
+    // The pierce chance must not touch the bullet's spirit half or leak into
+    // ability damage - Stake is untouched by a weapon-only bypass.
+    const stakeBare = bare.abilities.find((a) => a.key === "stake")!;
+    const stakeWithItem = withItem.abilities.find((a) => a.key === "stake")!;
+    expect(withItem.spiritPower).toBeCloseTo(bare.spiritPower, 6);
+    expect(stakeWithItem.totalDamage.shredded).toBeCloseTo(stakeBare.totalDamage.shredded, 4);
+
+    // At 0% Enemy Resist and no shred, the multiplier is already 1, so the
+    // pierce chance has nothing left to add.
+    const unresisted = calculateBuild(createBuild({ boons: 27 }), ctx);
+    const unresistedWithItem = calculateBuild(
+      addItemToBuild(createBuild({ boons: 27 }), apRounds),
+      ctx,
+    );
+    const noResistExpectedMul = 1 + unresisted.bulletResistShred;
+    const noResistBlendedMul = noResistExpectedMul + chance * (1 - noResistExpectedMul);
+    expect(unresistedWithItem.perBulletParts.ground.weapon.shredded).toBeCloseTo(
+      unresistedWithItem.bulletDamage * noResistBlendedMul,
+      6,
+    );
   });
 
   it("tracks Enemy Resist separately for bullet and spirit, since a target can be built to resist one and not the other", () => {

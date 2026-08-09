@@ -8,7 +8,7 @@
 import type { CalcResult } from "./engine";
 import { calculateBuild } from "./engine";
 import type { Build, CalcContext, Item } from "../types";
-import { addItemToBuild, removeItemFromBuild } from "../build";
+import { addItemToBuild } from "../build";
 import { planCost } from "./timeline";
 
 export type MetricUnit = "flat" | "dps" | "souls" | "percent" | "seconds" | "mps";
@@ -321,6 +321,14 @@ export interface ItemContribution {
  *
  * Removing an item can also drop the build below a category investment
  * threshold, and that loss is correctly attributed to the item here.
+ *
+ * Only currently-*held* items are scored (not the full purchase plan). A plan
+ * can list purchases the souls figure hasn't reached yet, and dropping a held
+ * item out of the ordered plan lowers every later threshold — which, against
+ * the full plan, can pull a still-pending purchase into "held" as a side
+ * effect and contaminate that item's number with someone else's value. Testing
+ * against the held-only loadout (with the plan truncated to just that list)
+ * keeps each item's number isolated to itself.
  */
 export function itemContributions(
   build: Build,
@@ -328,14 +336,17 @@ export function itemContributions(
   metricKey: string,
 ): ItemContribution[] {
   const metric = METRIC_BY_KEY[metricKey] ?? METRICS[0];
-  const baseline = metric.get(calculateBuild(build, ctx));
+  const baselineResult = calculateBuild(build, ctx);
+  const baseline = metric.get(baselineResult);
   const bySlug = new Map(ctx.items.map((i) => [i.slug, i]));
+  const held = baselineResult.timeline.held;
 
   const rows: ItemContribution[] = [];
-  for (const entry of build.items) {
+  for (const entry of held) {
     const item = bySlug.get(entry.slug);
     if (!item) continue;
-    const without = metric.get(calculateBuild(removeItemFromBuild(build, entry.slug), ctx));
+    const withoutBuild: Build = { ...build, items: held.filter((h) => h.slug !== entry.slug) };
+    const without = metric.get(calculateBuild(withoutBuild, ctx));
     const delta = baseline - without;
     rows.push({
       item,
@@ -351,6 +362,16 @@ export function itemContributions(
  * What each *unowned* item would add if bought next, sorted by value per soul.
  * The counterpart to `itemContributions`, and the basis of the "what to buy
  * next" suggestion list.
+ *
+ * Each candidate is inserted right after the items currently held — not
+ * appended after the rest of the plan's still-pending purchases — and only
+ * given just enough souls to reach that one purchase. Appending to the end
+ * would force the souls figure up to whatever the *entire* plan costs,
+ * which both prices the candidate using other people's purchases and, since
+ * boons key off souls earned, invents boons the player doesn't actually have
+ * yet at this point in the match. Boons are pinned to the baseline's own
+ * figure for the same reason: buying one more item does not change how many
+ * souls you've earned.
  */
 export function purchaseCandidates(
   build: Build,
@@ -362,19 +383,25 @@ export function purchaseCandidates(
   const baselineResult = calculateBuild(build, ctx);
   const baseline = metric.get(baselineResult);
   const baselineSpent = baselineResult.timeline.soulsSpent;
+  const held = baselineResult.timeline.held;
+  // Anything already in the plan - held or still pending - is not a "next
+  // purchase" suggestion; it's already spoken for.
   const owned = new Set(build.items.map((i) => i.slug));
 
   const rows: ItemContribution[] = [];
   for (const item of ctx.items) {
     if (owned.has(item.slug)) continue;
-    // Appending the purchase to the plan and re-running the timeline prices it
-    // the way the game does: components already held are absorbed, so the true
-    // cost is the difference, not the sticker price.
-    const withItem = addItemToBuild(build, item);
-    // Give the plan enough souls to actually reach the new purchase.
+    // Appending the purchase right after the held loadout and re-running the
+    // timeline prices it the way the game does: components already held are
+    // absorbed, so the true cost is the difference, not the sticker price.
+    const withItem = addItemToBuild({ ...build, items: held }, item);
     const candidate: Build = {
       ...withItem,
+      // Give the plan enough souls to actually reach this one purchase, but
+      // never fewer than what the player already has.
       soulsEarned: Math.max(build.soulsEarned, planCost(withItem, ctx.items)),
+      boonsFromSouls: false,
+      boons: baselineResult.boons,
     };
     const after = calculateBuild(candidate, ctx);
     const netCost = Math.max(0, after.timeline.soulsSpent - baselineSpent);

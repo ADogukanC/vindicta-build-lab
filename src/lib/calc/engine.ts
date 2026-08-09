@@ -628,13 +628,31 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
     if (dps > 0) expectedProcDps.push({ label: r.item.name, dps });
   }
 
+  // Armor Piercing Rounds: a chance for the gun's own bullets to ignore the
+  // target's Bullet Resistance entirely, rather than add bonus damage like
+  // every other procChancePct item. Modelled as an expected-value blend of
+  // the weapon-damage resist multiplier toward 1 (fully unresisted) - not
+  // toward the no-shred multiplier, since a pierce bypasses the target's
+  // resist outright, so any of *your own* shred stops mattering for that
+  // bullet too. Only the gun's weapon damage is affected; its spirit half and
+  // ability damage still go through the normal resist untouched.
+  let armorPierceChance = 0;
+  for (const r of resolved) {
+    if (!r.item.ignoresBulletResist) continue;
+    const stats: StatBag = { ...(r.item.stats ?? {}) };
+    if (r.contributing) addStats(stats, r.item.conditionalStats);
+    armorPierceChance = Math.max(armorPierceChance, statValue(stats, "procChancePct") / 100);
+  }
+  const bulletWeaponResistMul = bulletResistMul + armorPierceChance * (1 - bulletResistMul);
+  const bulletWeaponNoShredMul = bulletNoShredMul + armorPierceChance * (1 - bulletNoShredMul);
+
   // ------------------------------------------------------- damage rollups ---
   // "raw" is the no-shred toggle: the target's own Enemy Resist still
   // applies (it's their stat, not yours), just none of your shred sources.
   /** Combines a bullet's weapon and spirit damage under their own resists. */
   const mkDamage = (weapon: number, spirit: number): DamageSet => ({
-    raw: (weapon * bulletNoShredMul + spirit * spiritNoShredMul) * damageMultiplier,
-    shredded: (weapon * bulletResistMul + spirit * spiritResistMul) * damageMultiplier,
+    raw: (weapon * bulletWeaponNoShredMul + spirit * spiritNoShredMul) * damageMultiplier,
+    shredded: (weapon * bulletWeaponResistMul + spirit * spiritResistMul) * damageMultiplier,
   });
   const scaleSet = (s: DamageSet, k: number): DamageSet => ({
     raw: s.raw * k,

@@ -6,7 +6,8 @@ description: Re-import Deadlock item data from deadlock.wiki after a game patch 
 # Refresh item data
 
 **Source: `Data:ItemCards.json` on deadlock.wiki**, which mirrors the game's own
-tables. 195 items (173 enabled, 22 unreleased/disabled), 183 icons.
+tables. 195 items (156 usable, 22 unreleased/disabled, 17 Street Brawl-only —
+excluded since they can't be bought in Standard or Ranked), 183 icons.
 
 Refresh after a patch:
 

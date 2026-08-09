@@ -215,7 +215,6 @@ export function HeroControls({
             label="Assassinate stacks"
             value={build.snipeStacks}
             min={0}
-            max={20}
             onChange={(v) => onChange({ snipeStacks: v })}
           />
           <label className="block">

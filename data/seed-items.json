@@ -2594,412 +2594,6 @@
     ]
   },
   {
-    "slug": "celestial-blessing",
-    "gameKey": "upgrade_celestial_guidance",
-    "name": "Celestial Blessing",
-    "category": "Vitality",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "InstantCast",
-    "iconUrl": "/items/celestial-blessing.png",
-    "description": "Applies an extremely powerful cleanse that replenishes your allies globally.",
-    "components": [],
-    "shopFilters": [],
-    "isImbue": false,
-    "stats": {},
-    "enabled": true,
-    "sortOrder": 54,
-    "conditionalStats": {
-      "staminaRecoveryPct": 100.0,
-      "moveSpeedFlat": 5.0
-    },
-    "conditional": {
-      "label": "Debuff applied to target",
-      "defaultActive": false
-    },
-    "info": [
-      {
-        "type": "Active",
-        "cooldown": 30,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "HealPercentAmount",
-            "value": 60,
-            "type": "healing",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "MinHeal",
-            "value": 400,
-            "type": "healing",
-            "conditional": false,
-            "emphasis": false
-          },
-          {
-            "key": "BuffDuration",
-            "value": 6,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": false
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "cloak-of-opportunity",
-    "gameKey": "upgrade_cloak_of_opportunity",
-    "name": "Cloak of Opportunity",
-    "category": "Vitality",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "Passive",
-    "iconUrl": "/items/cloak-of-opportunity.png",
-    "description": "Block the next debuff that would apply movement lock, Stun, Chained, Immobilize, or Sleep and become Unstoppable. Also gain a Barrier and bonus MoveSpeed",
-    "components": [],
-    "shopFilters": [],
-    "isImbue": false,
-    "stats": {},
-    "enabled": true,
-    "sortOrder": 55,
-    "conditionalStats": {
-      "combatBarrierFlat": 500.0,
-      "moveSpeedFlat": 3.0
-    },
-    "conditional": {
-      "label": "Barrier up",
-      "defaultActive": false
-    },
-    "info": [
-      {
-        "type": "Passive",
-        "cooldown": 12,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "StatusImmuneDuration",
-            "value": 4,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": false
-          },
-          {
-            "key": "BuffDuration",
-            "value": 6,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": false
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "electric-slippers",
-    "gameKey": "upgrade_electric_slippers",
-    "name": "Electric Slippers",
-    "category": "Vitality",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "Passive",
-    "iconUrl": "/items/electric-slippers.png",
-    "description": "When sliding, evade bullets, gain fire rate and deal damage to enemies around you. Cooldown is per target.",
-    "components": [],
-    "shopFilters": [],
-    "isImbue": false,
-    "stats": {
-      "staminaFlat": 2.0
-    },
-    "enabled": true,
-    "sortOrder": 56,
-    "conditionalStats": {
-      "fireRatePct": 60.0
-    },
-    "conditional": {
-      "label": "Buff window active",
-      "defaultActive": false
-    },
-    "info": [
-      {
-        "type": "Innate",
-        "cooldown": null,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "SlideScale",
-            "value": 80,
-            "type": "movement_speed",
-            "conditional": false,
-            "emphasis": true
-          }
-        ]
-      },
-      {
-        "type": "Passive",
-        "cooldown": 0.3,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "Damage",
-            "value": 100,
-            "type": "tech_damage",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "EvasionWhileSliding",
-            "value": 60,
-            "type": null,
-            "conditional": true,
-            "emphasis": true
-          },
-          {
-            "key": "Radius",
-            "value": "12m",
-            "type": "distance",
-            "conditional": false,
-            "emphasis": false
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "eternal-gift",
-    "gameKey": "upgrade_eternal_gift",
-    "name": "Eternal Gift",
-    "category": "Vitality",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "Passive",
-    "iconUrl": "/items/eternal-gift.png",
-    "description": "Periodically gain a random permanent stat buff.",
-    "components": [],
-    "shopFilters": [],
-    "isImbue": false,
-    "stats": {},
-    "enabled": true,
-    "sortOrder": 57,
-    "info": [
-      {
-        "type": "Passive",
-        "cooldown": null,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "BuffFrequency",
-            "value": 2,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": true
-          }
-        ]
-      },
-      {
-        "type": "Passive",
-        "cooldown": 165,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "RespawnTime",
-            "value": -70,
-            "type": null,
-            "conditional": true,
-            "emphasis": true
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "nullification-burst",
-    "gameKey": "upgrade_nullification_aura",
-    "name": "Nullification Burst",
-    "category": "Vitality",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "InstantCast",
-    "iconUrl": "/items/nullification-burst.png",
-    "description": "Removes any positive buffs and prevents stamina usage and healing effects on enemies.",
-    "components": [],
-    "shopFilters": [
-      "Disruption"
-    ],
-    "isImbue": false,
-    "stats": {
-      "debuffResistPct": 40.0,
-      "bonusHealthFlat": 300.0
-    },
-    "enabled": true,
-    "sortOrder": 58,
-    "info": [
-      {
-        "type": "Active",
-        "cooldown": 18,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "AbilityDuration",
-            "value": 7,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "Damage",
-            "value": 250,
-            "type": "tech_damage",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "EndRadius",
-            "value": "20m",
-            "type": "distance",
-            "conditional": false,
-            "emphasis": false
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "seraphim-wings",
-    "gameKey": "upgrade_icarus_wings",
-    "name": "Seraphim Wings",
-    "category": "Vitality",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "Passive",
-    "iconUrl": "/items/seraphim-wings.png",
-    "description": "When Airborne, You deal more damage and take reduced damage. Allows unlimited Air Dash and Jumping.",
-    "components": [],
-    "shopFilters": [],
-    "isImbue": false,
-    "stats": {
-      "staminaRecoveryPct": 120.0
-    },
-    "enabled": true,
-    "sortOrder": 59,
-    "info": [
-      {
-        "type": "Innate",
-        "cooldown": null,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "GravityScale",
-            "value": -70,
-            "type": null,
-            "conditional": false,
-            "emphasis": false
-          },
-          {
-            "key": "AirControlPercent",
-            "value": 100,
-            "type": "move_speed",
-            "conditional": false,
-            "emphasis": false
-          },
-          {
-            "key": "AirControlAccelPercent",
-            "value": 50,
-            "type": "move_speed",
-            "conditional": false,
-            "emphasis": false
-          }
-        ]
-      },
-      {
-        "type": "Passive",
-        "cooldown": null,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "AirBonusDamageGiven",
-            "value": 40,
-            "type": null,
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "AirBonusDamageTaken",
-            "value": -40,
-            "type": null,
-            "conditional": false,
-            "emphasis": true
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "shadow-strike",
-    "gameKey": "upgrade_shadow_strike",
-    "name": "Shadow Strike",
-    "category": "Vitality",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "Passive",
-    "iconUrl": "/items/shadow-strike.png",
-    "description": "Go Invisible on Stamina use with no detection range. Doing a melee attack while invisible will cause you to steal bullet and spirit resistance from them and deal damage over time.",
-    "components": [],
-    "shopFilters": [],
-    "isImbue": false,
-    "stats": {
-      "staminaFlat": 3.0,
-      "bonusHealthFlat": 350.0
-    },
-    "enabled": true,
-    "sortOrder": 60,
-    "info": [
-      {
-        "type": "Active",
-        "cooldown": null,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "DPS",
-            "value": 125,
-            "type": "tech_damage",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "AbilityDuration",
-            "value": 3,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "StealDuration",
-            "value": 6,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "ResistStealAmount",
-            "value": 40,
-            "type": "tech_armor_up",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "InvisFadeToDuration",
-            "value": 0.2,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": false
-          }
-        ]
-      }
-    ]
-  },
-  {
     "slug": "extra-charge",
     "gameKey": "upgrade_extra_charge",
     "name": "Extra Charge",
@@ -3018,7 +2612,7 @@
       "chargesFlat": 1.0
     },
     "enabled": true,
-    "sortOrder": 61,
+    "sortOrder": 54,
     "info": [
       {
         "type": "Innate",
@@ -3056,7 +2650,7 @@
       "spiritPowerFlat": 10.0
     },
     "enabled": true,
-    "sortOrder": 62
+    "sortOrder": 55
   },
   {
     "slug": "golden-goose-egg",
@@ -3078,7 +2672,7 @@
       "outOfCombatHealthRegen": 1.0
     },
     "enabled": true,
-    "sortOrder": 63,
+    "sortOrder": 56,
     "damageMultiplier": 0.9,
     "info": [
       {
@@ -3115,7 +2709,7 @@
     "isImbue": false,
     "stats": {},
     "enabled": true,
-    "sortOrder": 64,
+    "sortOrder": 57,
     "info": [
       {
         "type": "Passive",
@@ -3148,7 +2742,7 @@
     "isImbue": true,
     "stats": {},
     "enabled": true,
-    "sortOrder": 65,
+    "sortOrder": 58,
     "imbuedStats": {
       "abilityRangePct": 20.0
     }
@@ -3173,7 +2767,7 @@
       "bonusHealthFlat": 50.0
     },
     "enabled": true,
-    "sortOrder": 66,
+    "sortOrder": 59,
     "info": [
       {
         "type": "Passive",
@@ -3219,7 +2813,7 @@
       "sprintSpeedFlat": 0.5
     },
     "enabled": true,
-    "sortOrder": 67,
+    "sortOrder": 60,
     "defaultShredActive": false,
     "shred": {
       "bullet": 0.08
@@ -3273,7 +2867,7 @@
     "isImbue": false,
     "stats": {},
     "enabled": true,
-    "sortOrder": 68,
+    "sortOrder": 61,
     "defaultShredActive": false,
     "shred": {
       "spirit": 0.06
@@ -3328,7 +2922,7 @@
       "staminaRecoveryPct": 12.0
     },
     "enabled": true,
-    "sortOrder": 69,
+    "sortOrder": 62,
     "conditionalStats": {
       "abilityRangePct": 12.0,
       "abilityDurationPct": 15.0,
@@ -3375,7 +2969,7 @@
       "weaponDamagePct": 9.0
     },
     "enabled": true,
-    "sortOrder": 70,
+    "sortOrder": 63,
     "conditionalStats": {
       "bulletResistPct": 9.0
     },
@@ -3425,7 +3019,7 @@
       "spiritResistPct": 6.0
     },
     "enabled": true,
-    "sortOrder": 71,
+    "sortOrder": 64,
     "info": [
       {
         "type": "Active",
@@ -3481,7 +3075,7 @@
     "isImbue": true,
     "stats": {},
     "enabled": true,
-    "sortOrder": 72,
+    "sortOrder": 65,
     "imbuedStats": {
       "cooldownReductionPct": 18.0
     }
@@ -3501,7 +3095,7 @@
     "isImbue": true,
     "stats": {},
     "enabled": true,
-    "sortOrder": 73,
+    "sortOrder": 66,
     "imbuedStats": {
       "abilityDurationPct": 22.0
     }
@@ -3529,7 +3123,7 @@
       "outOfCombatHealthRegen": 1.5
     },
     "enabled": true,
-    "sortOrder": 74
+    "sortOrder": 67
   },
   {
     "slug": "mystic-slow",
@@ -3551,7 +3145,7 @@
       "sprintSpeedFlat": 0.75
     },
     "enabled": true,
-    "sortOrder": 75,
+    "sortOrder": 68,
     "info": [
       {
         "type": "Passive",
@@ -3601,7 +3195,7 @@
     "isImbue": false,
     "stats": {},
     "enabled": true,
-    "sortOrder": 76,
+    "sortOrder": 69,
     "conditionalStats": {
       "spiritResistPct": 8.0
     },
@@ -3650,7 +3244,7 @@
       "fireRatePct": 10.0
     },
     "enabled": true,
-    "sortOrder": 77,
+    "sortOrder": 70,
     "imbuedStats": {
       "abilityBonusDamage": 44
     },
@@ -3699,7 +3293,7 @@
       "sprintSpeedFlat": 0.5
     },
     "enabled": true,
-    "sortOrder": 78,
+    "sortOrder": 71,
     "info": [
       {
         "type": "Active",
@@ -3757,7 +3351,7 @@
       "bonusHealthFlat": 50.0
     },
     "enabled": true,
-    "sortOrder": 79,
+    "sortOrder": 72,
     "defaultShredActive": false,
     "shred": {
       "spirit": 0.09
@@ -3814,7 +3408,7 @@
       "bulletResistPct": 8.0
     },
     "enabled": true,
-    "sortOrder": 80,
+    "sortOrder": 73,
     "info": [
       {
         "type": "Passive",
@@ -3860,7 +3454,7 @@
       "bonusHealthFlat": 65.0
     },
     "enabled": true,
-    "sortOrder": 81,
+    "sortOrder": 74,
     "conditionalStats": {
       "healingReceivedPct": -50.0
     },
@@ -3929,7 +3523,7 @@
       "sprintSpeedFlat": 0.75
     },
     "enabled": true,
-    "sortOrder": 82,
+    "sortOrder": 75,
     "defaultShredActive": false,
     "shred": {
       "bullet": 0.13
@@ -3987,7 +3581,7 @@
       "abilityRangePct": 30.0
     },
     "enabled": true,
-    "sortOrder": 83,
+    "sortOrder": 76,
     "conditionalStats": {
       "spiritResistPct": 10.0
     },
@@ -4017,7 +3611,7 @@
       "abilityRangePct": 5.0
     },
     "enabled": true,
-    "sortOrder": 84,
+    "sortOrder": 77,
     "info": [
       {
         "type": "Active",
@@ -4072,7 +3666,7 @@
       "bonusHealthFlat": 90.0
     },
     "enabled": true,
-    "sortOrder": 85,
+    "sortOrder": 78,
     "conditionalStats": {
       "moveSpeedFlat": 1.75
     },
@@ -4145,7 +3739,7 @@
       "cooldownReductionPct": 14.0
     },
     "enabled": true,
-    "sortOrder": 86,
+    "sortOrder": 79,
     "info": [
       {
         "type": "Innate",
@@ -4190,7 +3784,7 @@
       "bonusHealthFlat": 50.0
     },
     "enabled": true,
-    "sortOrder": 87,
+    "sortOrder": 80,
     "info": [
       {
         "type": "Active",
@@ -4252,7 +3846,7 @@
       "bonusHealthFlat": 75.0
     },
     "enabled": true,
-    "sortOrder": 88,
+    "sortOrder": 81,
     "conditionalStats": {
       "spiritResistPct": 12.0,
       "spiritPowerFlat": 25.0
@@ -4307,7 +3901,7 @@
       "cooldownReductionPct": 20.0
     },
     "enabled": true,
-    "sortOrder": 89
+    "sortOrder": 82
   },
   {
     "slug": "superior-duration",
@@ -4328,7 +3922,7 @@
       "abilityDurationPct": 28.0
     },
     "enabled": true,
-    "sortOrder": 90,
+    "sortOrder": 83,
     "conditionalStats": {
       "bulletResistPct": 8.0
     },
@@ -4357,7 +3951,7 @@
     "isImbue": true,
     "stats": {},
     "enabled": true,
-    "sortOrder": 91,
+    "sortOrder": 84,
     "imbuedStats": {
       "spiritPowerFlat": 28.0
     },
@@ -4408,7 +4002,7 @@
       "bonusHealthFlat": 50.0
     },
     "enabled": true,
-    "sortOrder": 92,
+    "sortOrder": 85,
     "info": [
       {
         "type": "Passive",
@@ -4454,7 +4048,7 @@
       "meleeResistPct": 18.0
     },
     "enabled": true,
-    "sortOrder": 93,
+    "sortOrder": 86,
     "info": [
       {
         "type": "Passive",
@@ -4502,7 +4096,7 @@
       "spiritResistPct": 10.0
     },
     "enabled": true,
-    "sortOrder": 94,
+    "sortOrder": 87,
     "info": [
       {
         "type": "Active",
@@ -4560,7 +4154,7 @@
       "outOfCombatHealthRegen": 4.0
     },
     "enabled": true,
-    "sortOrder": 95
+    "sortOrder": 88
   },
   {
     "slug": "cursed-relic",
@@ -4580,7 +4174,7 @@
     "isImbue": false,
     "stats": {},
     "enabled": true,
-    "sortOrder": 96,
+    "sortOrder": 89,
     "info": [
       {
         "type": "Active",
@@ -4644,7 +4238,7 @@
     "isImbue": true,
     "stats": {},
     "enabled": true,
-    "sortOrder": 97,
+    "sortOrder": 90,
     "conditionalStats": {
       "spiritResistPct": 5.0,
       "bulletResistPct": 5.0
@@ -4684,7 +4278,7 @@
       "spiritResistPct": 17.0
     },
     "enabled": true,
-    "sortOrder": 98,
+    "sortOrder": 91,
     "perStack": {
       "spiritAmpPct": 4.5
     },
@@ -4739,7 +4333,7 @@
     "isImbue": false,
     "stats": {},
     "enabled": true,
-    "sortOrder": 99,
+    "sortOrder": 92,
     "conditionalStats": {
       "spiritPowerFlat": 20.0,
       "spiritResistPct": 30.0,
@@ -4795,7 +4389,7 @@
       "fireRatePct": 10.0
     },
     "enabled": true,
-    "sortOrder": 100,
+    "sortOrder": 93,
     "shred": {
       "spirit": 0.09
     },
@@ -4867,7 +4461,7 @@
       "sprintSpeedFlat": 0.75
     },
     "enabled": true,
-    "sortOrder": 101,
+    "sortOrder": 94,
     "info": [
       {
         "type": "Innate",
@@ -4941,7 +4535,7 @@
       "spiritPowerFlat": 14.0
     },
     "enabled": true,
-    "sortOrder": 102,
+    "sortOrder": 95,
     "conditionalStats": {
       "moveSpeedFlat": 7.0
     },
@@ -5019,7 +4613,7 @@
       "fireRatePct": 22.0
     },
     "enabled": true,
-    "sortOrder": 103,
+    "sortOrder": 96,
     "imbuedStats": {
       "abilityBonusDamage": 60
     },
@@ -5068,7 +4662,7 @@
     "isImbue": true,
     "stats": {},
     "enabled": true,
-    "sortOrder": 104,
+    "sortOrder": 97,
     "imbuedStats": {
       "abilityDamagePct": 50.0
     },
@@ -5132,7 +4726,7 @@
     "isImbue": false,
     "stats": {},
     "enabled": true,
-    "sortOrder": 105,
+    "sortOrder": 98,
     "info": [
       {
         "type": "Active",
@@ -5159,7 +4753,7 @@
       "bonusHealthFlat": 100.0
     },
     "enabled": true,
-    "sortOrder": 106,
+    "sortOrder": 99,
     "conditionalStats": {
       "spiritResistPct": 40.0,
       "debuffResistPct": 20.0
@@ -5226,7 +4820,7 @@
       "abilityRangePct": 6.0
     },
     "enabled": true,
-    "sortOrder": 107,
+    "sortOrder": 100,
     "conditionalStats": {
       "healingReceivedPct": -70.0
     },
@@ -5301,7 +4895,7 @@
       "cooldownReductionPct": 50.0
     },
     "enabled": true,
-    "sortOrder": 108
+    "sortOrder": 101
   },
   {
     "slug": "vortex-web",
@@ -5323,7 +4917,7 @@
       "sprintSpeedFlat": 0.75
     },
     "enabled": true,
-    "sortOrder": 109,
+    "sortOrder": 102,
     "info": [
       {
         "type": "Active",
@@ -5363,406 +4957,6 @@
     ]
   },
   {
-    "slug": "frostbite-charm",
-    "gameKey": "upgrade_shivas_bracelet",
-    "name": "Frostbite Charm",
-    "category": "Spirit",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "Passive",
-    "iconUrl": "/items/frostbite-charm.png",
-    "description": "Imbued ability has its Cooldown reduced and gains Spirit Power. When the ability deals damage, freeze the target and apply bonus damage. Cooldown is per target.",
-    "components": [],
-    "shopFilters": [],
-    "isImbue": true,
-    "stats": {},
-    "enabled": true,
-    "sortOrder": 110,
-    "imbuedStats": {
-      "cooldownReductionPct": 50.0,
-      "spiritPowerFlat": 70.0
-    },
-    "info": [
-      {
-        "type": "Active",
-        "cooldown": 10,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "Damage",
-            "value": 200,
-            "type": "tech_damage",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "FreezeDuration",
-            "value": 1,
-            "type": null,
-            "conditional": false,
-            "emphasis": true
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "mystic-conduit",
-    "gameKey": "upgrade_patrons_blessing",
-    "name": "Mystic Conduit",
-    "category": "Spirit",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "Passive",
-    "iconUrl": "/items/mystic-conduit.png",
-    "description": "Provides yourself and allies with a powerful spirit focused aura. Has reduced values on allies.",
-    "components": [],
-    "shopFilters": [],
-    "isImbue": false,
-    "stats": {
-      "abilityRangePct": 40.0,
-      "cooldownReductionPct": 40.0
-    },
-    "enabled": true,
-    "sortOrder": 111,
-    "info": [
-      {
-        "type": "Passive",
-        "cooldown": null,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "AllyPercentage",
-            "value": 50,
-            "type": null,
-            "conditional": false,
-            "emphasis": false
-          },
-          {
-            "key": "Radius",
-            "value": "25m",
-            "type": "distance",
-            "conditional": false,
-            "emphasis": false
-          }
-        ]
-      },
-      {
-        "type": "Passive",
-        "cooldown": 25,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "HealAmount",
-            "value": 700,
-            "type": "healing",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "HealRadius",
-            "value": "35m",
-            "type": "distance",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "DamageThreshold",
-            "value": 300,
-            "type": "tech_armor_up",
-            "conditional": false,
-            "emphasis": false
-          },
-          {
-            "key": "DamageThresholdDuration",
-            "value": 5,
-            "type": null,
-            "conditional": false,
-            "emphasis": false
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "mystical-piano",
-    "gameKey": "upgrade_mystical_piano",
-    "name": "Mystical Piano",
-    "category": "Spirit",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "Press",
-    "iconUrl": "/items/mystical-piano.png",
-    "description": "After a short delay, enemies in the target area will be stunned and have their stamina depleted. After the stun they will be temporarily dazed.",
-    "components": [],
-    "shopFilters": [],
-    "isImbue": false,
-    "stats": {},
-    "enabled": true,
-    "sortOrder": 112,
-    "info": [
-      {
-        "type": "Active",
-        "cooldown": 23,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "StatusEffectStun",
-            "value": null,
-            "type": null,
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "StunDuration",
-            "value": 2,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "DazeDuration",
-            "value": 2,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "StunDelay",
-            "value": 1.7,
-            "type": null,
-            "conditional": false,
-            "emphasis": false
-          },
-          {
-            "key": "Radius",
-            "value": "12m",
-            "type": "distance",
-            "conditional": false,
-            "emphasis": false
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "omnicharge-signet",
-    "gameKey": "upgrade_omnicharge_pendant",
-    "name": "Omnicharge Signet",
-    "category": "Spirit",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "Passive",
-    "iconUrl": "/items/omnicharge-signet.png",
-    "description": "Imbue any active non-ultimate ability with Bonus Ability Charges. Already charged abilities receive more bonus charges.",
-    "components": [],
-    "shopFilters": [],
-    "isImbue": true,
-    "stats": {
-      "cooldownReductionPct": 30.0
-    },
-    "enabled": true,
-    "sortOrder": 113,
-    "imbuedStats": {
-      "chargesFlat": 4.0
-    },
-    "info": [
-      {
-        "type": "Innate",
-        "cooldown": null,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "CooldownBetweenChargeReduction",
-            "value": 70,
-            "type": "cooldown",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "BonusSpiritForChargedAbilities",
-            "value": 50,
-            "type": null,
-            "conditional": false,
-            "emphasis": false
-          }
-        ]
-      },
-      {
-        "type": "Passive",
-        "cooldown": null,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "BonusAbilityChargesNonCharge",
-            "value": 2,
-            "type": "cast",
-            "conditional": false,
-            "emphasis": true
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "prism-blast",
-    "gameKey": "upgrade_prism_blast",
-    "name": "Prism Blast",
-    "category": "Spirit",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "InstantCast",
-    "iconUrl": "/items/prism-blast.png",
-    "description": "You enter a void state and become untargetable and invincible for a short duration, during which lasers blast out and rotate around you.",
-    "components": [],
-    "shopFilters": [
-      "FireRate"
-    ],
-    "isImbue": false,
-    "stats": {},
-    "enabled": true,
-    "sortOrder": 114,
-    "info": [
-      {
-        "type": "Active",
-        "cooldown": 40,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "DPS",
-            "value": 270,
-            "type": "tech_damage",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "AbilityDuration",
-            "value": 6,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": true
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "shrink-ray",
-    "gameKey": "upgrade_shrink_ray",
-    "name": "Shrink Ray",
-    "category": "Spirit",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "Press",
-    "iconUrl": "/items/shrink-ray.png",
-    "description": "Reduces Model Size and grants Move Speed to the target. Allows usage of tunnels in this mode. Can be self-cast.",
-    "components": [],
-    "shopFilters": [
-      "Healing"
-    ],
-    "isImbue": false,
-    "stats": {
-      "moveSpeedFlat": 5.0,
-      "fireRatePct": 20.0
-    },
-    "enabled": true,
-    "sortOrder": 115,
-    "info": [
-      {
-        "type": "Active",
-        "cooldown": 30,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "ModelScaleGrowthTooltip",
-            "value": -50,
-            "type": null,
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "ShrinkDuration",
-            "value": 60,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": false
-          },
-          {
-            "key": "AbilityCastRange",
-            "value": "40m",
-            "type": "range",
-            "conditional": false,
-            "emphasis": false
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "unstable-concoction",
-    "gameKey": "upgrade_unstable_concoction",
-    "name": "Unstable Concoction",
-    "category": "Spirit",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "InstantCast",
-    "iconUrl": "/items/unstable-concoction.png",
-    "description": "Consume a concoction that grants you Unstoppable and increased speed, health, spirit and weapon damage. After a short duration you die and explode, stunning nearby enemies and dealing damage based on your maximum health. Dying this way reduces your respawn time by 50%.",
-    "components": [],
-    "shopFilters": [],
-    "isImbue": false,
-    "stats": {},
-    "enabled": true,
-    "sortOrder": 116,
-    "conditionalStats": {
-      "moveSpeedFlat": 10.0,
-      "bonusHealthFlat": 3000.0,
-      "weaponDamagePct": 150.0,
-      "spiritPowerFlat": 150.0
-    },
-    "conditional": {
-      "label": "Active effect running",
-      "defaultActive": false
-    },
-    "info": [
-      {
-        "type": "Active",
-        "cooldown": 25,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "MaxHPDamage",
-            "value": 30,
-            "type": "tech_damage",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "StunDuration",
-            "value": 3,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "AbilityDuration",
-            "value": 4,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": false
-          },
-          {
-            "key": "Radius",
-            "value": "22m",
-            "type": null,
-            "conditional": false,
-            "emphasis": false
-          }
-        ]
-      }
-    ]
-  },
-  {
     "slug": "close-quarters",
     "gameKey": "upgrade_close_range",
     "name": "Close Quarters",
@@ -5782,7 +4976,7 @@
       "meleeResistPct": 20.0
     },
     "enabled": true,
-    "sortOrder": 117,
+    "sortOrder": 103,
     "conditionalStats": {
       "weaponDamagePct": 20.0
     },
@@ -5828,7 +5022,7 @@
       "weaponDamagePct": 8.0
     },
     "enabled": true,
-    "sortOrder": 118
+    "sortOrder": 104
   },
   {
     "slug": "headshot-booster",
@@ -5851,7 +5045,7 @@
       "headshotDamagePct": 45.0
     },
     "enabled": true,
-    "sortOrder": 119,
+    "sortOrder": 105,
     "info": [
       {
         "type": "Passive",
@@ -5881,7 +5075,7 @@
       "weaponDamagePct": 8.0
     },
     "enabled": true,
-    "sortOrder": 120
+    "sortOrder": 106
   },
   {
     "slug": "monster-rounds",
@@ -5904,7 +5098,7 @@
       "outOfCombatHealthRegen": 1.0
     },
     "enabled": true,
-    "sortOrder": 121,
+    "sortOrder": 107,
     "conditionalStats": {
       "weaponDamageVsNpcPct": 25.0,
       "bulletResistVsNpcPct": 25.0
@@ -5934,7 +5128,7 @@
       "fireRatePct": 9.0
     },
     "enabled": true,
-    "sortOrder": 122
+    "sortOrder": 108
   },
   {
     "slug": "restorative-shot",
@@ -5956,7 +5150,7 @@
       "weaponDamagePct": 6.0
     },
     "enabled": true,
-    "sortOrder": 123,
+    "sortOrder": 109,
     "info": [
       {
         "type": "Passive",
@@ -6001,7 +5195,7 @@
       "moveSpeedFlat": 0.75
     },
     "enabled": true,
-    "sortOrder": 124,
+    "sortOrder": 110,
     "conditionalStats": {
       "fireRatePct": 25.0,
       "bulletLifestealPct": 16.0
@@ -6048,7 +5242,7 @@
       "slowResistPct": 40.0
     },
     "enabled": true,
-    "sortOrder": 125,
+    "sortOrder": 111,
     "conditionalStats": {
       "bulletResistPct": 6.0,
       "moveSpeedFlat": 3.0
@@ -6108,7 +5302,7 @@
       "ammoPct": 20.0
     },
     "enabled": true,
-    "sortOrder": 126,
+    "sortOrder": 112,
     "conditionalStats": {
       "weaponDamagePct": 45.0
     },
@@ -6172,7 +5366,7 @@
       "staminaRecoveryPct": 12.0
     },
     "enabled": true,
-    "sortOrder": 127,
+    "sortOrder": 113,
     "conditionalStats": {
       "fireRatePct": 25.0,
       "ammoFlat": 6.0
@@ -6219,7 +5413,7 @@
       "sprintSpeedFlat": 0.75
     },
     "enabled": true,
-    "sortOrder": 128,
+    "sortOrder": 114,
     "conditionalStats": {
       "weaponDamagePct": 40.0
     },
@@ -6265,7 +5459,7 @@
       "heavyMeleeDamagePct": 25.0
     },
     "enabled": true,
-    "sortOrder": 129,
+    "sortOrder": 115,
     "info": [
       {
         "type": "Innate",
@@ -6309,7 +5503,7 @@
       "spiritPowerFlat": 7.0
     },
     "enabled": true,
-    "sortOrder": 130,
+    "sortOrder": 116,
     "info": [
       {
         "type": "Passive",
@@ -6351,7 +5545,7 @@
       "spiritPowerFlat": 7.0
     },
     "enabled": true,
-    "sortOrder": 131,
+    "sortOrder": 117,
     "conditionalStats": {
       "weaponDamagePct": 25.0
     },
@@ -6381,7 +5575,7 @@
       "weaponDamagePct": 10.0
     },
     "enabled": true,
-    "sortOrder": 132,
+    "sortOrder": 118,
     "info": [
       {
         "type": "Passive",
@@ -6424,7 +5618,7 @@
     "isImbue": false,
     "stats": {},
     "enabled": true,
-    "sortOrder": 133,
+    "sortOrder": 119,
     "info": [
       {
         "type": "Passive",
@@ -6481,7 +5675,7 @@
     "isImbue": false,
     "stats": {},
     "enabled": true,
-    "sortOrder": 134,
+    "sortOrder": 120,
     "conditionalStats": {
       "spiritLifestealPct": 10.0
     },
@@ -6527,7 +5721,7 @@
     "isImbue": false,
     "stats": {},
     "enabled": true,
-    "sortOrder": 135,
+    "sortOrder": 121,
     "info": [
       {
         "type": "Active",
@@ -6592,7 +5786,7 @@
       "bonusHealthFlat": 50.0
     },
     "enabled": true,
-    "sortOrder": 136,
+    "sortOrder": 122,
     "conditionalStats": {
       "moveSpeedFlat": 1.5
     },
@@ -6671,7 +5865,7 @@
       "sprintSpeedFlat": 0.75
     },
     "enabled": true,
-    "sortOrder": 137
+    "sortOrder": 123
   },
   {
     "slug": "titanic-magazine",
@@ -6696,7 +5890,7 @@
       "weaponDamagePct": 14.0
     },
     "enabled": true,
-    "sortOrder": 138
+    "sortOrder": 124
   },
   {
     "slug": "weakening-headshot",
@@ -6718,7 +5912,7 @@
       "bonusHealthFlat": 60.0
     },
     "enabled": true,
-    "sortOrder": 139,
+    "sortOrder": 125,
     "defaultShredActive": false,
     "shred": {
       "bullet": 0.13
@@ -6760,7 +5954,7 @@
       "spiritPowerFlat": 10.0
     },
     "enabled": true,
-    "sortOrder": 140,
+    "sortOrder": 126,
     "defaultShredActive": false,
     "shred": {
       "bullet": 0.07
@@ -6824,7 +6018,7 @@
       "weaponDamageVsNpcPct": 5.0
     },
     "enabled": true,
-    "sortOrder": 141,
+    "sortOrder": 127,
     "imbuedStats": {
       "abilityRangePct": 22.0
     },
@@ -6880,7 +6074,7 @@
       "bulletResistPct": 8.0
     },
     "enabled": true,
-    "sortOrder": 142,
+    "sortOrder": 128,
     "perStack": {
       "weaponDamagePct": 7.0
     },
@@ -6944,7 +6138,7 @@
       "moveSpeedFlat": 2.0
     },
     "enabled": true,
-    "sortOrder": 143,
+    "sortOrder": 129,
     "conditionalStats": {
       "fireRatePct": 35.0
     },
@@ -7004,7 +6198,7 @@
       "fireRatePct": 10.0
     },
     "enabled": true,
-    "sortOrder": 144,
+    "sortOrder": 130,
     "conditionalStats": {
       "fireRatePct": 32.0,
       "moveSpeedFlat": 1.25
@@ -7067,7 +6261,7 @@
       "outOfCombatHealthRegen": 2.0
     },
     "enabled": true,
-    "sortOrder": 145,
+    "sortOrder": 131,
     "conditionalStats": {
       "weaponDamageVsNpcPct": 30.0,
       "bulletResistVsNpcPct": 30.0,
@@ -7121,7 +6315,7 @@
       "weaponDamagePct": 18.0
     },
     "enabled": true,
-    "sortOrder": 146,
+    "sortOrder": 132,
     "perStack": {
       "bulletResistPct": 2.0
     },
@@ -7178,7 +6372,7 @@
       "weaponDamagePct": 8.0
     },
     "enabled": true,
-    "sortOrder": 147,
+    "sortOrder": 133,
     "conditionalStats": {
       "procWeaponDamagePct": 125.0
     },
@@ -7240,7 +6434,7 @@
       "headshotDamagePct": 75.0
     },
     "enabled": true,
-    "sortOrder": 148,
+    "sortOrder": 134,
     "conditionalStats": {
       "moveSpeedFlat": 1.75
     },
@@ -7294,7 +6488,7 @@
       "bulletResistPct": 17.0
     },
     "enabled": true,
-    "sortOrder": 149,
+    "sortOrder": 135,
     "conditionalStats": {
       "moveSpeedFlat": 2.25,
       "fireRatePct": 26.0
@@ -7362,7 +6556,7 @@
       "bonusHealthFlat": 125.0
     },
     "enabled": true,
-    "sortOrder": 150,
+    "sortOrder": 136,
     "conditionalStats": {
       "weaponDamagePct": 35.0
     },
@@ -7413,7 +6607,7 @@
       "sprintSpeedFlat": 0.75
     },
     "enabled": true,
-    "sortOrder": 151,
+    "sortOrder": 137,
     "shred": {
       "bullet": 0.1
     },
@@ -7466,7 +6660,7 @@
       "weaponDamagePct": 50.0
     },
     "enabled": true,
-    "sortOrder": 152,
+    "sortOrder": 138,
     "info": [
       {
         "type": "Passive",
@@ -7520,7 +6714,7 @@
       "sprintSpeedFlat": 1.5
     },
     "enabled": true,
-    "sortOrder": 153,
+    "sortOrder": 139,
     "conditionalStats": {
       "fireRatePct": 25.0,
       "spiritPowerFlat": 25.0,
@@ -7609,7 +6803,7 @@
       "moveSpeedFlat": -0.7
     },
     "enabled": true,
-    "sortOrder": 154,
+    "sortOrder": 140,
     "conditionalStats": {
       "weaponDamagePct": 60.0
     },
@@ -7670,7 +6864,7 @@
       "bonusHealthFlat": 75.0
     },
     "enabled": true,
-    "sortOrder": 155,
+    "sortOrder": 141,
     "conditionalStats": {
       "spiritLifestealPct": 10.0
     },
@@ -7730,7 +6924,7 @@
       "procChancePct": 15.0
     },
     "enabled": true,
-    "sortOrder": 156,
+    "sortOrder": 142,
     "info": [
       {
         "type": "Passive",
@@ -7773,7 +6967,7 @@
     "isImbue": false,
     "stats": {},
     "enabled": true,
-    "sortOrder": 157,
+    "sortOrder": 143,
     "conditionalStats": {
       "healingReceivedPct": -35.0
     },
@@ -7836,7 +7030,7 @@
       "moveSpeedFlat": -0.5
     },
     "enabled": true,
-    "sortOrder": 158,
+    "sortOrder": 144,
     "info": [
       {
         "type": "Passive",
@@ -7899,7 +7093,8 @@
       "procChancePct": 55.0
     },
     "enabled": true,
-    "sortOrder": 159
+    "sortOrder": 145,
+    "ignoresBulletResist": true
   },
   {
     "slug": "capacitor",
@@ -7925,7 +7120,7 @@
       "procChancePct": 20.0
     },
     "enabled": true,
-    "sortOrder": 160,
+    "sortOrder": 146,
     "info": [
       {
         "type": "Passive",
@@ -8000,7 +7195,7 @@
       "bonusHealthFlat": 125.0
     },
     "enabled": true,
-    "sortOrder": 161,
+    "sortOrder": 147,
     "defaultShredActive": false,
     "shred": {
       "bullet": 0.16,
@@ -8053,7 +7248,7 @@
       "heavyMeleeDamagePct": 25.0
     },
     "enabled": true,
-    "sortOrder": 162,
+    "sortOrder": 148,
     "maxStacks": 6,
     "defaultStacks": 6,
     "stackLabel": "Stacks",
@@ -8146,7 +7341,7 @@
       "bulletLifestealPct": 10.0
     },
     "enabled": true,
-    "sortOrder": 163,
+    "sortOrder": 149,
     "conditionalStats": {
       "moveSpeedFlat": 4.0,
       "fireRatePct": 40.0,
@@ -8195,7 +7390,7 @@
       "bonusHealthPct": -13.0
     },
     "enabled": true,
-    "sortOrder": 164,
+    "sortOrder": 150,
     "perStack": {
       "fireRatePct": 7.0
     },
@@ -8229,7 +7424,7 @@
       "procChancePct": 25.0
     },
     "enabled": true,
-    "sortOrder": 165
+    "sortOrder": 151
   },
   {
     "slug": "ricochet",
@@ -8252,7 +7447,7 @@
       "ricochetTargets": 2.0
     },
     "enabled": true,
-    "sortOrder": 166,
+    "sortOrder": 152,
     "info": [
       {
         "type": "Passive",
@@ -8288,7 +7483,7 @@
     "isImbue": false,
     "stats": {},
     "enabled": true,
-    "sortOrder": 167,
+    "sortOrder": 153,
     "conditionalStats": {
       "spiritResistPct": 12.0
     },
@@ -8375,7 +7570,7 @@
       "cooldownReductionPct": 5.0
     },
     "enabled": true,
-    "sortOrder": 168,
+    "sortOrder": 154,
     "perStack": {
       "fireRatePct": 11.0,
       "reloadSpeedPct": 10.0
@@ -8436,7 +7631,7 @@
       "spiritPowerFlat": 6.0
     },
     "enabled": true,
-    "sortOrder": 169,
+    "sortOrder": 155,
     "conditionalStats": {
       "fireRatePct": 30.0,
       "spiritPowerFlat": 40.0,
@@ -8465,171 +7660,6 @@
             "type": "duration",
             "conditional": false,
             "emphasis": false
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "haunting-shot",
-    "gameKey": "upgrade_eldritch_shot",
-    "name": "Haunting Shot",
-    "category": "Weapon",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "Passive",
-    "iconUrl": "/items/haunting-shot.png",
-    "description": "Your next bullet applies a powerful debuff reducing the enemy's damage output, healing and movement speed. It also deals BonusSpiritDamage based on the targets current Health. The bullet is larger and penetrates through targets.",
-    "components": [],
-    "shopFilters": [
-      "WeaponDamage",
-      "MagicDamage"
-    ],
-    "isImbue": false,
-    "stats": {},
-    "enabled": true,
-    "sortOrder": 170,
-    "conditionalStats": {
-      "healingReceivedPct": -40.0
-    },
-    "conditional": {
-      "label": "Debuff applied to target",
-      "defaultActive": false
-    },
-    "info": [
-      {
-        "type": "Passive",
-        "cooldown": 2.5,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "HealthPctDamage",
-            "value": 10,
-            "type": "tech_damage",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "OutgoingDamagePenaltyPercent",
-            "value": -40,
-            "type": "damage",
-            "conditional": true,
-            "emphasis": true
-          },
-          {
-            "key": "BulletRadius",
-            "value": "1.5m",
-            "type": null,
-            "conditional": false,
-            "emphasis": false
-          },
-          {
-            "key": "DebuffDuration",
-            "value": 4,
-            "type": "duration",
-            "conditional": false,
-            "emphasis": false
-          },
-          {
-            "key": "MovementSpeedSlow",
-            "value": 40,
-            "type": "slow",
-            "conditional": true,
-            "emphasis": false
-          },
-          {
-            "key": "GroundDashReductionPercent",
-            "value": -40,
-            "type": "slow",
-            "conditional": true,
-            "emphasis": false
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "infinite-rounds",
-    "gameKey": "upgrade_infinite_rounds",
-    "name": "Infinite Rounds",
-    "category": "Weapon",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "Passive",
-    "iconUrl": "/items/infinite-rounds.png",
-    "description": "You have infinite ammo.",
-    "components": [],
-    "shopFilters": [
-      "ClipSize",
-      "WeaponDamage"
-    ],
-    "isImbue": false,
-    "stats": {
-      "bulletVelocityPct": 200.0,
-      "fireRatePct": 35.0,
-      "procChancePct": 65.0
-    },
-    "enabled": true,
-    "sortOrder": 171
-  },
-  {
-    "slug": "runed-gauntlets",
-    "gameKey": "upgrade_runed_gauntlets",
-    "name": "Runed Gauntlets",
-    "category": "Weapon",
-    "cost": 9999,
-    "tier": 5,
-    "activation": "Passive",
-    "iconUrl": "/items/runed-gauntlets.png",
-    "description": "Everytime you land a heavy melee, your existing cooldowns get reduced.",
-    "components": [],
-    "shopFilters": [],
-    "isImbue": false,
-    "stats": {
-      "meleeResistPct": 50.0,
-      "meleeDamagePct": 30.0
-    },
-    "enabled": true,
-    "sortOrder": 172,
-    "info": [
-      {
-        "type": "Innate",
-        "cooldown": null,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "MeleeDistanceScale",
-            "value": 150,
-            "type": null,
-            "conditional": false,
-            "emphasis": true
-          }
-        ]
-      },
-      {
-        "type": "Passive",
-        "cooldown": 10,
-        "chargeUp": null,
-        "rows": []
-      },
-      {
-        "type": "Passive",
-        "cooldown": null,
-        "chargeUp": null,
-        "rows": [
-          {
-            "key": "CooldownReductionOnHitPct",
-            "value": 16,
-            "type": "cooldown",
-            "conditional": false,
-            "emphasis": true
-          },
-          {
-            "key": "CooldownReductionOnHitMin",
-            "value": 4,
-            "type": "cooldown",
-            "conditional": false,
-            "emphasis": true
           }
         ]
       }

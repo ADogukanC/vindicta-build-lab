@@ -110,6 +110,13 @@ export interface Item {
   defaultShredActive?: boolean;
   /** Multiplier on all outgoing damage, e.g. 0.9 for Golden Goose Egg. */
   damageMultiplier?: number;
+  /**
+   * Armor Piercing Rounds: `stats.procChancePct` is the chance for a gun
+   * bullet's weapon damage to ignore the target's Bullet Resistance entirely,
+   * rather than add bonus damage like every other `procChancePct` item. The
+   * export gives no way to tell the two apart, so this is opted in per item.
+   */
+  ignoresBulletResist?: boolean;
   /** Numbers the game displays that the engine does not consume. */
   info?: InfoBlock[];
   notes?: string;
