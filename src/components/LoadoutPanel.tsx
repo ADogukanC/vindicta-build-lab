@@ -321,7 +321,7 @@ export function LoadoutPanel({
                 )}
                 style={{ borderLeft: `2px solid ${held ? CATEGORY_COLOR[item.category] : "transparent"}` }}
               >
-                <span className="flex flex-col items-center gap-0.5 pt-0.5">
+                <span className="flex flex-col items-center gap-1 pt-0.5">
                   {/* Only this handle is `draggable`, not the whole row — a
                       draggable row swallows drag gestures anywhere inside it,
                       including on the stack sliders further along the row. */}
@@ -336,12 +336,12 @@ export function LoadoutPanel({
                       setDragIndex(null);
                       setOverIndex(null);
                     }}
-                    className="cursor-grab select-none text-[11px] leading-none text-ink-600 hover:text-ink-200 active:cursor-grabbing"
+                    className="cursor-grab select-none text-[16px] leading-none text-ink-600 hover:text-ink-200 active:cursor-grabbing"
                     title="Drag to reorder"
                   >
                     ⠿
                   </span>
-                  <span className="tnum text-[9px] text-ink-500">{index + 1}</span>
+                  <span className="tnum text-[11px] leading-none text-ink-500">{index + 1}</span>
                 </span>
 
                 <ItemIcon
