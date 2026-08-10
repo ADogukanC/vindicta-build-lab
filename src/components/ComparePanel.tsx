@@ -40,7 +40,7 @@ const bigAxis = { stroke: "#4d4960", fontSize: 12 };
 
 export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   const store = useBuilds();
-  const [metricKey, setMetricKey] = useState("groundDps");
+  const [metricKey, setMetricKey] = useState("flightDps");
   const [valueBuildId, setValueBuildId] = useState<string | null>(null);
   // One souls-earned figure drives every build here, so the comparison is
   // always at an equal point in the match rather than each build's own.
@@ -51,7 +51,7 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   // Same reasoning for snipe stacks: how many kills you've banked is a
   // playstyle/match assumption, not something one build "has" and another
   // doesn't, so every build is measured holding the same count.
-  const [snipeStacks, setSnipeStacks] = useState(5);
+  const [snipeStacks, setSnipeStacks] = useState(0);
   // Same reasoning for the target's resist: it describes who you're fighting,
   // not any one build, so every build has to be measured against the same one.
   const [enemyBulletResistPct, setEnemyBulletResistPct] = useState(0);
@@ -179,7 +179,7 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
     value: metric.get(result),
     color: build.color,
   }));
-  // One falloff series per build, joined on distance.
+  // Two falloff series per build (ground + flight), joined on distance.
   const falloffData = (() => {
     const perBuild = rows.map(({ build, result }) => ({
       name: build.name,
@@ -188,7 +188,10 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
     const distances = perBuild[0]?.points.map((p) => p.distance) ?? [];
     return distances.map((distance, i) => {
       const row: Record<string, number> = { distance };
-      for (const b of perBuild) row[b.name] = b.points[i]?.ground ?? 0;
+      for (const b of perBuild) {
+        row[`${b.name} (Ground)`] = b.points[i]?.ground ?? 0;
+        row[`${b.name} (Flight)`] = b.points[i]?.flight ?? 0;
+      }
       return row;
     });
   })();
@@ -471,7 +474,10 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
 
       <section className="panel">
         <header className="panel-header">
-          <span>Ground DPS vs distance</span>
+          <span>DPS vs distance</span>
+          <span className="normal-case tracking-normal text-ink-500">
+            solid = ground, dashed = flight
+          </span>
         </header>
         <div className="h-96 p-3">
           <ResponsiveContainer width="100%" height="100%">
@@ -483,11 +489,22 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
               <Legend wrapperStyle={{ fontSize: 12 }} />
               {rows.map(({ build }) => (
                 <Line
-                  key={build.id}
+                  key={`${build.id}-ground`}
                   type="monotone"
-                  dataKey={build.name}
+                  dataKey={`${build.name} (Ground)`}
                   stroke={build.color}
                   strokeWidth={2.5}
+                  dot={false}
+                />
+              ))}
+              {rows.map(({ build }) => (
+                <Line
+                  key={`${build.id}-flight`}
+                  type="monotone"
+                  dataKey={`${build.name} (Flight)`}
+                  stroke={build.color}
+                  strokeWidth={2.5}
+                  strokeDasharray="6 4"
                   dot={false}
                 />
               ))}
