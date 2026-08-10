@@ -288,16 +288,6 @@ export function LoadoutPanel({
             return (
               <li
                 key={item.slug}
-                draggable
-                onDragStart={(e) => {
-                  setDragIndex(index);
-                  e.dataTransfer.effectAllowed = "move";
-                  e.dataTransfer.setData("text/plain", String(index));
-                }}
-                onDragEnd={() => {
-                  setDragIndex(null);
-                  setOverIndex(null);
-                }}
                 onDragOver={(e) => {
                   // Always allow the drop (rather than gating on `dragIndex`,
                   // which is component state and can still be reflecting the
@@ -332,31 +322,26 @@ export function LoadoutPanel({
                 style={{ borderLeft: `2px solid ${held ? CATEGORY_COLOR[item.category] : "transparent"}` }}
               >
                 <span className="flex flex-col items-center gap-0.5 pt-0.5">
+                  {/* Only this handle is `draggable`, not the whole row — a
+                      draggable row swallows drag gestures anywhere inside it,
+                      including on the stack sliders further along the row. */}
                   <span
+                    draggable
+                    onDragStart={(e) => {
+                      setDragIndex(index);
+                      e.dataTransfer.effectAllowed = "move";
+                      e.dataTransfer.setData("text/plain", String(index));
+                    }}
+                    onDragEnd={() => {
+                      setDragIndex(null);
+                      setOverIndex(null);
+                    }}
                     className="cursor-grab select-none text-[11px] leading-none text-ink-600 hover:text-ink-200 active:cursor-grabbing"
                     title="Drag to reorder"
                   >
                     ⠿
                   </span>
-                  <button
-                    type="button"
-                    className="text-[9px] leading-none text-ink-600 hover:text-ink-100 disabled:opacity-20"
-                    disabled={index === 0}
-                    onClick={() => onMove(index, index - 1)}
-                    title="Buy earlier"
-                  >
-                    ▲
-                  </button>
                   <span className="tnum text-[9px] text-ink-500">{index + 1}</span>
-                  <button
-                    type="button"
-                    className="text-[9px] leading-none text-ink-600 hover:text-ink-100 disabled:opacity-20"
-                    disabled={index === rows.length - 1}
-                    onClick={() => onMove(index, index + 1)}
-                    title="Buy later"
-                  >
-                    ▼
-                  </button>
                 </span>
 
                 <ItemIcon
