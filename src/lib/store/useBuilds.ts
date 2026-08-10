@@ -39,6 +39,7 @@ interface BuildsState extends PersistedState {
   updateActive: (patch: Partial<Build>) => void;
   updateBuild: (id: string, patch: Partial<Build>) => void;
   renameBuild: (id: string, name: string) => void;
+  recolorBuild: (id: string, color: string) => void;
   deleteBuild: (id: string) => void;
   duplicate: (id: string) => void;
   toggleCompare: (id: string) => void;
@@ -125,6 +126,8 @@ export const useBuilds = create<BuildsState>((set, get) => ({
   },
 
   renameBuild: (id, name) => get().updateBuild(id, { name }),
+
+  recolorBuild: (id, color) => get().updateBuild(id, { color }),
 
   deleteBuild: (id) => {
     const builds = get().builds.filter((b) => b.id !== id);

@@ -104,7 +104,7 @@
             "key": "BarrierDuration",
             "value": 4,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -146,21 +146,21 @@
             "key": "TotalHealthRegen",
             "value": 300,
             "type": "healing",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "RegenDuration",
             "value": 20,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityCastRange",
             "value": "30m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -467,14 +467,14 @@
             "key": "BuffDuration",
             "value": 6,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityCastRange",
             "value": "40m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -651,21 +651,21 @@
             "key": "HealPerStack",
             "value": 16,
             "type": "healing",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "MaxStacks",
             "value": 25,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "MaxStaminaRestore",
             "value": 3,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -704,21 +704,21 @@
             "key": "BulletDamageReflectedPct",
             "value": 65,
             "type": "bullet_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "SpiritDamageReflectedPct",
             "value": 25,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityDuration",
             "value": 6.5,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -1077,14 +1077,14 @@
             "key": "HealOnActivate",
             "value": 250,
             "type": "healing",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "BuffDuration",
             "value": 3,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -1170,14 +1170,14 @@
     "stats": {
       "bulletLifestealPct": 14.0,
       "bonusHealthFlat": 100.0,
-      "weaponDamagePct": 6.0,
-      "fireRatePct": 32.0,
-      "spiritResistPct": 40.0
+      "weaponDamagePct": 6.0
     },
     "enabled": true,
     "sortOrder": 27,
     "conditionalStats": {
-      "moveSpeedFlat": 1.0
+      "fireRatePct": 32.0,
+      "moveSpeedFlat": 1.0,
+      "spiritResistPct": 40.0
     },
     "conditional": {
       "label": "Active effect running",
@@ -1193,7 +1193,7 @@
             "key": "AbilityDuration",
             "value": 6.5,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -1233,21 +1233,21 @@
             "key": "TotalHealthRegen",
             "value": 325,
             "type": "healing",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "RegenDuration",
             "value": 2,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AuraRadius",
             "value": "18m",
             "type": "distance",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -1352,14 +1352,14 @@
             "key": "InterruptCooldown",
             "value": 5,
             "type": "cooldown",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "BarrierDuration",
             "value": 8,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
@@ -1418,7 +1418,7 @@
             "key": "AbilityDuration",
             "value": 5,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -1447,11 +1447,17 @@
     "isImbue": false,
     "stats": {
       "sprintSpeedFlat": 0.75,
-      "abilityRangePct": 6.0,
-      "moveSpeedFlat": 0.0
+      "abilityRangePct": 6.0
     },
     "enabled": true,
     "sortOrder": 32,
+    "conditionalStats": {
+      "moveSpeedFlat": 0.0
+    },
+    "conditional": {
+      "label": "Active effect running",
+      "defaultActive": false
+    },
     "info": [
       {
         "type": "Active",
@@ -1462,21 +1468,21 @@
             "key": "HealPercentAmount",
             "value": 20,
             "type": "healing",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityChannelTime",
             "value": 2.5,
             "type": "cast",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityCastRange",
             "value": "35m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -1669,14 +1675,14 @@
             "key": "AbilityCastRange",
             "value": "11m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "CasterBuffDuration",
             "value": 6,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -1751,14 +1757,14 @@
     ],
     "isImbue": false,
     "stats": {
-      "weaponDamagePct": 15.0,
-      "meleeDamagePct": 30.0
+      "weaponDamagePct": 15.0
     },
     "enabled": true,
     "sortOrder": 38,
     "conditionalStats": {
       "bulletResistPct": 35.0,
-      "spiritResistPct": 35.0
+      "spiritResistPct": 35.0,
+      "meleeDamagePct": 30.0
     },
     "conditional": {
       "label": "Active effect running",
@@ -1795,21 +1801,21 @@
             "key": "Radius",
             "value": "14m",
             "type": "distance",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityDuration",
             "value": 7,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "ModelScaleGrowthTooltip",
             "value": 20,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -1858,14 +1864,14 @@
             "key": "BuffDuration",
             "value": 6,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityCastRange",
             "value": "40m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -1940,12 +1946,18 @@
     "stats": {
       "spiritResistPct": 10.0,
       "healthRegenFlat": 6.0,
-      "outOfCombatHealthRegen": 4.0,
-      "fireRatePct": 35.0,
-      "moveSpeedFlat": 1.25
+      "outOfCombatHealthRegen": 4.0
     },
     "enabled": true,
     "sortOrder": 41,
+    "conditionalStats": {
+      "fireRatePct": 35.0,
+      "moveSpeedFlat": 1.25
+    },
+    "conditional": {
+      "label": "Buff window active",
+      "defaultActive": false
+    },
     "info": [
       {
         "type": "Innate",
@@ -1970,7 +1982,7 @@
             "key": "BuffDuration",
             "value": 7,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -2081,7 +2093,7 @@
             "key": "AbilityDuration",
             "value": 7,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -2261,7 +2273,7 @@
             "key": "StatusEffectDisarmed",
             "value": null,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
@@ -2275,21 +2287,21 @@
             "key": "ImpactDamage",
             "value": 75,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityCastRange",
             "value": "25m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "SlowDuration",
             "value": 3,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -2474,7 +2486,7 @@
             "key": "AbilityDuration",
             "value": 5.5,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           }
         ]
@@ -2504,13 +2516,13 @@
     "stats": {
       "bulletLifestealPct": 13.0,
       "bonusHealthFlat": 100.0,
-      "weaponDamagePct": 6.0,
-      "fireRatePct": 34.0
+      "weaponDamagePct": 6.0
     },
     "enabled": true,
     "sortOrder": 52,
     "conditionalStats": {
-      "bulletResistPct": 10.0
+      "bulletResistPct": 10.0,
+      "fireRatePct": 34.0
     },
     "conditional": {
       "label": "Active effect running",
@@ -2526,21 +2538,21 @@
             "key": "ActiveBonusLifesteal",
             "value": 70,
             "type": "healing",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "ActiveReloadPercent",
             "value": 75,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityDuration",
             "value": 5,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -2684,7 +2696,7 @@
             "key": "BonusGoldPerMinute",
             "value": 90,
             "type": "souls",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           }
         ]
@@ -2720,7 +2732,7 @@
             "key": "Damage",
             "value": 40,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           }
         ]
@@ -2835,14 +2847,14 @@
             "key": "AbilityCastRange",
             "value": "32m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityDuration",
             "value": 5,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -3030,7 +3042,7 @@
             "key": "Damage",
             "value": 95,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
@@ -3044,14 +3056,14 @@
             "key": "AbilityDuration",
             "value": 4,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "EndRadius",
             "value": "10m",
             "type": "distance",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -3240,13 +3252,18 @@
       "FireRate"
     ],
     "isImbue": true,
-    "stats": {
-      "fireRatePct": 10.0
-    },
+    "stats": {},
     "enabled": true,
     "sortOrder": 70,
     "imbuedStats": {
       "abilityBonusDamage": 44
+    },
+    "conditionalStats": {
+      "fireRatePct": 10.0
+    },
+    "conditional": {
+      "label": "Buff window active",
+      "defaultActive": false
     },
     "info": [
       {
@@ -3258,14 +3275,14 @@
             "key": "Damage",
             "value": 44,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AmmoReloadPercent",
             "value": 100,
             "type": "clipsize",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           }
         ]
@@ -3318,14 +3335,14 @@
             "key": "AbilityCastRange",
             "value": "25m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityDuration",
             "value": 3.5,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -3366,21 +3383,21 @@
             "key": "TechPowerReduction",
             "value": -30,
             "type": "spirit",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityDuration",
             "value": 12,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityCastRange",
             "value": "40m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -3472,28 +3489,28 @@
             "key": "DotHealthPercent",
             "value": 2.6,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityCastRange",
             "value": "20m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityCastRange",
             "value": "20m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityDuration",
             "value": 10,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -3538,21 +3555,21 @@
             "key": "StatusEffectDisarmed",
             "value": null,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityCastRange",
             "value": "32m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityDuration",
             "value": 4.25,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -3622,21 +3639,21 @@
             "key": "StatusEffectStun",
             "value": null,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "StunDuration",
             "value": 0.5,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityCastRange",
             "value": "45m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -3795,28 +3812,28 @@
             "key": "StatusEffectEMP",
             "value": null,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "Damage",
             "value": 75,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityCastRange",
             "value": "40m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityDuration",
             "value": 3,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -4013,14 +4030,14 @@
             "key": "Damage",
             "value": 40,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "CurrentHealthDamage",
             "value": 8,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           }
         ]
@@ -4107,21 +4124,21 @@
             "key": "Damage",
             "value": 175,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "FreezeDuration",
             "value": 1,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "EndRadius",
             "value": "16m",
             "type": "distance",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -4185,28 +4202,28 @@
             "key": "StatusEffectEMP",
             "value": null,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "StatusEffectDisarmed",
             "value": null,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityDuration",
             "value": 3.25,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityCastRange",
             "value": "20m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
@@ -4353,14 +4370,14 @@
             "key": "AbilityDuration",
             "value": 4,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "BuffDuration",
             "value": 5,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -4390,6 +4407,7 @@
     },
     "enabled": true,
     "sortOrder": 93,
+    "defaultShredActive": false,
     "shred": {
       "spirit": 0.09
     },
@@ -4403,35 +4421,35 @@
             "key": "AbilityDuration",
             "value": 4.5,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "PercentDamage",
             "value": 30,
             "type": "damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "TechPowerReduction",
             "value": -30,
             "type": "spirit",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityCastRange",
             "value": "20m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "ResistReductionDuration",
             "value": 12,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -4574,14 +4592,14 @@
             "key": "AbilityDuration",
             "value": 12,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "SummonDuration",
             "value": 1.3,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -4608,14 +4626,20 @@
     "isImbue": true,
     "stats": {
       "ammoPct": 20.0,
-      "spiritPowerFlat": 7.0,
-      "bulletSpiritDamagePctOfBase": 25.0,
-      "fireRatePct": 22.0
+      "spiritPowerFlat": 7.0
     },
     "enabled": true,
     "sortOrder": 96,
     "imbuedStats": {
       "abilityBonusDamage": 60
+    },
+    "conditionalStats": {
+      "bulletSpiritDamagePctOfBase": 25.0,
+      "fireRatePct": 22.0
+    },
+    "conditional": {
+      "label": "Buff window active",
+      "defaultActive": false
     },
     "perSpirit": {
       "bulletSpiritDamagePctOfBase": 0.49
@@ -4630,14 +4654,14 @@
             "key": "Damage",
             "value": 60,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AmmoReloadPercent",
             "value": 100,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -4772,28 +4796,28 @@
             "key": "MaxHealthPercentAsDPS",
             "value": 2.3,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityDuration",
             "value": 10,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityCastRange",
             "value": "35m",
             "type": "range",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AuraRadius",
             "value": "10m",
             "type": "distance",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -4928,7 +4952,7 @@
             "key": "CaptureRadius",
             "value": "12m",
             "type": "distance",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
@@ -4942,7 +4966,7 @@
             "key": "AbilityDuration",
             "value": 4,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
@@ -5238,14 +5262,14 @@
     ],
     "isImbue": false,
     "stats": {
-      "weaponDamagePct": 6.0,
-      "slowResistPct": 40.0
+      "weaponDamagePct": 6.0
     },
     "enabled": true,
     "sortOrder": 111,
     "conditionalStats": {
       "bulletResistPct": 6.0,
-      "moveSpeedFlat": 3.0
+      "moveSpeedFlat": 3.0,
+      "slowResistPct": 40.0
     },
     "conditional": {
       "label": "Active effect running",
@@ -5275,7 +5299,7 @@
             "key": "AbilityDuration",
             "value": 5,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -5739,28 +5763,28 @@
             "key": "WeaponDamagePerStack",
             "value": 8,
             "type": "bullet_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "BonusShotsDuration",
             "value": 5,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "MaxStacks",
             "value": 5,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "WeaponDamageBonusDuration",
             "value": 12,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -5969,28 +5993,28 @@
             "key": "DPS",
             "value": 45,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "DPSMax",
             "value": 95,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "Radius",
             "value": "10m",
             "type": "distance",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityDuration",
             "value": 5,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -6133,14 +6157,14 @@
     "isImbue": false,
     "stats": {
       "spiritResistPct": 8.0,
-      "outOfCombatHealthRegen": 4.0,
-      "debuffResistPct": 35.0,
-      "moveSpeedFlat": 2.0
+      "outOfCombatHealthRegen": 4.0
     },
     "enabled": true,
     "sortOrder": 129,
     "conditionalStats": {
-      "fireRatePct": 35.0
+      "fireRatePct": 35.0,
+      "debuffResistPct": 35.0,
+      "moveSpeedFlat": 2.0
     },
     "conditional": {
       "label": "Active effect running",
@@ -6170,7 +6194,7 @@
             "key": "HealthDrainedPerSecond",
             "value": 50,
             "type": "damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           }
         ]
@@ -6283,7 +6307,7 @@
             "key": "AbilityDuration",
             "value": 160,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -6521,14 +6545,14 @@
             "key": "ActiveRadius",
             "value": "35m",
             "type": "distance",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "AbilityDuration",
             "value": 7,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -6734,28 +6758,28 @@
             "key": "StatusEffectInvisible",
             "value": null,
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "AbilityDuration",
             "value": 13,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "SpottedRadius",
             "value": "20m",
             "type": null,
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           },
           {
             "key": "InvisMoveSpeedMod",
             "value": "5m",
             "type": "move_speed",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -6769,7 +6793,7 @@
             "key": "AmbushDuration",
             "value": 5,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]
@@ -7152,21 +7176,21 @@
             "key": "Damage",
             "value": 100,
             "type": "tech_damage",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "MaxSlowPercent",
             "value": 75,
             "type": "slow",
-            "conditional": false,
+            "conditional": true,
             "emphasis": true
           },
           {
             "key": "SlowDuration",
             "value": 3,
             "type": "duration",
-            "conditional": false,
+            "conditional": true,
             "emphasis": false
           }
         ]

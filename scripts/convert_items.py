@@ -180,6 +180,21 @@ SCALING_OVERRIDES = {
 # the export gives no way to tell those apart, so it is opted in per item.
 IGNORES_BULLET_RESIST = {"upgrade_aprounds"}
 
+# The export marks a stat as conditional with per-entry "UsageFlags", but it
+# is inconsistent about it: an entire block typed "Active" (you must press
+# the item) or gated behind a "ChargeUp" (Quicksilver Reload/Mercurial
+# Magnum's charge-then-consume kit) is conditional by construction even when
+# none of its individual entries carry the flag - confirmed against Vampiric
+# Burst's fire rate and Mercurial Magnum's bonus spirit damage, both of which
+# require the bound ability to be triggered.
+#
+# Healing Tempo is the one item where even that does not save us: its reward
+# block has no Type at all, and its own tooltip spells out the condition
+# ("Does not apply on innate Regen or passive Bullet/Spirit Lifesteals") -
+# lifesteal is not Healing in this game, so the fire rate/move speed it
+# grants is opted in here rather than guessed at from a heuristic.
+FORCE_CONDITIONAL_ITEMS = {"upgrade_healbuff"}
+
 CONDITION_LABELS = [
     ("LongRangeBonusWeaponPower", "Beyond minimum range"),
     ("CloseRangeBonusWeaponPower", "Within close range"),
@@ -298,6 +313,14 @@ def main():
             entries = [(lst, s) for lst in ("Main", "Alt") for s in (block.get(lst) or [])]
             block_has_cooldown = block.get("Cooldown") is not None
             block_is_innate = (block.get("Type") or "") == "Innate"
+            # See FORCE_CONDITIONAL_ITEMS: a block typed "Active", one gated
+            # behind a ChargeUp, or an item opted in by hand is conditional
+            # even when the export leaves UsageFlags off every entry.
+            block_is_active = (block.get("Type") or "") == "Active"
+            block_is_charge_gated = block.get("ChargeUp") is not None
+            block_forced_conditional = (
+                rec["Key"] in FORCE_CONDITIONAL_ITEMS and not block_is_innate
+            )
             scoped_to_imbue = bool(rec.get("IsImbue")) and not block_is_innate
             block_stacks = next(
                 (
@@ -312,6 +335,9 @@ def main():
             # duration, or when the item is one you have to press at all.
             block_has_window = (
                 block_has_cooldown
+                or block_is_active
+                or block_is_charge_gated
+                or block_forced_conditional
                 or (rec.get("Activation") or "Passive") != "Passive"
                 or any(
                     s["Key"].endswith("Duration") or s["Key"] == "DamageWindow"
@@ -325,7 +351,12 @@ def main():
             for lst, entry in entries:
                 gkey = entry["Key"]
                 value = parse_value(entry.get("Value"))
-                is_conditional = bool(entry.get("UsageFlags"))
+                is_conditional = (
+                    bool(entry.get("UsageFlags"))
+                    or block_is_active
+                    or block_is_charge_gated
+                    or block_forced_conditional
+                )
                 # Within a stacking block, the headline numbers are per-stack.
                 is_per_stack = bool(block_stacks) and lst == "Main"
                 if gkey.startswith("Stacking"):

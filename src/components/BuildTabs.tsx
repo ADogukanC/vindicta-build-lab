@@ -1,9 +1,9 @@
 ﻿"use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import type { Build } from "@/lib/types";
-import { normalizeBuild } from "@/lib/build";
+import { BUILD_COLORS, normalizeBuild } from "@/lib/build";
 import { decodeBuildCode, extractBuildCode } from "@/lib/buildCode";
 import { fmtSouls } from "@/lib/format";
 
@@ -14,6 +14,7 @@ export function BuildTabs({
   onSelect,
   onAdd,
   onRename,
+  onRecolor,
   onDuplicate,
   onDelete,
   onToggleCompare,
@@ -27,6 +28,7 @@ export function BuildTabs({
   onSelect: (id: string) => void;
   onAdd: () => void;
   onRename: (id: string, name: string) => void;
+  onRecolor: (id: string, color: string) => void;
   onDuplicate: (id: string) => void;
   onDelete: (id: string) => void;
   onToggleCompare: (id: string) => void;
@@ -35,9 +37,22 @@ export function BuildTabs({
   soulsFor: (build: Build) => number;
 }) {
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [colorPickerId, setColorPickerId] = useState<string | null>(null);
   const [codeInput, setCodeInput] = useState("");
   const [importingCode, setImportingCode] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const pickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!colorPickerId) return;
+    function onClickOutside(e: MouseEvent) {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setColorPickerId(null);
+      }
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, [colorPickerId]);
 
   async function importCode() {
     const code = extractBuildCode(codeInput);
@@ -87,7 +102,7 @@ export function BuildTabs({
             <div
               key={build.id}
               className={clsx(
-                "group flex items-center gap-2 rounded-lg border px-3 py-2 transition",
+                "group relative flex items-center gap-2 rounded-lg border px-3 py-2 transition",
                 active
                   ? "border-ink-500 bg-ink-800"
                   : "border-ink-700 bg-ink-900 hover:border-ink-600 hover:bg-ink-850",
@@ -118,6 +133,50 @@ export function BuildTabs({
               </button>
 
               <div className="mx-0.5 h-3.5 w-px bg-ink-700" />
+
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setColorPickerId(colorPickerId === build.id ? null : build.id)}
+                  className="h-3.5 w-3.5 shrink-0 rounded-full border border-ink-950/40 transition hover:scale-110"
+                  style={{ background: build.color }}
+                  title="Change build color"
+                  aria-label="Change build color"
+                />
+                {colorPickerId === build.id && (
+                  <div
+                    ref={pickerRef}
+                    className="absolute left-0 top-full z-20 mt-2 flex w-max items-center gap-1.5 rounded-lg border border-ink-700 bg-ink-850 p-2 shadow-lg"
+                  >
+                    {BUILD_COLORS.map((color) => (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => {
+                          onRecolor(build.id, color);
+                          setColorPickerId(null);
+                        }}
+                        className={clsx(
+                          "h-5 w-5 shrink-0 rounded-full border-2 transition hover:scale-110",
+                          build.color === color ? "border-ink-100" : "border-transparent",
+                        )}
+                        style={{ background: color }}
+                        title={color}
+                        aria-label={`Use ${color}`}
+                      />
+                    ))}
+                    <div className="mx-0.5 h-5 w-px bg-ink-700" />
+                    <input
+                      type="color"
+                      value={build.color}
+                      onChange={(e) => onRecolor(build.id, e.target.value)}
+                      className="h-5 w-6 cursor-pointer rounded border border-ink-700 bg-transparent p-0"
+                      title="Custom color"
+                      aria-label="Custom build color"
+                    />
+                  </div>
+                )}
+              </div>
 
               {editingId === build.id ? (
                 <input

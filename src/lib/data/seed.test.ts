@@ -149,7 +149,9 @@ describe("item catalogue", () => {
 
   it("scales Mercurial Magnum's bonus off base gun damage", () => {
     const mm = bySlug.get("mercurial-magnum")!;
-    expect(mm.stats.bulletSpiritDamagePctOfBase).toBe(25);
+    // Bullets only deal the bonus damage "until your next reload" after the
+    // imbued ability fires, so this is gated behind the item's toggle.
+    expect(mm.conditionalStats?.bulletSpiritDamagePctOfBase).toBe(25);
     expect(mm.perSpirit?.bulletSpiritDamagePctOfBase).toBe(0.49);
     expect(mm.stats.bulletSpiritDamageFlat ?? 0).toBe(0);
   });
@@ -165,10 +167,13 @@ describe("item catalogue", () => {
     expect(bySlug.get("quicksilver-reload")!.imbuedStats?.abilityBonusDamage).toBe(44);
     expect(bySlug.get("mercurial-magnum")!.imbuedStats?.abilityBonusDamage).toBe(60);
 
-    // Their innate halves stay global: Mercurial Magnum's +7 spirit and the
-    // weapon buffs apply whatever you imbue.
+    // Their innate half stays global and unconditional: Mercurial Magnum's
+    // +7 spirit applies whatever you imbue. The fire rate is not innate - it
+    // only runs while the charge-and-consume buff window is up, same as the
+    // bonus spirit damage per bullet, so it belongs in conditionalStats.
     expect(bySlug.get("mercurial-magnum")!.stats.spiritPowerFlat).toBe(7);
-    expect(bySlug.get("quicksilver-reload")!.stats.fireRatePct).toBe(10);
+    expect(bySlug.get("quicksilver-reload")!.stats.fireRatePct ?? 0).toBe(0);
+    expect(bySlug.get("quicksilver-reload")!.conditionalStats?.fireRatePct).toBe(10);
   });
 
   it("only references components that exist", () => {

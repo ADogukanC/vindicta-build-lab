@@ -113,6 +113,7 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
         onSelect={store.setActive}
         onAdd={() => store.addBuild()}
         onRename={store.renameBuild}
+        onRecolor={store.recolorBuild}
         onDuplicate={store.duplicate}
         onDelete={store.deleteBuild}
         onToggleCompare={store.toggleCompare}
