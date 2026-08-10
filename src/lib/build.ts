@@ -213,6 +213,14 @@ export function normalizeBuild(raw: Partial<Build> & LegacyTierFlags): Build {
     ...base,
     ...raw,
     id: raw.id ?? base.id,
+    // Not user-facing (no UI ever writes this) — it exists only so the
+    // workbook-parity test fixture can pin the old pre-item-spirit math via
+    // `createBuild({ gunDamageUsesTotalSpirit: false, ... })` directly. A real
+    // build has no legitimate reason to carry `false`; the only way one does is
+    // stale persisted data from before the app's default flipped to `true` (the
+    // behaviour that actually matches the game). Always heal it back on load so
+    // two builds with identical items can't silently diverge in DPS.
+    gunDamageUsesTotalSpirit: true,
     abilityUpgrades,
     // Builds saved before the timeline existed were unordered sets shown in
     // full, so start them at the top of the range and let their stored order
