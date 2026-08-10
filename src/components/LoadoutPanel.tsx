@@ -5,7 +5,7 @@ import clsx from "clsx";
 import type { BuildItem, Item } from "@/lib/types";
 import type { CalcResult } from "@/lib/calc/engine";
 import { MAX_ITEM_SLOTS } from "@/lib/calc/timeline";
-import { CATEGORY_COLOR, fmtInt, fmtSouls } from "@/lib/format";
+import { CATEGORY_COLOR, fmtDelta, fmtInt, fmtSouls } from "@/lib/format";
 import { ItemIcon } from "./ItemIcon";
 
 interface Row {
@@ -136,6 +136,7 @@ function SellOrderEditor({
 export function LoadoutPanel({
   rows,
   result,
+  dpsContributions,
   sellOrder,
   onRemove,
   onPatch,
@@ -150,6 +151,8 @@ export function LoadoutPanel({
   /** Every purchase in the plan, in buy order. */
   rows: Row[];
   result: CalcResult;
+  /** Ground/Flight DPS lost if each held item were removed, keyed by slug. */
+  dpsContributions: Map<string, { ground: number; flight: number }>;
   sellOrder: string[];
   onRemove: (slug: string) => void;
   onPatch: (slug: string, patch: Partial<BuildItem>) => void;
@@ -162,6 +165,9 @@ export function LoadoutPanel({
   onImbue: (slug: string, abilityKey: string) => void;
 }) {
   const [showSells, setShowSells] = useState(false);
+  // Drag-to-reorder state, kept local since it never outlives this panel.
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
   const { timeline } = result;
 
   const conditionals = rows.filter((r) => r.item.conditional);
@@ -278,13 +284,60 @@ export function LoadoutPanel({
             const held = timeline.heldSlugs.has(item.slug);
             const threshold = thresholdByIndex.get(index);
             const effects = sideEffects.get(index) ?? [];
+            const contribution = dpsContributions.get(item.slug);
             return (
               <li
                 key={item.slug}
-                className={clsx("flex items-start gap-2 p-1.5", !held && "opacity-45")}
+                draggable
+                onDragStart={(e) => {
+                  setDragIndex(index);
+                  e.dataTransfer.effectAllowed = "move";
+                  e.dataTransfer.setData("text/plain", String(index));
+                }}
+                onDragEnd={() => {
+                  setDragIndex(null);
+                  setOverIndex(null);
+                }}
+                onDragOver={(e) => {
+                  // Always allow the drop (rather than gating on `dragIndex`,
+                  // which is component state and can still be reflecting the
+                  // previous render on the very first dragover of a drag — an
+                  // unconditional `preventDefault` is what tells the browser
+                  // this row is a valid drop target at all).
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = "move";
+                  if (overIndex !== index) setOverIndex(index);
+                }}
+                onDragLeave={() => setOverIndex((cur) => (cur === index ? null : cur))}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  // Read the source index off the event itself rather than
+                  // `dragIndex` state: dataTransfer is synchronously correct
+                  // no matter where React's render is, while state set in
+                  // `onDragStart` may not have flushed by the time this fires.
+                  const from = Number(e.dataTransfer.getData("text/plain"));
+                  if (Number.isInteger(from) && from !== index) onMove(from, index);
+                  setDragIndex(null);
+                  setOverIndex(null);
+                }}
+                className={clsx(
+                  "flex items-start gap-2 p-1.5 transition",
+                  !held && "opacity-45",
+                  dragIndex === index && "opacity-30",
+                  dragIndex !== null &&
+                    dragIndex !== index &&
+                    overIndex === index &&
+                    "bg-amber-brand/10 outline outline-1 -outline-offset-1 outline-amber-brand/50",
+                )}
                 style={{ borderLeft: `2px solid ${held ? CATEGORY_COLOR[item.category] : "transparent"}` }}
               >
                 <span className="flex flex-col items-center gap-0.5 pt-0.5">
+                  <span
+                    className="cursor-grab select-none text-[11px] leading-none text-ink-600 hover:text-ink-200 active:cursor-grabbing"
+                    title="Drag to reorder"
+                  >
+                    ⠿
+                  </span>
                   <button
                     type="button"
                     className="text-[9px] leading-none text-ink-600 hover:text-ink-100 disabled:opacity-20"
@@ -355,6 +408,18 @@ export function LoadoutPanel({
 
                   {held && (
                     <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                      {contribution && (
+                        <span
+                          className="tnum rounded-full border border-ink-700 bg-ink-850 px-1.5 py-0.5 text-[10px] text-ink-400"
+                          title="DPS lost if this item alone were removed from the build"
+                        >
+                          <span className="text-ink-500">Ground</span>{" "}
+                          {fmtDelta(contribution.ground, 0)}
+                          <span className="mx-1 text-ink-700">·</span>
+                          <span className="text-ink-500">Flight</span>{" "}
+                          {fmtDelta(contribution.flight, 0)}
+                        </span>
+                      )}
                       {item.isImbue && (
                         <label
                           className={clsx(

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useBuilds } from "@/lib/store/useBuilds";
 import { calculateBuild } from "@/lib/calc/engine";
+import { itemContributions } from "@/lib/calc/metrics";
 import { decodeBuildCode, encodeBuildCode } from "@/lib/buildCode";
 import { normalizeBuild } from "@/lib/build";
 import type { Build, CalcContext } from "@/lib/types";
@@ -80,6 +81,21 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
     () => new Set(build?.items.map((i) => i.slug) ?? []),
     [build],
   );
+
+  // Ground and Flight DPS lost if each held item alone were removed, shown per
+  // row in the purchase order so "is this worth its souls" doesn't require a
+  // trip to the compare page.
+  const dpsContributions = useMemo(() => {
+    const map = new Map<string, { ground: number; flight: number }>();
+    if (!build) return map;
+    const ground = itemContributions(build, ctx, "groundDps");
+    const flight = itemContributions(build, ctx, "flightDps");
+    const flightBySlug = new Map(flight.map((c) => [c.item.slug, c.delta]));
+    for (const c of ground) {
+      map.set(c.item.slug, { ground: c.delta, flight: flightBySlug.get(c.item.slug) ?? 0 });
+    }
+    return map;
+  }, [build, ctx]);
 
   async function share() {
     if (!build) return;
@@ -200,6 +216,7 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
           <LoadoutPanel
             rows={loadoutRows}
             result={result}
+            dpsContributions={dpsContributions}
             sellOrder={build.sellOrder ?? []}
             onRemove={store.removeItem}
             onPatch={store.patchItem}
