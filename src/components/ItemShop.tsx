@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import clsx from "clsx";
 import type { Item, ItemCategory } from "@/lib/types";
 import { ACTIVATION_LABELS, ITEM_CATEGORIES, TIER_LABELS } from "@/lib/types";
@@ -8,6 +9,77 @@ import { statLabel } from "@/lib/stats";
 import { CATEGORY_COLOR, fmtSouls } from "@/lib/format";
 import { ItemIcon } from "./ItemIcon";
 import { ItemInfoRows, ItemStatLines, itemStatLines } from "./ItemStatLines";
+import { ITEM_PREVIEW_WIDTH, ItemPreviewCard } from "./ItemPreviewCard";
+
+/**
+ * Hovering (or focusing) the "details" link floats a wiki-styled preview
+ * near it. Positioned in a portal at `fixed` coordinates measured from the
+ * link itself, rather than as a plain CSS-hover popover, so it always
+ * escapes the shop list's `overflow-y-auto` clipping instead of being cut off
+ * mid-card. The card shows every effect an item has (not just the sliver the
+ * calculator doesn't model), so it can run tall — leaves a generous margin
+ * and lets `ItemPreviewCard`'s own `max-h-[80vh]` scroll take over past that.
+ */
+interface PreviewPos {
+  left: number;
+  maxHeight: number;
+  /** Anchored from whichever edge has more room — never both. */
+  top?: number;
+  bottom?: number;
+}
+
+function DetailsHoverLink({ item, onClick }: { item: Item; onClick: () => void }) {
+  const ref = useRef<HTMLButtonElement>(null);
+  const [pos, setPos] = useState<PreviewPos | null>(null);
+
+  const show = () => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    const margin = 8;
+    const left = Math.min(Math.max(margin, rect.left), window.innerWidth - ITEM_PREVIEW_WIDTH - margin);
+    const spaceBelow = window.innerHeight - rect.bottom - margin;
+    const spaceAbove = rect.top - margin;
+    // Whichever side has more room, so the card gets as much height as the
+    // viewport can actually give it. Anchoring from that same edge (`top`
+    // below the link, `bottom` above it) means a short card hugs the link
+    // either way, instead of a `top`-only card floating away from it when
+    // its content turns out shorter than the space it was budgeted.
+    if (spaceBelow >= spaceAbove) {
+      setPos({ top: rect.bottom + 6, left, maxHeight: spaceBelow - 6 });
+    } else {
+      setPos({ bottom: window.innerHeight - rect.top + 6, left, maxHeight: spaceAbove - 6 });
+    }
+  };
+  const hide = () => setPos(null);
+
+  return (
+    <>
+      <button
+        ref={ref}
+        type="button"
+        onClick={onClick}
+        onMouseEnter={show}
+        onMouseLeave={hide}
+        onFocus={show}
+        onBlur={hide}
+        className="rounded px-1.5 py-0.5 text-[10px] text-ink-500 hover:bg-ink-700 hover:text-ink-100"
+        title="Hover to preview, click to pin full details"
+      >
+        details
+      </button>
+      {pos &&
+        createPortal(
+          <div
+            className="pointer-events-none fixed z-50"
+            style={{ top: pos.top, bottom: pos.bottom, left: pos.left }}
+          >
+            <ItemPreviewCard item={item} maxHeight={pos.maxHeight} />
+          </div>,
+          document.body,
+        )}
+    </>
+  );
+}
 
 /** Readable names for the game's own shop filter tags. */
 function filterLabel(tag: string): string {
@@ -101,14 +173,7 @@ function ItemCard({
           </span>
         )}
         <span className="flex-1" />
-        <button
-          type="button"
-          onClick={onInspect}
-          className="rounded px-1.5 py-0.5 text-[10px] text-ink-500 hover:bg-ink-700 hover:text-ink-100"
-          title="Show full details"
-        >
-          details
-        </button>
+        <DetailsHoverLink item={item} onClick={onInspect} />
       </div>
 
       {owned && (
