@@ -51,6 +51,14 @@ export interface InfoRow {
   conditional?: boolean;
   /** Headline numbers the game renders larger. */
   emphasis?: boolean;
+  /**
+   * The export's per-entry scaling coefficient, when this number grows with a
+   * resource beyond its flat base — e.g. Cold Front's damage scales with
+   * spirit power, Cultist Sacrifice's buff scales with boons. Not modelled by
+   * the engine (the base `value` is display-only to begin with), but shown
+   * alongside it so the card can read "60 (+X at your Spirit Power)".
+   */
+  scale?: { value: number; kind: "spirit" | "boon" };
 }
 
 /** One of the boxes the game draws on an item card. */

@@ -93,6 +93,13 @@ export const STAT_DEFS: StatDef[] = [
     hint: "Flat damage added to one ability. On an imbue item this applies only to the ability you imbue.",
   },
   {
+    key: "abilityBonusDamagePerSpirit",
+    label: "Ability Bonus Damage per Spirit",
+    group: "spirit",
+    kind: "flat",
+    hint: "Added to Ability Bonus Damage per point of spirit power, e.g. Mercurial Magnum and Quicksilver Reload's charge-up bonus.",
+  },
+  {
     key: "abilityDamagePct",
     label: "Ability Damage",
     group: "spirit",

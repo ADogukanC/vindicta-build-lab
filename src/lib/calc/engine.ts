@@ -748,7 +748,9 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
     const a = r.ability;
     const imbue = imbueFor(a.key);
     const abilitySpirit = spiritPower + statValue(imbue.bag, "spiritPowerFlat");
-    const bonusFlat = statValue(imbue.bag, "abilityBonusDamage");
+    const bonusFlat =
+      statValue(imbue.bag, "abilityBonusDamage") +
+      statValue(imbue.bag, "abilityBonusDamagePerSpirit") * abilitySpirit;
     const damageMul = 1 + statValue(imbue.bag, "abilityDamagePct") / 100;
 
     const isSpirit = (a.damageType ?? "spirit") === "spirit";
@@ -820,7 +822,10 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
     };
 
     const baseAmount =
-      r.damage + statValue(imbue.bag, "abilityBonusDamage") + a.spiritScaling * abilitySpirit;
+      r.damage +
+      statValue(imbue.bag, "abilityBonusDamage") +
+      statValue(imbue.bag, "abilityBonusDamagePerSpirit") * abilitySpirit +
+      a.spiritScaling * abilitySpirit;
     const bonusAmount = r.bonusDamage + (a.bonusSpiritScaling ?? 0) * abilitySpirit;
     const base = scaleSet(scale, baseAmount);
     const bonus = scaleSet(scale, bonusAmount);

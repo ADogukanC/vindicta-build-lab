@@ -147,7 +147,11 @@
             "value": 300,
             "type": "healing",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 1.1,
+              "kind": "spirit"
+            }
           },
           {
             "key": "RegenDuration",
@@ -603,6 +607,9 @@
       "label": "Barrier up",
       "defaultActive": false
     },
+    "perSpirit": {
+      "combatBarrierFlat": 1.8
+    },
     "info": [
       {
         "type": "Passive",
@@ -652,7 +659,11 @@
             "value": 16,
             "type": "healing",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.5,
+              "kind": "boon"
+            }
           },
           {
             "key": "MaxStacks",
@@ -780,6 +791,9 @@
       "label": "Barrier up",
       "defaultActive": false
     },
+    "perBoon": {
+      "combatBarrierFlat": 5
+    },
     "info": [
       {
         "type": "Passive",
@@ -903,6 +917,9 @@
     "conditional": {
       "label": "Barrier up",
       "defaultActive": false
+    },
+    "perBoon": {
+      "combatBarrierFlat": 5
     },
     "info": [
       {
@@ -1234,7 +1251,11 @@
             "value": 325,
             "type": "healing",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 6,
+              "kind": "boon"
+            }
           },
           {
             "key": "RegenDuration",
@@ -1297,14 +1318,22 @@
             "value": 100,
             "type": "healing",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 1.5,
+              "kind": "boon"
+            }
           },
           {
             "key": "LifestealHealPercent",
             "value": 30,
             "type": "healing",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.5,
+              "kind": "boon"
+            }
           },
           {
             "key": "SlowDuration",
@@ -1341,6 +1370,9 @@
     "conditional": {
       "label": "Barrier up",
       "defaultActive": false
+    },
+    "perBoon": {
+      "combatBarrierFlat": 12
     },
     "info": [
       {
@@ -1626,7 +1658,11 @@
             "value": 85,
             "type": "healing",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 8,
+              "kind": "boon"
+            }
           },
           {
             "key": "InvisDuration",
@@ -2020,6 +2056,9 @@
       "label": "Barrier up",
       "defaultActive": false
     },
+    "perSpirit": {
+      "combatBarrierFlat": 2
+    },
     "info": [
       {
         "type": "Passive",
@@ -2288,7 +2327,11 @@
             "value": 75,
             "type": "tech_damage",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.93,
+              "kind": "spirit"
+            }
           },
           {
             "key": "AbilityCastRange",
@@ -2895,7 +2938,11 @@
             "value": 40,
             "type": "tech_damage",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.372,
+              "kind": "spirit"
+            }
           },
           {
             "key": "AbilityDuration",
@@ -3043,7 +3090,11 @@
             "value": 95,
             "type": "tech_damage",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.465,
+              "kind": "spirit"
+            }
           },
           {
             "key": "MovementSpeedSlow",
@@ -3256,6 +3307,7 @@
     "enabled": true,
     "sortOrder": 70,
     "imbuedStats": {
+      "abilityBonusDamagePerSpirit": 0.16,
       "abilityBonusDamage": 44
     },
     "conditionalStats": {
@@ -3276,7 +3328,11 @@
             "value": 44,
             "type": "tech_damage",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.16,
+              "kind": "spirit"
+            }
           },
           {
             "key": "AmmoReloadPercent",
@@ -3490,21 +3546,33 @@
             "value": 2.6,
             "type": "tech_damage",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.004,
+              "kind": "spirit"
+            }
           },
           {
             "key": "AbilityCastRange",
             "value": "20m",
             "type": "range",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.1,
+              "kind": "spirit"
+            }
           },
           {
             "key": "AbilityCastRange",
             "value": "20m",
             "type": "range",
             "conditional": true,
-            "emphasis": false
+            "emphasis": false,
+            "scale": {
+              "value": 0.1,
+              "kind": "spirit"
+            }
           },
           {
             "key": "AbilityDuration",
@@ -3702,7 +3770,11 @@
             "value": 4,
             "type": "healing",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.04,
+              "kind": "spirit"
+            }
           },
           {
             "key": "RegenerationDuration",
@@ -3723,7 +3795,11 @@
             "value": 70,
             "type": "healing",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 2,
+              "kind": "boon"
+            }
           },
           {
             "key": "AbilityDuration",
@@ -3820,7 +3896,11 @@
             "value": 75,
             "type": "tech_damage",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.7,
+              "kind": "spirit"
+            }
           },
           {
             "key": "AbilityCastRange",
@@ -3883,7 +3963,11 @@
             "value": 50,
             "type": "tech_damage",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.84,
+              "kind": "spirit"
+            }
           },
           {
             "key": "AbilityDuration",
@@ -4077,7 +4161,11 @@
             "value": 25,
             "type": "tech_damage",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.23,
+              "kind": "spirit"
+            }
           },
           {
             "key": "DamagePulseRadius",
@@ -4125,7 +4213,11 @@
             "value": 175,
             "type": "tech_damage",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.6975,
+              "kind": "spirit"
+            }
           },
           {
             "key": "FreezeDuration",
@@ -4631,6 +4723,7 @@
     "enabled": true,
     "sortOrder": 96,
     "imbuedStats": {
+      "abilityBonusDamagePerSpirit": 0.16,
       "abilityBonusDamage": 60
     },
     "conditionalStats": {
@@ -4655,7 +4748,11 @@
             "value": 60,
             "type": "tech_damage",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.16,
+              "kind": "spirit"
+            }
           },
           {
             "key": "AmmoReloadPercent",
@@ -4797,7 +4894,11 @@
             "value": 2.3,
             "type": "tech_damage",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.0055,
+              "kind": "spirit"
+            }
           },
           {
             "key": "AbilityDuration",
@@ -4877,7 +4978,11 @@
             "value": 24,
             "type": "tech_damage",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.06,
+              "kind": "spirit"
+            }
           },
           {
             "key": "ImmunityDuration",
@@ -5539,7 +5644,11 @@
             "value": 40,
             "type": "tech_damage",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.9,
+              "kind": "spirit"
+            }
           }
         ]
       }
@@ -5981,7 +6090,8 @@
     "sortOrder": 126,
     "defaultShredActive": false,
     "shred": {
-      "bullet": 0.07
+      "bullet": 0.07,
+      "bulletPerSpirit": 0.0006
     },
     "info": [
       {
@@ -5994,14 +6104,22 @@
             "value": 45,
             "type": "tech_damage",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.2,
+              "kind": "spirit"
+            }
           },
           {
             "key": "DPSMax",
             "value": 95,
             "type": "tech_damage",
             "conditional": true,
-            "emphasis": false
+            "emphasis": false,
+            "scale": {
+              "value": 0.4,
+              "kind": "spirit"
+            }
           },
           {
             "key": "Radius",
@@ -6297,6 +6415,10 @@
       "label": "Against non-heroes",
       "defaultActive": false
     },
+    "perBoon": {
+      "weaponDamagePct": 0.8,
+      "bonusHealthFlat": 4
+    },
     "info": [
       {
         "type": "Active",
@@ -6404,6 +6526,9 @@
       "label": "Buff window active",
       "defaultActive": false
     },
+    "perBoon": {
+      "procWeaponDamagePct": 2
+    },
     "info": [
       {
         "type": "Passive",
@@ -6415,7 +6540,11 @@
             "value": 40,
             "type": "bullet_damage",
             "conditional": true,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 1.3,
+              "kind": "boon"
+            }
           },
           {
             "key": "ProcBulletVelocity",
@@ -6477,7 +6606,11 @@
             "value": 4,
             "type": "healing",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.06,
+              "kind": "boon"
+            }
           },
           {
             "key": "MovementSpeedBonusDuration",
@@ -6949,6 +7082,9 @@
     },
     "enabled": true,
     "sortOrder": 142,
+    "perSpirit": {
+      "procSpiritDamageFlat": 0.19
+    },
     "info": [
       {
         "type": "Passive",
@@ -7010,7 +7146,11 @@
             "value": 1.9,
             "type": "tech_damage",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.005,
+              "kind": "spirit"
+            }
           },
           {
             "key": "DotDuration",
@@ -7145,6 +7285,9 @@
     },
     "enabled": true,
     "sortOrder": 146,
+    "perSpirit": {
+      "procSpiritDamageFlat": 0.19
+    },
     "info": [
       {
         "type": "Passive",

@@ -251,6 +251,7 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
             <ItemShop
               items={ctx.items}
               ownedSlugs={ownedSlugs}
+              ctx={result ? { spiritPower: result.spiritPower, boons: result.boons } : undefined}
               onAdd={(item) => store.addItem(item)}
               onRemove={store.removeItem}
             />

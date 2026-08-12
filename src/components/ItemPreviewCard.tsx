@@ -6,7 +6,7 @@ import { ACTIVATION_LABELS, TIER_LABELS } from "@/lib/types";
 import { humaniseGameKey } from "@/lib/stats";
 import { CATEGORY_COLOR, fmtSouls } from "@/lib/format";
 import { ItemIcon } from "./ItemIcon";
-import { itemStatLines } from "./ItemStatLines";
+import { infoRowScaleText, itemStatLines, type ScaleContext } from "./ItemStatLines";
 
 /** Read by `ItemShop.tsx` when it computes where the popup can fit. */
 export const ITEM_PREVIEW_WIDTH = 416;
@@ -26,9 +26,17 @@ const DEFAULT_MAX_HEIGHT = 560;
  * (non-Street-Brawl "Enhanced") version of each item, so neither needs
  * filtering here.
  */
-export function ItemPreviewCard({ item, maxHeight }: { item: Item; maxHeight?: number }) {
+export function ItemPreviewCard({
+  item,
+  maxHeight,
+  ctx,
+}: {
+  item: Item;
+  maxHeight?: number;
+  ctx?: ScaleContext;
+}) {
   const color = CATEGORY_COLOR[item.category];
-  const effects = itemStatLines(item);
+  const effects = itemStatLines(item, ctx);
   const blocks = (item.info ?? []).filter((b) => b.rows.length > 0 || b.cooldown);
   const hasExtras =
     effects.length > 0 || blocks.length > 0 || Boolean(item.conditional) || (item.maxStacks ?? 0) > 1;
@@ -125,19 +133,23 @@ export function ItemPreviewCard({ item, maxHeight }: { item: Item; maxHeight?: n
                 )}
               </div>
               <ul className="space-y-1 text-[11px]">
-                {block.rows.map((row, j) => (
-                  <li key={j} className="flex items-start justify-between gap-3">
-                    <span className="text-ink-300">{humaniseGameKey(row.key)}</span>
-                    <span
-                      className={clsx(
-                        "tnum shrink-0 text-right",
-                        row.emphasis ? "font-semibold text-ink-100" : "text-ink-200",
-                      )}
-                    >
-                      {row.value === null ? "yes" : String(row.value)}
-                    </span>
-                  </li>
-                ))}
+                {block.rows.map((row, j) => {
+                  const scaleText = infoRowScaleText(row, ctx);
+                  return (
+                    <li key={j} className="flex items-start justify-between gap-3">
+                      <span className="text-ink-300">{humaniseGameKey(row.key)}</span>
+                      <span
+                        className={clsx(
+                          "tnum shrink-0 text-right",
+                          row.emphasis ? "font-semibold text-ink-100" : "text-ink-200",
+                        )}
+                      >
+                        {row.value === null ? "yes" : String(row.value)}
+                        {scaleText && <span className="ml-1 text-ink-500">{scaleText}</span>}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}

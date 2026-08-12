@@ -78,5 +78,28 @@ the global figure.
 
 **Mercurial Magnum** per-bullet bonus is a *percentage of base gun damage*:
 `(0.25 + spirit × 0.0049) × base gun damage × spirit amp` (workbook `E35`). The
-export's "25" is 25 percent, and the 0.49%/spirit scaling is not in the export
-at all.
+export's "25" is 25 percent.
+
+**Spirit/boon scaling beyond the flat base** lives in each entry's own
+`Scale` field in the wiki export (`{"Value": 0.49, "Type": "spirit"}` etc.),
+which `convert_items.py` reads into `item.perSpirit`/`item.perBoon` — the
+generic per-point bags `engine.ts` already folds into `itemStats` after
+`spiritPower`/`boons` are known. `"power_increase"` is the export's internal
+name for boon (hero level) scaling, confirmed against how deadlock.wiki
+renders it ("+10 [Boon]×0.8% Weapon Damage" on Cultist Sacrifice) — not
+literally about Weapon Power despite the name. A scaled key only gets folded
+in when its own base value shares the *same* conditional gate as the rest of
+the item (`r.contributing`); if the base is unconditional but the item also
+carries an unrelated conditional bonus (Headhunter: unconditional headshot
+damage next to a separately-gated move speed proc), the scaling is left
+display-only rather than risk it silently disabling with the wrong toggle -
+`convert_items.py` prints a warning when this happens. Entries whose key the
+engine doesn't model at all (most active-item nuke damage: Cold Front,
+Torment Pulse, Capacitor's burst, …) keep their `Scale` attached to the
+`info` row instead, for the hover card to show scaled-alongside-unscaled
+without the engine having to model the ability itself. The same charge-up
+mechanic Mercurial Magnum uses for its imbued ability's `abilityBonusDamage`
+(60 flat) also scales with spirit power (+0.16/spirit) — as does Quicksilver
+Reload's (44 flat, same +0.16/spirit) — via `abilityBonusDamagePerSpirit`,
+since the wiki's bare `Damage` key is ambiguous across items and both are
+opted in by hand in `IMBUED_BONUS_DAMAGE` already.

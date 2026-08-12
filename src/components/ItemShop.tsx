@@ -8,7 +8,7 @@ import { ACTIVATION_LABELS, ITEM_CATEGORIES, TIER_LABELS } from "@/lib/types";
 import { statLabel } from "@/lib/stats";
 import { CATEGORY_COLOR, fmtSouls } from "@/lib/format";
 import { ItemIcon } from "./ItemIcon";
-import { ItemInfoRows, ItemStatLines, itemStatLines } from "./ItemStatLines";
+import { ItemInfoRows, ItemStatLines, itemStatLines, type ScaleContext } from "./ItemStatLines";
 import { ITEM_PREVIEW_WIDTH, ItemPreviewCard } from "./ItemPreviewCard";
 
 /**
@@ -28,7 +28,15 @@ interface PreviewPos {
   bottom?: number;
 }
 
-function DetailsHoverLink({ item, onClick }: { item: Item; onClick: () => void }) {
+function DetailsHoverLink({
+  item,
+  ctx,
+  onClick,
+}: {
+  item: Item;
+  ctx?: ScaleContext;
+  onClick: () => void;
+}) {
   const ref = useRef<HTMLButtonElement>(null);
   const [pos, setPos] = useState<PreviewPos | null>(null);
 
@@ -73,7 +81,7 @@ function DetailsHoverLink({ item, onClick }: { item: Item; onClick: () => void }
             className="pointer-events-none fixed z-50"
             style={{ top: pos.top, bottom: pos.bottom, left: pos.left }}
           >
-            <ItemPreviewCard item={item} maxHeight={pos.maxHeight} />
+            <ItemPreviewCard item={item} maxHeight={pos.maxHeight} ctx={ctx} />
           </div>,
           document.body,
         )}
@@ -108,6 +116,7 @@ function ItemCard({
   item,
   owned,
   componentsOwned,
+  ctx,
   onToggle,
   onInspect,
   itemsBySlug,
@@ -115,6 +124,7 @@ function ItemCard({
   item: Item;
   owned: boolean;
   componentsOwned: string[];
+  ctx?: ScaleContext;
   onToggle: () => void;
   onInspect: () => void;
   itemsBySlug: Map<string, Item>;
@@ -146,7 +156,7 @@ function ItemCard({
             )}
           </span>
           <span className="mt-1 block">
-            <ItemStatLines item={item} limit={4} />
+            <ItemStatLines item={item} limit={4} ctx={ctx} />
           </span>
         </span>
       </button>
@@ -173,7 +183,7 @@ function ItemCard({
           </span>
         )}
         <span className="flex-1" />
-        <DetailsHoverLink item={item} onClick={onInspect} />
+        <DetailsHoverLink item={item} ctx={ctx} onClick={onInspect} />
       </div>
 
       {owned && (
@@ -188,10 +198,12 @@ function ItemCard({
 function DetailPanel({
   item,
   itemsBySlug,
+  ctx,
   onClose,
 }: {
   item: Item;
   itemsBySlug: Map<string, Item>;
+  ctx?: ScaleContext;
   onClose: () => void;
 }) {
   const usedBy = [...itemsBySlug.values()].filter((i) => i.components.includes(item.slug));
@@ -228,13 +240,13 @@ function DetailPanel({
           <h4 className="mb-1 text-[10px] uppercase tracking-wider text-ink-500">
             Modelled by the calculator
           </h4>
-          <ItemStatLines item={item} />
+          <ItemStatLines item={item} ctx={ctx} />
         </div>
         <div>
           <h4 className="mb-1 text-[10px] uppercase tracking-wider text-ink-500">
             Everything the game shows
           </h4>
-          <ItemInfoRows item={item} />
+          <ItemInfoRows item={item} ctx={ctx} />
         </div>
       </div>
 
@@ -270,11 +282,14 @@ function DetailPanel({
 export function ItemShop({
   items,
   ownedSlugs,
+  ctx,
   onAdd,
   onRemove,
 }: {
   items: Item[];
   ownedSlugs: Set<string>;
+  /** Current build's spirit power/boons, to show item stats that scale with either as both their base and scaled value. */
+  ctx?: ScaleContext;
   onAdd: (item: Item) => void;
   onRemove: (slug: string) => void;
 }) {
@@ -423,6 +438,7 @@ export function ItemShop({
         <DetailPanel
           item={inspectedItem}
           itemsBySlug={itemsBySlug}
+          ctx={ctx}
           onClose={() => setInspected(null)}
         />
       )}
@@ -452,6 +468,7 @@ export function ItemShop({
                     item={item}
                     owned={owned}
                     componentsOwned={item.components.filter((c) => ownedSlugs.has(c))}
+                    ctx={ctx}
                     itemsBySlug={itemsBySlug}
                     onToggle={() => (owned ? onRemove(item.slug) : onAdd(item))}
                     onInspect={() => setInspected(inspected === item.slug ? null : item.slug)}

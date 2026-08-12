@@ -171,9 +171,17 @@ STACK_CAPS = {
     "glass-cannon": 8,
 }
 
-SCALING_OVERRIDES = {
-    "mercurial-magnum": {"perSpirit": {"bulletSpiritDamagePctOfBase": 0.49}},
-}
+SCALING_OVERRIDES = {}
+
+# The export's per-entry "Scale" field gives the per-point coefficient for
+# stats that scale with a resource beyond their flat base — Mercurial Magnum's
+# 0.49%-per-spirit bonus (previously hand-copied from the workbook, now read
+# straight from the data) is one of many. "spirit" scales with spirit power;
+# "power_increase" is the export's internal name for boon (hero level)
+# scaling, confirmed against deadlock.wiki's own rendering ("+10 [Boon]x0.8%
+# Weapon Damage" on Cultist Sacrifice).
+SCALE_KIND = {"spirit": "spirit", "power_increase": "boon"}
+SHRED_SCALE_KEY = {"bullet": "bulletPerSpirit", "spirit": "spiritPerSpirit"}
 
 # Armor Piercing Rounds' ProcChance means "chance to ignore Bullet Resistance
 # entirely", not "chance of bonus damage" like every other ProcChance item -
@@ -295,6 +303,10 @@ def main():
         name = rec["Name"]
         stats, conditional_stats, per_stack = {}, {}, {}
         imbued_stats = {}
+        per_spirit, per_boon = {}, {}
+        # (skey, "spirit"|"boon", coefficient, was_conditional) - resolved once
+        # the item's full conditional_stats is known; see the loop below.
+        scale_candidates = []
         shred, per_stack_shred = {}, {}
         conditional_is_proc = False
         conditional_is_held = False
@@ -351,6 +363,9 @@ def main():
             for lst, entry in entries:
                 gkey = entry["Key"]
                 value = parse_value(entry.get("Value"))
+                scale = entry.get("Scale")
+                scale_value = scale.get("Value") if scale else None
+                scale_kind = SCALE_KIND.get(scale.get("Type")) if scale else None
                 is_conditional = (
                     bool(entry.get("UsageFlags"))
                     or block_is_active
@@ -372,6 +387,10 @@ def main():
                 if gkey in SHRED_MAP and value is not None:
                     target = per_stack_shred if is_per_stack else shred
                     add(target, SHRED_MAP[gkey], abs(value) / 100)
+                    # Per-stack shred has nowhere to carry a spirit coefficient
+                    # too (ShredSpec has no perStack-and-perSpirit combo).
+                    if scale_kind == "spirit" and scale_value is not None and not is_per_stack:
+                        add(shred, SHRED_SCALE_KEY[SHRED_MAP[gkey]], abs(scale_value) / 100)
                     if is_conditional and not is_per_stack:
                         condition_keys.append(gkey)
                         if block_has_window:
@@ -407,6 +426,12 @@ def main():
                         stacks_are_proc = True
                     bag = per_stack if is_per_stack else (conditional_stats if is_conditional else stats)
                     add(bag, skey, value)
+                    # Per-stack has no perSpirit/perBoon counterpart to fold
+                    # into (Item only carries one flat perSpirit/perBoon bag,
+                    # not one scoped per stack), so leave those unhandled -
+                    # none of the wiki's Scale entries land on one today.
+                    if scale_kind and scale_value is not None and not is_per_stack:
+                        scale_candidates.append((skey, scale_kind, scale_value, is_conditional))
                     if is_conditional and not is_per_stack:
                         condition_keys.append(gkey)
                         if block_has_window:
@@ -414,6 +439,20 @@ def main():
                         else:
                             conditional_is_held = True
                     continue
+
+                # Quicksilver Reload and Mercurial Magnum's imbued
+                # charge-then-consume bonus (see IMBUED_BONUS_DAMAGE) also
+                # scales with spirit power; the base amount is opted in by
+                # hand below since "Damage" means something different on
+                # almost every other item, but the coefficient can be read
+                # straight off this entry once we know it applies here.
+                if (
+                    gkey == "Damage"
+                    and rec["Key"] in IMBUED_BONUS_DAMAGE
+                    and scale_kind == "spirit"
+                    and scale_value is not None
+                ):
+                    add(imbued_stats, "abilityBonusDamagePerSpirit", scale_value)
 
                 if gkey not in ("MaxStacks", "MaxArmorStacks"):
                     unmapped[gkey] += 1
@@ -424,6 +463,7 @@ def main():
                         "type": entry.get("Type"),
                         "conditional": is_conditional,
                         "emphasis": lst == "Main",
+                        **({"scale": {"value": scale_value, "kind": scale_kind}} if scale else {}),
                     }
                 )
 
@@ -435,6 +475,25 @@ def main():
                         "chargeUp": block.get("ChargeUp"),
                         "rows": display_rows,
                     }
+                )
+
+        # Item.perSpirit/perBoon are one flat bag gating every key in them the
+        # same way (r.contributing in engine.ts) - fine when a scaled key's own
+        # base value shares that gate, but wrong if the item also carries some
+        # *other*, unrelated conditional bonus (e.g. Headhunter's unconditional
+        # headshot damage sits next to a separately-gated move speed proc): the
+        # scaling would then silently disable itself with the wrong toggle. Only
+        # fold a candidate in when it can't be misgated - its own base is
+        # conditional (same toggle either way) or the item has no other
+        # conditional stat to collide with.
+        has_other_conditional = bool(conditional_stats)
+        for skey, kind, sval, was_conditional in scale_candidates:
+            if was_conditional or not has_other_conditional:
+                add(per_boon if kind == "boon" else per_spirit, skey, sval)
+            else:
+                print(
+                    f"  ! {name}: skipping {kind} scaling on {skey} - its base is "
+                    "unconditional but the item has an unrelated conditional bonus"
                 )
 
         item = {
@@ -484,6 +543,10 @@ def main():
                 # (Spiritual Overflow, Sharpshooter's range bonus) starts on.
                 "defaultActive": conditional_is_held or not conditional_is_proc,
             }
+        if per_spirit:
+            item["perSpirit"] = per_spirit
+        if per_boon:
+            item["perBoon"] = per_boon
         if per_stack or per_stack_shred:
             if per_stack:
                 item["perStack"] = per_stack
