@@ -44,7 +44,7 @@
       "damageType": "spirit",
       "notes": "Throw a stake that tethers enemies to where it lands. 9m capture radius, 9m tether length, 40% move speed while tethered.",
       "upgrades": [
-        { "tier": 1, "cost": 1, "description": "+65 Damage", "damageDelta": 65 },
+        { "tier": 1, "cost": 1, "description": "+45 Damage", "damageDelta": 45 },
         { "tier": 2, "cost": 2, "description": "-22s Cooldown", "cooldownDelta": -22 },
         {
           "tier": 3,
