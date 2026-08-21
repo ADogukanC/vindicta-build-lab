@@ -654,19 +654,27 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
   const sprintSpeed = hero.base.sprintSpeed + statValue(itemStats, "sprintSpeedFlat");
   const stamina = hero.base.stamina + statValue(itemStats, "staminaFlat");
   // deadlock.wiki/Melee_Damage: "Melee damage scales with Boons and Items. It
-  // also scales with the Weapon Damage stat at a rate of 50%" — so a +40%
-  // Weapon Damage item only nets melee +20%, on top of melee's own bonuses.
-  const meleeWeaponDamageScaling = statValue(itemStats, "weaponDamagePct") * 0.5;
+  // also scales with the Weapon Damage stat at a rate of 50%" — and per the
+  // user, that's every source that feeds bulletDamage's own multiplier, not
+  // just the item stat: Assassinate's kill stacks and the passive weapon
+  // investment tier are themselves +weapon damage%, so they carry over at
+  // 50% too, same as statue buffs. Melee's own base is boons-only (no
+  // per-item flat additions), so this mirrors bulletDamage's multiplier
+  // terms exactly, just halved and added to melee's own bonuses instead.
+  const meleeWeaponDamageScaling =
+    0.5 *
+    (snipeStackBonus +
+      weaponInvestmentPct +
+      statValue(itemStats, "weaponDamagePct") / 100 +
+      build.adjustables.bulletDamagePct / 100);
   const lightMelee =
     (hero.base.lightMelee + (hero.perBoon.lightMelee ?? 0) * boons) *
-    (1 + (statValue(itemStats, "meleeDamagePct") + meleeWeaponDamageScaling) / 100);
+    (1 + statValue(itemStats, "meleeDamagePct") / 100 + meleeWeaponDamageScaling);
   const heavyMelee =
     (hero.base.heavyMelee + (hero.perBoon.heavyMelee ?? 0) * boons) *
     (1 +
-      (statValue(itemStats, "meleeDamagePct") +
-        statValue(itemStats, "heavyMeleeDamagePct") +
-        meleeWeaponDamageScaling) /
-        100);
+      (statValue(itemStats, "meleeDamagePct") + statValue(itemStats, "heavyMeleeDamagePct")) / 100 +
+      meleeWeaponDamageScaling);
 
   // ----------------------------------------------- chance-based extra damage ---
   // Procs are folded into the headline as an expected value per bullet - a 25%

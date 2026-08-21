@@ -750,3 +750,28 @@ describe("AP order", () => {
     expect(flight?.upgradesTaken).toEqual([true, false, false]);
   });
 });
+
+describe("melee scales with weapon damage sources beyond the item stat", () => {
+  // WORKBOOK_HERO's assassinate carries a baseline gunDamagePerStack: 0.06
+  // regardless of upgrades taken (see resolveAbility), so snipeStacks alone
+  // exercises it; WORKBOOK_HERO has no perBoon melee scaling, so boons: 0
+  // keeps melee's own base flat and isolates the weapon-damage-derived term.
+  function meleeBuild(snipeStacks: number) {
+    return createBuild({
+      boonsFromSouls: false,
+      boons: 0,
+      snipeStacks,
+      items: [],
+    });
+  }
+
+  it("Assassinate's per-kill weapon damage stacks also move melee, at half rate", () => {
+    const none = calculateBuild(meleeBuild(0), ctx);
+    const staked = calculateBuild(meleeBuild(10), ctx);
+    // snipeStackBonus = 10 * 0.06 = 0.6; melee's share is half of that: +30%.
+    expect(none.lightMelee).toBeCloseTo(50, 5);
+    expect(staked.lightMelee).toBeCloseTo(50 * 1.3, 5);
+    expect(none.heavyMelee).toBeCloseTo(116, 5);
+    expect(staked.heavyMelee).toBeCloseTo(116 * 1.3, 5);
+  });
+});
