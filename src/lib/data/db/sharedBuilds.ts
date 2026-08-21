@@ -100,3 +100,31 @@ export async function reviewSubmission(code: string, approve: boolean): Promise<
     .returning({ code: sharedBuilds.code });
   return result.length > 0;
 }
+
+/** Every approved build, for the admin's own management view — not paginated like the public browser. */
+export async function listAllApprovedBuilds() {
+  return getDb()
+    .select({
+      code: sharedBuilds.code,
+      name: sharedBuilds.name,
+      payload: sharedBuilds.payload,
+      createdAt: sharedBuilds.createdAt,
+    })
+    .from(sharedBuilds)
+    .where(eq(sharedBuilds.status, "approved"))
+    .orderBy(desc(sharedBuilds.createdAt));
+}
+
+/**
+ * Removes a shared build outright — used to pull a stale approved listing
+ * once its owner has a better version to submit instead. Also kills the
+ * `/b/<code>` link, not just the browse listing; there's no "unlist but keep
+ * the link" middle ground here, same as the rest of this table has no soft-delete.
+ */
+export async function deleteSharedBuild(code: string): Promise<boolean> {
+  const result = await getDb()
+    .delete(sharedBuilds)
+    .where(eq(sharedBuilds.code, code))
+    .returning({ code: sharedBuilds.code });
+  return result.length > 0;
+}

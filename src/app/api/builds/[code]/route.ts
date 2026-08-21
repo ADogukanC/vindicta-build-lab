@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getSharedBuildByCode } from "@/lib/data/db/sharedBuilds";
+import { requireAdmin } from "@/lib/auth";
+import { deleteSharedBuild, getSharedBuildByCode } from "@/lib/data/db/sharedBuilds";
 
 export const dynamic = "force-dynamic";
 
@@ -9,4 +10,17 @@ export async function GET(_request: Request, { params }: { params: Promise<{ cod
   const row = await getSharedBuildByCode(code);
   if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json({ ...row.payload, status: row.status });
+}
+
+/** Admin-only: removes a shared build outright, e.g. a stale approved listing its owner has replaced. */
+export async function DELETE(_request: Request, { params }: { params: Promise<{ code: string }> }) {
+  try {
+    await requireAdmin();
+  } catch (response) {
+    return response as Response;
+  }
+  const { code } = await params;
+  const ok = await deleteSharedBuild(code);
+  if (!ok) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  return NextResponse.json({ ok: true });
 }

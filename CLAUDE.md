@@ -108,7 +108,11 @@ from the Submissions tab (`PATCH /api/builds/[code]/review`), and only
 `approved` rows are ever returned by `GET /api/builds/directory`, which
 `/browse` lists and searches by name. This admin gate is the anti-spam
 mechanism — there is no other moderation. A submission is a snapshot: later
-edits to the sender's local build never propagate to it.
+edits to the sender's local build never propagate to it, so the Submissions
+tab also lists already-approved builds with a **Delete** action
+(`DELETE /api/builds/[code]`) — a hard delete, killing the share link too —
+for when someone's improved their build and the stale public listing should
+make way for a resubmission.
 
 ---
 
