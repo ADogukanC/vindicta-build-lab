@@ -1,10 +1,24 @@
 "use client";
 
+import { useState } from "react";
 import clsx from "clsx";
-import type { Build, HeroConfig } from "@/lib/types";
+import type { Build, HeroConfig, Progression } from "@/lib/types";
 import type { CalcResult } from "@/lib/calc/engine";
-import { normalizeUpgrades, setUpgradeTier } from "@/lib/build";
-import { fmtInt } from "@/lib/format";
+import { ABILITY_UNLOCK_BOONS } from "@/lib/calc/engine";
+import { setUpgradeTier } from "@/lib/build";
+import { fmtInt, fmtSouls } from "@/lib/format";
+
+/** Lowest souls-earned figure at which at least `apNeeded` ability points are available. */
+function soulsForAbilityPoints(progression: Progression, apNeeded: number): number | null {
+  if (apNeeded <= 0) return 0;
+  return progression.boons.find((b) => b.abilityPoints >= apNeeded)?.souls ?? null;
+}
+
+/** Souls-earned figure at which a given ability slot (1-4) unlocks. */
+function soulsForAbilityUnlock(progression: Progression, slot: number): number {
+  const unlockBoons = ABILITY_UNLOCK_BOONS[slot - 1] ?? 0;
+  return progression.boons.find((b) => b.boons === unlockBoons)?.souls ?? 0;
+}
 
 function NumberField({
   label,
@@ -58,26 +72,32 @@ function NumberField({
  *
  * Upgrades are bought in order, so this behaves like a progress track rather
  * than three switches: clicking a tier takes every tier up to it, and clearing
- * one drops everything above it too.
+ * one drops everything above it too. `taken` is always the *effective* state —
+ * from `build.abilityUpgrades` normally, but from the AP order below whenever
+ * one is set, in which case the row is `locked` and just displays it.
  */
 function AbilityRow({
   hero,
   build,
   abilityKey,
+  taken,
+  locked,
   onChange,
 }: {
   hero: HeroConfig;
   build: Build;
   abilityKey: string;
+  taken: boolean[];
+  locked: boolean;
   onChange: (patch: Partial<Build>) => void;
 }) {
   const ability = hero.abilities.find((a) => a.key === abilityKey);
   if (!ability) return null;
-  const taken = normalizeUpgrades(build.abilityUpgrades?.[abilityKey]);
   const upgrades = ability.upgrades ?? [];
   const spent = upgrades.reduce((sum, u, i) => sum + (taken[i] ? u.cost : 0), 0);
 
   const select = (index: number) => {
+    if (locked) return;
     onChange({
       abilityUpgrades: {
         ...build.abilityUpgrades,
@@ -109,18 +129,22 @@ function AbilityRow({
               <button
                 type="button"
                 aria-pressed={isTaken}
+                disabled={locked}
                 title={
                   `${upgrade.cost} AP — ${upgrade.description}` +
-                  (isTaken
-                    ? "\nClick to refund this and every later tier."
-                    : `\nClick to buy every tier up to T${upgrade.tier}.`)
+                  (locked
+                    ? "\nSet by the AP order below."
+                    : isTaken
+                      ? "\nClick to refund this and every later tier."
+                      : `\nClick to buy every tier up to T${upgrade.tier}.`)
                 }
                 onClick={() => select(index)}
                 className={clsx(
                   "rounded border px-1.5 py-0.5 text-[10px] transition",
+                  locked && "cursor-default opacity-70",
                   isTaken
                     ? "border-amber-brand bg-amber-brand/15 text-amber-brand"
-                    : isNext
+                    : isNext && !locked
                       ? "border-ink-500 bg-ink-850 text-ink-200 hover:text-ink-100"
                       : "border-ink-700 bg-ink-900 text-ink-600 hover:text-ink-300",
                 )}
@@ -145,18 +169,159 @@ function AbilityRow({
   );
 }
 
+/**
+ * The order to spend ability points in, if the build wants souls-earned to
+ * drive tier upgrades the same way it drives the item buy order. Optional —
+ * cleared back to an empty list, `AbilityRow` above reverts to manual toggles.
+ */
+function ApOrderEditor({
+  hero,
+  apOrder,
+  progression,
+  resolvedByKey,
+  onChange,
+}: {
+  hero: HeroConfig;
+  apOrder: string[];
+  progression: Progression;
+  resolvedByKey: Map<string, boolean[]>;
+  onChange: (next: string[]) => void;
+}) {
+  const abilities = hero.abilities.slice().sort((a, b) => a.slot - b.slot);
+  const abilityByKey = new Map(abilities.map((a) => [a.key, a]));
+
+  const move = (from: number, to: number) => {
+    if (to < 0 || to >= apOrder.length) return;
+    const next = apOrder.slice();
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    onChange(next);
+  };
+
+  // Walk the order once to know each entry's tier (its Nth occurrence of that
+  // key), whether the engine actually reached it yet, and the souls figure it
+  // would need — the later of "AP budget catches up" and "the slot unlocks",
+  // same two conditions `deriveAbilityUpgradesFromApOrder` gates on. This sum
+  // is hypothetical (unconditional on earlier entries actually being reached)
+  // since it's answering "when would this entry clear on its own", not
+  // reproducing the engine's real stop-at-the-first-block cutoff — `reached`,
+  // sourced from the engine itself, is what actually drives the row's styling.
+  const occurrence: Record<string, number> = {};
+  let cumulativeAp = 0;
+  const rows = apOrder.map((key, index) => {
+    const ability = abilityByKey.get(key);
+    const tierIndex = occurrence[key] ?? 0;
+    occurrence[key] = tierIndex + 1;
+    const upgrade = ability?.upgrades?.[tierIndex];
+    const reached = Boolean(resolvedByKey.get(key)?.[tierIndex]);
+    let soulsNeeded: number | null = null;
+    if (upgrade) {
+      cumulativeAp += upgrade.cost;
+      const budgetSouls = soulsForAbilityPoints(progression, cumulativeAp);
+      const unlockSouls = ability ? soulsForAbilityUnlock(progression, ability.slot) : 0;
+      soulsNeeded = budgetSouls === null ? null : Math.max(budgetSouls, unlockSouls);
+    }
+    return { index, key, ability, tierIndex, upgrade, reached, soulsNeeded };
+  });
+
+  return (
+    <div className="space-y-1.5 rounded-md border border-ink-700 bg-ink-850 p-2.5">
+      <p className="text-[11px] text-ink-500">
+        Ability points are spent in this order as souls-earned grows, exactly like the item
+        buy order. Doesn&apos;t have to be complete — it just stops wherever the AP budget runs
+        out, or at an ability that hasn&apos;t unlocked yet (the ultimate unlocks last).
+      </p>
+      {apOrder.length === 0 && (
+        <p className="text-[11px] text-ink-600">Nothing queued — tiers are set by hand above.</p>
+      )}
+      <ol className="space-y-1">
+        {rows.map(({ index, key, ability, upgrade, reached, soulsNeeded }) => (
+          <li
+            key={index}
+            className={clsx(
+              "flex items-center gap-2 rounded border border-ink-800 bg-ink-900 px-1.5 py-1",
+              !reached && "opacity-50",
+            )}
+          >
+            <span className="tnum w-4 text-[10px] text-ink-500">{index + 1}</span>
+            <span className="min-w-0 flex-1 truncate text-[12px]">
+              {ability?.name ?? key} {upgrade ? `T${upgrade.tier}` : ""}
+            </span>
+            <span className="tnum text-[10px] text-ink-400">{upgrade?.cost ?? "?"} AP</span>
+            <span className="tnum w-20 shrink-0 text-right text-[10px] text-ink-500">
+              {soulsNeeded !== null ? `at ${fmtSouls(soulsNeeded)}` : ""}
+            </span>
+            <button
+              type="button"
+              className="rounded px-1 text-[10px] text-ink-500 hover:text-ink-100 disabled:opacity-30"
+              disabled={index === 0}
+              onClick={() => move(index, index - 1)}
+              title="Earlier"
+            >
+              ▲
+            </button>
+            <button
+              type="button"
+              className="rounded px-1 text-[10px] text-ink-500 hover:text-ink-100 disabled:opacity-30"
+              disabled={index === apOrder.length - 1}
+              onClick={() => move(index, index + 1)}
+              title="Later"
+            >
+              ▼
+            </button>
+            <button
+              type="button"
+              className="rounded px-1 text-[10px] text-ink-500 hover:text-red-300"
+              onClick={() => onChange(apOrder.filter((_, i) => i !== index))}
+              title="Remove from AP order"
+            >
+              ✕
+            </button>
+          </li>
+        ))}
+      </ol>
+      <div className="flex flex-wrap gap-1.5">
+        {abilities.map((a) => {
+          const count = apOrder.filter((k) => k === a.key).length;
+          const maxed = count >= (a.upgrades?.length ?? 0);
+          return (
+            <button
+              key={a.key}
+              type="button"
+              disabled={maxed}
+              onClick={() => onChange([...apOrder, a.key])}
+              className="btn px-2 py-0.5 text-[10px] disabled:opacity-30"
+              title={maxed ? `${a.name} is fully queued` : `Queue the next ${a.name} tier`}
+            >
+              + {a.name}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function HeroControls({
   build,
   hero,
+  progression,
   result,
   onChange,
 }: {
   build: Build;
   hero: HeroConfig;
+  progression: Progression;
   result: CalcResult;
   onChange: (patch: Partial<Build>) => void;
 }) {
+  const [showApOrder, setShowApOrder] = useState(false);
   const overspent = result.abilityPointsSpent > result.abilityPoints;
+  const apOrder = build.apOrder ?? [];
+  const apOrderActive = apOrder.length > 0;
+  const resolvedByKey = new Map(
+    result.resolvedAbilities.map((r) => [r.ability.key, r.upgradesTaken]),
+  );
 
   return (
     <section className="panel">
@@ -257,21 +422,30 @@ export function HeroControls({
             <span className="text-[10px] uppercase tracking-wider text-ink-300">
               Ability upgrades
             </span>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={build.crowShredActive}
-              onClick={() => onChange({ crowShredActive: !build.crowShredActive })}
-              title="Whether Crow's resist shred is currently on the target"
-              className={clsx(
-                "rounded border px-2 py-0.5 text-[10px] transition",
-                build.crowShredActive
-                  ? "border-amber-brand bg-amber-brand/15 text-amber-brand"
-                  : "border-ink-600 text-ink-400 hover:text-ink-100",
-              )}
-            >
-              Crow shred applied
-            </button>
+            <span className="flex items-center gap-2">
+              <button
+                type="button"
+                className={clsx("btn px-2 py-0.5 text-[10px]", showApOrder && "btn-primary")}
+                onClick={() => setShowApOrder((s) => !s)}
+              >
+                AP order {apOrder.length > 0 && `(${apOrder.length})`}
+              </button>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={build.crowShredActive}
+                onClick={() => onChange({ crowShredActive: !build.crowShredActive })}
+                title="Whether Crow's resist shred is currently on the target"
+                className={clsx(
+                  "rounded border px-2 py-0.5 text-[10px] transition",
+                  build.crowShredActive
+                    ? "border-amber-brand bg-amber-brand/15 text-amber-brand"
+                    : "border-ink-600 text-ink-400 hover:text-ink-100",
+                )}
+              >
+                Crow shred applied
+              </button>
+            </span>
           </div>
           {hero.abilities
             .slice()
@@ -282,10 +456,22 @@ export function HeroControls({
                 hero={hero}
                 build={build}
                 abilityKey={a.key}
+                taken={resolvedByKey.get(a.key) ?? [false, false, false]}
+                locked={apOrderActive}
                 onChange={onChange}
               />
             ))}
         </div>
+
+        {showApOrder && (
+          <ApOrderEditor
+            hero={hero}
+            apOrder={apOrder}
+            progression={progression}
+            resolvedByKey={resolvedByKey}
+            onChange={(next) => onChange({ apOrder: next })}
+          />
+        )}
 
         <details className="group rounded-md border border-ink-700 bg-ink-850">
           <summary className="cursor-pointer list-none px-2.5 py-1.5 text-[11px] text-ink-300 hover:text-ink-100">

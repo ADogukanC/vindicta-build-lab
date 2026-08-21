@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useBuilds } from "@/lib/store/useBuilds";
 import { calculateBuild } from "@/lib/calc/engine";
 import { itemContributions } from "@/lib/calc/metrics";
-import { decodeBuildCode, encodeBuildCode } from "@/lib/buildCode";
+import { encodeBuildCode, resolveBuildCode, toSharedBuild } from "@/lib/buildCode";
 import { normalizeBuild } from "@/lib/build";
 import type { Build, CalcContext } from "@/lib/types";
 import { BuildTabs } from "./BuildTabs";
@@ -17,8 +17,13 @@ import { buildBreakpoints, NetWorthSlider } from "./NetWorthSlider";
 
 export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: string }) {
   const store = useBuilds();
-  const [shareResult, setShareResult] = useState<{ code: string; url: string } | null>(null);
+  const [shareResult, setShareResult] = useState<
+    { code: string; url: string; dbBacked: boolean } | null
+  >(null);
   const [sharing, setSharing] = useState(false);
+  const [submission, setSubmission] = useState<
+    "idle" | "submitting" | "pending" | "already-submitted" | "error"
+  >("idle");
   const [sharedBanner, setSharedBanner] = useState<{ name: string } | "error" | null>(null);
 
   useEffect(() => {
@@ -27,15 +32,15 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // A build arriving via /b/<code> is decoded entirely client-side (the code
-  // is the build - there is no server round trip) and added once, the first
-  // time it is seen.
+  // A build arriving via /b/<code> is resolved from the database first (or
+  // decoded client-side as a fallback — see `resolveBuildCode`) and added
+  // once, the first time it is seen.
   useEffect(() => {
     if (!sharedCode || !store.hydrated) return;
     let cancelled = false;
     (async () => {
       try {
-        const decoded = await decodeBuildCode(sharedCode);
+        const decoded = await resolveBuildCode(sharedCode);
         const build = normalizeBuild(decoded as Partial<Build>);
         if (cancelled) return;
         if (
@@ -100,19 +105,45 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
   async function share() {
     if (!build) return;
     setSharing(true);
+    setSubmission("idle");
     try {
-      const code = await encodeBuildCode(build);
-      // The code itself is the primary artifact — it works no matter where
-      // (or whether) this site is hosted, so it's what goes on the clipboard.
-      // The /b/<code> link is a convenience for when both people can reach
-      // the same origin, e.g. once this is actually deployed somewhere.
+      let code: string;
+      let dbBacked = true;
+      try {
+        const response = await fetch("/api/builds", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(toSharedBuild(build)),
+        });
+        if (!response.ok) throw new Error("share API failed");
+        ({ code } = (await response.json()) as { code: string });
+      } catch {
+        // Offline, or the database is down — fall back to the old
+        // client-only code so sharing still works, just longer (and without
+        // a "submit to browser" option, since there's no row to submit).
+        code = await encodeBuildCode(build);
+        dbBacked = false;
+      }
       const url = `${window.location.origin}/b/${code}`;
-      setShareResult({ code, url });
+      setShareResult({ code, url, dbBacked });
       await navigator.clipboard.writeText(code).catch(() => {});
     } catch {
       alert("Could not generate a share code for this build.");
     } finally {
       setSharing(false);
+    }
+  }
+
+  async function submitToDirectory() {
+    if (!shareResult) return;
+    setSubmission("submitting");
+    try {
+      const response = await fetch(`/api/builds/${shareResult.code}/submit`, { method: "POST" });
+      if (!response.ok) throw new Error("submit failed");
+      const body = (await response.json()) as { status: string; changed: boolean };
+      setSubmission(body.changed ? "pending" : "already-submitted");
+    } catch {
+      setSubmission("error");
     }
   }
 
@@ -187,6 +218,33 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
               Copy link
             </button>
           </div>
+          {shareResult.dbBacked && (
+            <div className="mt-1.5 flex items-center gap-2 border-t border-amber-brand/20 pt-1.5 text-[11px]">
+              {submission === "pending" ? (
+                <span className="text-amber-brand">
+                  Submitted — visible in the build browser once an admin approves it.
+                </span>
+              ) : submission === "already-submitted" ? (
+                <span className="text-ink-400">Already submitted for review.</span>
+              ) : (
+                <>
+                  <span className="text-ink-500">
+                    Want this listed in the build browser for others to find?
+                  </span>
+                  <button
+                    className="btn shrink-0 px-2 py-0.5 text-[10px]"
+                    disabled={submission === "submitting"}
+                    onClick={() => void submitToDirectory()}
+                  >
+                    {submission === "submitting" ? "Submitting…" : "Submit for review"}
+                  </button>
+                  {submission === "error" && (
+                    <span className="text-red-300">Submission failed — try again.</span>
+                  )}
+                </>
+              )}
+            </div>
+          )}
         </div>
       )}
       {sharing && <p className="mb-3 text-[13px] text-ink-300">Generating share code…</p>}
@@ -210,6 +268,7 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
           <HeroControls
             build={build}
             hero={ctx.hero}
+            progression={ctx.progression}
             result={result}
             onChange={(patch) => store.updateActive(patch)}
           />

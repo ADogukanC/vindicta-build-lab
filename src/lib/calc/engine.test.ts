@@ -11,7 +11,14 @@
  * reproduces the spreadsheet. `wiki-data.test.ts` covers the live data.
  */
 import { describe, expect, it } from "vitest";
-import { calculateBuild, combineShred, falloffMultiplier, lookupStepDown, resolveAbility } from "./engine";
+import {
+  calculateBuild,
+  combineShred,
+  deriveAbilityUpgradesFromApOrder,
+  falloffMultiplier,
+  lookupStepDown,
+  resolveAbility,
+} from "./engine";
 import {
   WORKBOOK_HERO,
   WORKBOOK_ITEMS,
@@ -626,5 +633,120 @@ describe("engine rules", () => {
     );
     expect(r.abilityPointsSpent).toBe(8);
     expect(r.warnings.join(" ")).toContain("ability points");
+  });
+});
+
+describe("AP order", () => {
+  const abilities = WORKBOOK_HERO.abilities; // flight (slot2), crow-familiar (slot3), assassinate (slot4)
+  const allUnlocked = 35; // max boons — every slot is well past its unlock threshold
+
+  it("spends strictly in order, stopping at the first upgrade the budget can't afford", () => {
+    const taken = deriveAbilityUpgradesFromApOrder(
+      ["flight", "crow-familiar", "flight"],
+      abilities,
+      3,
+      allUnlocked,
+    );
+    // flight T1 (1, spent 1) + crow T1 (1, spent 2) fit; flight T2 (2, spent 4) does not.
+    expect(taken.flight).toEqual([true, false, false]);
+    expect(taken["crow-familiar"]).toEqual([true, false, false]);
+    expect(taken.assassinate).toEqual([false, false, false]);
+  });
+
+  it("does not skip ahead to a later, cheaper entry once the budget is exhausted", () => {
+    // Same order as above but a bigger budget reaches flight T2 too, proving the
+    // earlier test really did stop rather than happening to omit it some other way.
+    const taken = deriveAbilityUpgradesFromApOrder(
+      ["flight", "crow-familiar", "flight"],
+      abilities,
+      4,
+      allUnlocked,
+    );
+    expect(taken.flight).toEqual([true, true, false]);
+  });
+
+  it("ignores unknown ability keys and repeats past an ability's last tier", () => {
+    const taken = deriveAbilityUpgradesFromApOrder(
+      ["bogus-key", "flight", "flight", "flight", "flight"],
+      abilities,
+      100,
+      allUnlocked,
+    );
+    expect(taken.flight).toEqual([true, true, true]);
+  });
+
+  it("won't spend a point on an ability slot that hasn't unlocked yet, even with budget to spare", () => {
+    // Assassinate is the ultimate (slot 4), unlocked at boon 7 — deadlock.wiki/Boon.
+    // At boon 1 there's already 1 AP available (enough for its 1-cost T1), but it's
+    // not a legal target yet, so the plan stops rather than taking it early.
+    const taken = deriveAbilityUpgradesFromApOrder(["assassinate"], abilities, 1, 1);
+    expect(taken.assassinate).toEqual([false, false, false]);
+  });
+
+  it("unlocks the ultimate at exactly boon 7, matching the progression table's own note", () => {
+    const taken = deriveAbilityUpgradesFromApOrder(["assassinate"], abilities, 1, 7);
+    expect(taken.assassinate).toEqual([true, false, false]);
+  });
+
+  it("stops the whole plan at an unopened slot rather than skipping to a later, unlocked entry", () => {
+    // Flight (slot 2, unlocks at boon 2) is reachable at boon 2; assassinate (slot 4,
+    // boon 7) isn't yet, so the second flight entry queued after it never fires either
+    // — same "order is a promise" rule as the budget cutoff, just gated on unlocks.
+    const taken = deriveAbilityUpgradesFromApOrder(
+      ["flight", "assassinate", "flight"],
+      abilities,
+      10, // budget is not the constraint being tested here
+      2,
+    );
+    expect(taken.flight).toEqual([true, false, false]);
+    expect(taken.assassinate).toEqual([false, false, false]);
+  });
+
+  it("the souls-earned slider automatically appoints more of the order as the AP budget grows", () => {
+    const build = createBuild({
+      boonsFromSouls: true,
+      apOrder: ["flight", "crow-familiar", "flight"],
+      items: [],
+    });
+    // 2600 souls -> 3 AP (SEED_PROGRESSION): flight T1 + crow T1 fit, flight T2 doesn't.
+    const early = calculateBuild({ ...build, soulsEarned: 2600 }, ctx);
+    const earlyFlight = early.resolvedAbilities.find((r) => r.ability.key === "flight");
+    expect(earlyFlight?.upgradesTaken).toEqual([true, false, false]);
+    expect(early.abilityPointsSpent).toBe(2);
+
+    // 3200 souls -> 4 AP: now flight T2 fits too, with no code changed but the slider.
+    const later = calculateBuild({ ...build, soulsEarned: 3200 }, ctx);
+    const laterFlight = later.resolvedAbilities.find((r) => r.ability.key === "flight");
+    expect(laterFlight?.upgradesTaken).toEqual([true, true, false]);
+    expect(later.abilityPointsSpent).toBe(4);
+  });
+
+  it("never triggers the overspend warning, since it never exceeds the budget by construction", () => {
+    const r = calculateBuild(
+      createBuild({
+        boonsFromSouls: false,
+        boons: 0,
+        apOrder: ["flight", "flight", "flight"],
+        items: [],
+      }),
+      ctx,
+    );
+    expect(r.abilityPointsSpent).toBe(0);
+    expect(r.warnings.join(" ")).not.toContain("ability points");
+  });
+
+  it("an empty apOrder falls back to the manual abilityUpgrades toggles unchanged", () => {
+    const r = calculateBuild(
+      createBuild({
+        boonsFromSouls: false,
+        boons: 35,
+        apOrder: [],
+        abilityUpgrades: { flight: [true, false, false] },
+        items: [],
+      }),
+      ctx,
+    );
+    const flight = r.resolvedAbilities.find((a) => a.ability.key === "flight");
+    expect(flight?.upgradesTaken).toEqual([true, false, false]);
   });
 });

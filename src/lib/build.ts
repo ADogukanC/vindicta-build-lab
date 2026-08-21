@@ -66,6 +66,7 @@ export function createBuild(partial: Partial<Build> = {}): Build {
     enemyBulletResistPct: 0,
     enemySpiritResistPct: 0,
     abilityUpgrades: structuredCloneUpgrades(DEFAULT_ABILITY_UPGRADES),
+    apOrder: [],
     crowShredActive: true,
     // In game, spirit items do raise Vindicta's bullet damage. The workbook fed
     // only pre-item spirit into that scaling; the app defaults to the correct
@@ -175,6 +176,7 @@ export function duplicateBuild(build: Build, name?: string): Build {
     updatedAt: now,
     items: build.items.map((i) => ({ ...i })),
     sellOrder: [...(build.sellOrder ?? [])],
+    apOrder: [...(build.apOrder ?? [])],
     imbueTargets: { ...(build.imbueTargets ?? {}) },
     adjustables: { ...build.adjustables },
     abilityUpgrades: structuredCloneUpgrades(build.abilityUpgrades ?? {}),
@@ -229,6 +231,7 @@ export function normalizeBuild(raw: Partial<Build> & LegacyTierFlags): Build {
     headshotRate: raw.headshotRate ?? 0,
     boonsFromSouls: raw.boonsFromSouls ?? raw.soulsEarned !== undefined,
     sellOrder: raw.sellOrder ?? [],
+    apOrder: raw.apOrder ?? [],
     imbueTargets: raw.imbueTargets ?? {},
     adjustables: { ...base.adjustables, ...(raw.adjustables ?? {}) },
     items: (raw.items ?? []).map((i) => ({

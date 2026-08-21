@@ -318,9 +318,20 @@ export interface Build {
   enemySpiritResistPct: number;
   /**
    * Which ability upgrades are taken, as `{ abilityKey: [t1, t2, t3] }`.
-   * Replaces the old crowT3 / flightT3 / snipeT3 booleans.
+   * Replaces the old crowT3 / flightT3 / snipeT3 booleans. Ignored (and kept
+   * only as a manual fallback) whenever `apOrder` is non-empty — see below.
    */
   abilityUpgrades: Record<string, boolean[]>;
+  /**
+   * Optional order to spend ability points in, e.g. `["stake", "flight",
+   * "stake"]` — the Nth occurrence of a key is that ability's tier N, so any
+   * reordering is automatically a valid sequence with no separate validation.
+   * Doesn't have to be complete; the souls-earned slider walks it exactly
+   * like the item buy order, taking upgrades in order until the AP budget at
+   * that point (deadlock.wiki/Boon) runs out. Empty by default, meaning
+   * `abilityUpgrades` is set by hand instead.
+   */
+  apOrder: string[];
   /** Whether Crow Familiar's resist shred is counted as applied to the target. */
   crowShredActive: boolean;
   /**

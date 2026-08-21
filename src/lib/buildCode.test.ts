@@ -6,20 +6,42 @@ import { SEED_ITEMS } from "./data/seed";
 const bySlug = new Map(SEED_ITEMS.map((i) => [i.slug, i]));
 
 function sampleBuild() {
-  let build = createBuild({ name: "Crow ◈ shred build", notes: "unicode check: ◇ ▸ ×2.3" });
+  let build = createBuild({
+    name: "Crow ◈ shred build",
+    notes: "unicode check: ◇ ▸ ×2.3",
+    apOrder: ["stake", "flight", "stake"],
+  });
   for (const slug of ["escalating-exposure", "mercurial-magnum", "sharpshooter"]) {
     const item = bySlug.get(slug);
     if (item) build = addItemToBuild(build, item);
+  }
+  if (build.items.some((i) => i.slug === "mercurial-magnum")) {
+    build = { ...build, imbueTargets: { "mercurial-magnum": "flight" } };
   }
   return build;
 }
 
 describe("build codes", () => {
-  it("round-trips a build through encode/decode", async () => {
+  it("round-trips the shared subset of a build through encode/decode", async () => {
     const build = sampleBuild();
     const code = await encodeBuildCode(build);
-    const decoded = (await decodeBuildCode(code)) as typeof build;
-    expect(decoded).toEqual(JSON.parse(JSON.stringify(build)));
+    const decoded = await decodeBuildCode(code);
+    expect(decoded).toEqual({
+      name: build.name,
+      items: build.items,
+      sellOrder: build.sellOrder,
+      imbueTargets: build.imbueTargets,
+      apOrder: build.apOrder,
+    });
+  });
+
+  it("drops viewer-local state that isn't part of the shared build", async () => {
+    const build = sampleBuild();
+    const code = await encodeBuildCode(build);
+    const decoded = (await decodeBuildCode(code)) as Record<string, unknown>;
+    expect(decoded).not.toHaveProperty("id");
+    expect(decoded).not.toHaveProperty("soulsEarned");
+    expect(decoded).not.toHaveProperty("notes");
   });
 
   it("produces a URL-safe, path-segment-safe code", async () => {

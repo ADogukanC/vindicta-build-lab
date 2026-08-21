@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import type { Build } from "@/lib/types";
 import { BUILD_COLORS, normalizeBuild } from "@/lib/build";
-import { decodeBuildCode, extractBuildCode } from "@/lib/buildCode";
+import { extractBuildCode, resolveBuildCode } from "@/lib/buildCode";
 import { fmtSouls } from "@/lib/format";
 
 export function BuildTabs({
@@ -59,7 +59,7 @@ export function BuildTabs({
     if (!code) return;
     setImportingCode(true);
     try {
-      const decoded = await decodeBuildCode(code);
+      const decoded = await resolveBuildCode(code);
       onImport([normalizeBuild(decoded as Partial<Build>)]);
       setCodeInput("");
     } catch {
@@ -246,7 +246,7 @@ export function BuildTabs({
           type="button"
           className="btn"
           onClick={onShare}
-          title="Copy a shareable code/link for this build — nothing leaves your browser"
+          title="Copy a shareable code/link for this build — only the items, sell order, imbues and AP order, not your souls/boons/etc. viewing state"
         >
           Share
         </button>

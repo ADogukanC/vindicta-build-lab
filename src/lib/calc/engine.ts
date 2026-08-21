@@ -301,6 +301,56 @@ export function resolveAbility(ability: Ability, taken: boolean[] = []): Resolve
   };
 }
 
+/**
+ * Boon (the app's own 0-indexed count) at which a hero's Nth ability slot
+ * unlocks — universal across every hero, not just Vindicta: slot 1 is
+ * available from the start, one non-ultimate slot unlocks every couple of
+ * boons after, and the ultimate (slot 4) unlocks last. Per deadlock.wiki/Boon:
+ * "Levels 0, 2, 4 and 7 grant an ability unlock... The first three ability
+ * unlocks can only be used on non-ultimate abilities. The ultimate can be
+ * unlocked at 3.8k [souls]" — which is boon 7 in the local progression table,
+ * matching its own "Snipe Unlock" note on Assassinate (slot 4).
+ */
+export const ABILITY_UNLOCK_BOONS = [0, 2, 4, 7];
+
+/**
+ * Turns an AP order (a flat list of ability keys — the Nth occurrence of a
+ * key is that ability's tier N) into the same `{ abilityKey: [t1,t2,t3] }`
+ * shape as manual `abilityUpgrades`, spending strictly in the given order and
+ * stopping the moment the next upgrade would exceed `abilityPointsBudget` —
+ * or would land on an ability slot that hasn't unlocked yet at `boons`.
+ * Mirrors how the item timeline cuts the buy order by souls earned: order is
+ * a promise, not a set, so a later, already-unlocked, affordable upgrade
+ * never jumps ahead of an earlier one the plan hasn't reached yet.
+ */
+export function deriveAbilityUpgradesFromApOrder(
+  apOrder: string[],
+  abilities: Ability[],
+  abilityPointsBudget: number,
+  boons: number,
+): Record<string, boolean[]> {
+  const abilityByKey = new Map(abilities.map((a) => [a.key, a]));
+  const occurrence: Record<string, number> = {};
+  const taken: Record<string, boolean[]> = {};
+  for (const a of abilities) taken[a.key] = [false, false, false];
+
+  let spent = 0;
+  for (const key of apOrder) {
+    const ability = abilityByKey.get(key);
+    if (!ability) continue;
+    const unlockBoons = ABILITY_UNLOCK_BOONS[ability.slot - 1] ?? 0;
+    if (boons < unlockBoons) break;
+    const tierIndex = occurrence[key] ?? 0;
+    occurrence[key] = tierIndex + 1;
+    const upgrade = ability.upgrades?.[tierIndex];
+    if (!upgrade) continue; // already at max tier (or a duplicate beyond it)
+    if (spent + upgrade.cost > abilityPointsBudget) break;
+    taken[key][tierIndex] = true;
+    spent += upgrade.cost;
+  }
+  return taken;
+}
+
 export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
   const { hero, items, progression } = ctx;
   const warnings: string[] = [];
@@ -334,10 +384,16 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
     lookupStepDown(progression.investment, soulsByCategory.Spirit)?.spiritFlat ?? 0;
 
   // ------------------------------------------------------------ abilities ---
+  // An AP order, if the build has one, drives which tiers are taken instead
+  // of the manual abilityUpgrades toggles — same relationship as items and
+  // the buy order, one souls-driven plan superseding hand-set state.
+  const effectiveAbilityUpgrades = build.apOrder?.length
+    ? deriveAbilityUpgradesFromApOrder(build.apOrder, hero.abilities, abilityPoints, boons)
+    : build.abilityUpgrades;
   const resolvedAbilities = hero.abilities
     .slice()
     .sort((a, b) => a.slot - b.slot)
-    .map((a) => resolveAbility(a, build.abilityUpgrades?.[a.key] ?? []));
+    .map((a) => resolveAbility(a, effectiveAbilityUpgrades?.[a.key] ?? []));
   const abilityByKey = new Map(resolvedAbilities.map((r) => [r.ability.key, r]));
   const abilityPointsSpent = resolvedAbilities.reduce((s, r) => s + r.abilityPointsSpent, 0);
 
@@ -597,13 +653,20 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
     (1 + statValue(itemStats, "moveSpeedPct") / 100);
   const sprintSpeed = hero.base.sprintSpeed + statValue(itemStats, "sprintSpeedFlat");
   const stamina = hero.base.stamina + statValue(itemStats, "staminaFlat");
+  // deadlock.wiki/Melee_Damage: "Melee damage scales with Boons and Items. It
+  // also scales with the Weapon Damage stat at a rate of 50%" — so a +40%
+  // Weapon Damage item only nets melee +20%, on top of melee's own bonuses.
+  const meleeWeaponDamageScaling = statValue(itemStats, "weaponDamagePct") * 0.5;
   const lightMelee =
     (hero.base.lightMelee + (hero.perBoon.lightMelee ?? 0) * boons) *
-    (1 + statValue(itemStats, "meleeDamagePct") / 100);
+    (1 + (statValue(itemStats, "meleeDamagePct") + meleeWeaponDamageScaling) / 100);
   const heavyMelee =
     (hero.base.heavyMelee + (hero.perBoon.heavyMelee ?? 0) * boons) *
     (1 +
-      (statValue(itemStats, "meleeDamagePct") + statValue(itemStats, "heavyMeleeDamagePct")) / 100);
+      (statValue(itemStats, "meleeDamagePct") +
+        statValue(itemStats, "heavyMeleeDamagePct") +
+        meleeWeaponDamageScaling) /
+        100);
 
   // ----------------------------------------------- chance-based extra damage ---
   // Procs are folded into the headline as an expected value per bullet - a 25%

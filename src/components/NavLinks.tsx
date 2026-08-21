@@ -28,6 +28,7 @@ export function NavLinks() {
     <nav className="flex items-center gap-1">
       {navLink("/", "Build")}
       {navLink("/compare", "Compare")}
+      {navLink("/browse", "Browse")}
     </nav>
   );
 }

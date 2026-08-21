@@ -1,11 +1,14 @@
 /**
- * The data layer: a local JSON file (`data/local-db.json`), seeded from the
- * workbook export. There is no database — the admin panel's edits (items,
- * hero config, progression) persist here on whatever machine runs the app.
+ * The data layer for the game catalogue: a local JSON file
+ * (`data/local-db.json`), seeded from the workbook export. The admin panel's
+ * edits (items, hero config, progression) persist here on whatever machine
+ * runs the app — no database involved.
  *
- * Builds themselves never touch this file at all: they live in the browser's
- * IndexedDB, and sharing one is a pure client-side encode/decode (see
- * `src/lib/buildCode.ts`) — no server involved, nothing to store.
+ * Builds are different: they live in the browser's IndexedDB, and sharing
+ * one snapshots it into the real database (Postgres, via
+ * `lib/data/db/sharedBuilds.ts`) so it can get a short code and, if the
+ * sharer opts in, show up in the admin-moderated build browser. See
+ * `src/lib/buildCode.ts` for the fallback client-only path.
  */
 import "server-only";
 import { promises as fs } from "node:fs";

@@ -1,14 +1,52 @@
 /**
  * Build codes: a build round-tripped as a compact, copy-pasteable string —
- * gzip the JSON, then base64url-encode it. No server, no database: the code
- * *is* the build, so pasting it (or its URL, `/b/<code>`) into another
- * browser is the entire "share" flow.
+ * gzip the JSON, then base64url-encode it.
+ *
+ * Sharing now goes through `POST /api/builds` instead (a short, database-
+ * backed code — see `lib/data/db/sharedBuilds.ts`), so the encode/decode pair
+ * here is the fallback: `encodeBuildCode` when that request fails (offline,
+ * DB down), and `decodeBuildCode` for links made before the database existed.
+ * `resolveBuildCode` below is what callers actually use to open a `/b/<code>`
+ * link — it tries the database first and only falls back to `decodeBuildCode`
+ * if that misses.
+ *
+ * Only `name`, `items` (the buy order), `sellOrder`, `imbueTargets` and
+ * `apOrder` go in a build code — the rest of `Build` (souls earned, boons,
+ * headshot rate, enemy resist, adjustables, manual ability upgrades, notes,
+ * color, id/timestamps, ...) is the sender's local viewing state, not part
+ * of the shared build, and would otherwise dominate the code's length for no
+ * benefit to the recipient. `normalizeBuild` fills all of it back in with
+ * defaults.
  *
  * Decoding only ever returns a plain object; callers must still run it
  * through `normalizeBuild` to get a real `Build`; that is also what makes an
  * old code readable after the build schema grows a field.
  */
-import type { Build } from "./types";
+import type { Build, BuildItem } from "./types";
+
+/**
+ * The subset of a `Build` that actually gets shared — the same shape both the
+ * client-side code (below) and the server-side `shared_builds` table
+ * (`lib/data/db/schema.ts`) store, so there is exactly one definition of
+ * "what a shared build contains."
+ */
+export interface SharedBuild {
+  name: string;
+  items: BuildItem[];
+  sellOrder: string[];
+  imbueTargets: Record<string, string>;
+  apOrder: string[];
+}
+
+export function toSharedBuild(build: Build): SharedBuild {
+  return {
+    name: build.name,
+    items: build.items,
+    sellOrder: build.sellOrder,
+    imbueTargets: build.imbueTargets,
+    apOrder: build.apOrder,
+  };
+}
 
 const CAN_COMPRESS = typeof CompressionStream !== "undefined";
 
@@ -45,7 +83,7 @@ async function gunzip(bytes: Uint8Array): Promise<Uint8Array> {
 
 /** Encodes a build into a copy-pasteable code. */
 export async function encodeBuildCode(build: Build): Promise<string> {
-  const bytes = new TextEncoder().encode(JSON.stringify(build));
+  const bytes = new TextEncoder().encode(JSON.stringify(toSharedBuild(build)));
   const payload = CAN_COMPRESS ? await gzip(bytes) : bytes;
   return toBase64Url(payload);
 }
@@ -64,6 +102,22 @@ export async function decodeBuildCode(code: string): Promise<unknown> {
     json = new TextDecoder().decode(bytes);
   }
   return JSON.parse(json);
+}
+
+/**
+ * Resolves a share code to its build payload — the database-backed short
+ * codes `POST /api/builds` creates, first. Falls back to the older
+ * client-only gzip codes (`decodeBuildCode`) for links shared before the
+ * database existed, or whenever the API call itself fails (offline, DB down).
+ */
+export async function resolveBuildCode(code: string): Promise<unknown> {
+  try {
+    const response = await fetch(`/api/builds/${encodeURIComponent(code.trim())}`);
+    if (response.ok) return await response.json();
+  } catch {
+    // Network error, DB down, etc. — fall through to the client-side decode.
+  }
+  return decodeBuildCode(code);
 }
 
 /** Pulls a build code out of a pasted share link, or returns the input as-is. */

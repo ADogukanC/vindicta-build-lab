@@ -9,6 +9,7 @@ import { CATEGORY_COLOR, fmtSouls } from "@/lib/format";
 import { ItemIcon } from "../ItemIcon";
 import { ItemEditor } from "./ItemEditor";
 import { HeroEditor } from "./HeroEditor";
+import { SubmissionsPanel } from "./SubmissionsPanel";
 
 function blankItem(sortOrder: number): Item {
   return {
@@ -36,7 +37,7 @@ export function AdminPanel({
   initialHero: HeroConfig;
 }) {
   const router = useRouter();
-  const [tab, setTab] = useState<"items" | "hero">("items");
+  const [tab, setTab] = useState<"items" | "hero" | "submissions">("items");
   const [items, setItems] = useState(initialItems);
   const [hero, setHero] = useState(initialHero);
   const [heroDirty, setHeroDirty] = useState(false);
@@ -191,7 +192,7 @@ export function AdminPanel({
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex gap-1">
-          {(["items", "hero"] as const).map((t) => (
+          {(["items", "hero", "submissions"] as const).map((t) => (
             <button
               key={t}
               type="button"
@@ -245,6 +246,8 @@ export function AdminPanel({
             dirty={heroDirty}
           />
         </section>
+      ) : tab === "submissions" ? (
+        <SubmissionsPanel items={items} />
       ) : (
         <div className="grid gap-3 lg:grid-cols-12">
           <section className="panel flex max-h-[calc(100vh-10rem)] flex-col lg:col-span-4 xl:col-span-3">

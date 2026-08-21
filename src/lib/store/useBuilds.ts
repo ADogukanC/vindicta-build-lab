@@ -5,8 +5,10 @@
  *
  * Builds live in IndexedDB rather than on the server: editing a build is a
  * keystroke-frequency operation and should never wait on a network round trip,
- * and it means the site is fully usable with no account. Publishing a build
- * (see `shareBuild`) is the only time a build touches the database.
+ * and it means the site is fully usable with no account. Sharing a build
+ * (`BuildLab`'s `share()`, `POST /api/builds`) is the only time it touches
+ * the database, and even then only the snapshot at that moment — this store
+ * never syncs back to a shared row.
  */
 import { create } from "zustand";
 import { get as idbGet, set as idbSet } from "idb-keyval";
