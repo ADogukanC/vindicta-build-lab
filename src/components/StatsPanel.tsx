@@ -187,6 +187,20 @@ export function StatsPanel({
   const hasProcs = result.expectedProcDps.length > 0;
   const procLabel = `Expected procs (${result.expectedProcDps.map((p) => p.label).join(", ")})`;
 
+  // Effective resist = the target's resist and this build's shred, combined
+  // per deadlock.wiki/Damage_Resistance: they each stack multiplicatively on
+  // their own side, then shred subtracts from resist. Capped at 100% (matches
+  // bulletResistMul/spiritResistMul's floor at 0 in engine.ts) but not floored
+  // at 0 — enough shred against low resist reads as negative, i.e. the target
+  // takes more than raw damage. Follows the "with/no shred" toggle so it
+  // matches whatever the damage numbers below are showing.
+  const effectiveBulletResist = shred
+    ? Math.min(1, enemyBulletResistPct / 100 - result.bulletResistShred)
+    : enemyBulletResistPct / 100;
+  const effectiveSpiritResist = shred
+    ? Math.min(1, enemySpiritResistPct / 100 - result.spiritResistShred)
+    : enemySpiritResistPct / 100;
+
   return (
     <aside className="panel flex flex-col">
       <header className="panel-header">
@@ -246,6 +260,20 @@ export function StatsPanel({
             className="h-1.5 w-full accent-[var(--color-spirit)]"
           />
         </label>
+      </div>
+
+      <div
+        className="grid grid-cols-2 gap-3 px-3 pt-1 text-[10px] uppercase tracking-wider text-ink-400"
+        title="Resist and shred each stack multiplicatively on their own, then shred subtracts from resist: damage taken = raw × (1 − (resist − shred)) (deadlock.wiki/Damage_Resistance)."
+      >
+        <div>
+          Effective resist{" "}
+          <span className="tnum font-semibold text-ink-100">{fmtPct(effectiveBulletResist, 0)}</span>
+        </div>
+        <div>
+          Effective resist{" "}
+          <span className="tnum font-semibold text-ink-100">{fmtPct(effectiveSpiritResist, 0)}</span>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-2 p-3">
