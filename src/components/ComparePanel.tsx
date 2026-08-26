@@ -22,7 +22,7 @@ import { useBuilds } from "@/lib/store/useBuilds";
 import { calculateBuild, falloffCurve } from "@/lib/calc/engine";
 import { METRICS, formatMetric, itemContributions, purchaseCandidates } from "@/lib/calc/metrics";
 import type { CalcContext } from "@/lib/types";
-import { fmtDelta, fmtInt } from "@/lib/format";
+import { fmtDelta, fmtInt, fmtPct } from "@/lib/format";
 import { ItemIcon } from "./ItemIcon";
 import { buildBreakpoints, MAX_SOULS, NetWorthSlider } from "./NetWorthSlider";
 
@@ -343,6 +343,40 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                 className="h-1.5 w-full accent-[var(--color-spirit)]"
               />
             </label>
+          </div>
+
+          <div
+            className="grid grid-cols-2 gap-3 text-[10px] uppercase tracking-wider text-ink-400"
+            title="Each build's own resist shred subtracted from the enemy resist above, per build since shred differs build to build (deadlock.wiki/Damage_Resistance)."
+          >
+            <div className="space-y-1">
+              {rows.map(({ build, result }) => (
+                <div key={build.id} className="flex items-center gap-1.5">
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full"
+                    style={{ background: build.color }}
+                  />
+                  <span className="truncate">{build.name}</span>
+                  <span className="tnum ml-auto font-semibold text-ink-100">
+                    {fmtPct(Math.min(1, enemyBulletResistPct / 100 - result.bulletResistShred), 0)}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="space-y-1">
+              {rows.map(({ build, result }) => (
+                <div key={build.id} className="flex items-center gap-1.5">
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full"
+                    style={{ background: build.color }}
+                  />
+                  <span className="truncate">{build.name}</span>
+                  <span className="tnum ml-auto font-semibold text-ink-100">
+                    {fmtPct(Math.min(1, enemySpiritResistPct / 100 - result.spiritResistShred), 0)}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
