@@ -229,7 +229,12 @@ export function normalizeBuild(raw: Partial<Build> & LegacyTierFlags): Build {
     // stand in as the buy order.
     soulsEarned: raw.soulsEarned ?? 80000,
     headshotRate: raw.headshotRate ?? 0,
-    boonsFromSouls: raw.boonsFromSouls ?? raw.soulsEarned !== undefined,
+    // A shared build code never carries soulsEarned/boonsFromSouls (they're
+    // the sender's local viewing state, not part of the shared build — see
+    // buildCode.ts), so inferring this from soulsEarned's presence made every
+    // imported build default to manual boons at whatever createBuild's base
+    // "boons" happens to be. Match createBuild's own default instead.
+    boonsFromSouls: raw.boonsFromSouls ?? true,
     sellOrder: raw.sellOrder ?? [],
     apOrder: raw.apOrder ?? [],
     imbueTargets: raw.imbueTargets ?? {},
