@@ -31,8 +31,15 @@ export function fmtDelta(value: number, digits = 1): string {
   return value > 0 ? `+${s}` : s;
 }
 
+// Literal hex, not `var(--color-weapon)` etc. — these values only ever reach
+// the page via inline `style` attributes (borders, backgrounds, dynamic
+// per-item colors), and browser extensions that repaint the page (Dark
+// Reader and friends) parse inline styles ahead of stylesheet custom
+// properties. A `var()` reference there resolves to black until something
+// forces a style recalc (e.g. the user clicking the element). Keep this in
+// sync with the --color-weapon/vitality/spirit tokens in globals.css.
 export const CATEGORY_COLOR: Record<string, string> = {
-  Weapon: "var(--color-weapon)",
-  Vitality: "var(--color-vitality)",
-  Spirit: "var(--color-spirit)",
+  Weapon: "#e8834a",
+  Vitality: "#6bbf59",
+  Spirit: "#a879e6",
 };

@@ -281,13 +281,13 @@ export function StatsPanel({
           label="Ground DPS"
           value={fmtInt(pick(result.burstDps.ground))}
           sub={`${fmtInt(pick(result.sustainedDps.ground))} with reloads`}
-          color="var(--color-weapon)"
+          color="#e8834a"
         />
         <Headline
           label="Flight DPS"
           value={fmtInt(pick(result.burstDps.flight))}
           sub={`${fmtInt(pick(result.sustainedDps.flight))} with reloads`}
-          color="var(--color-spirit)"
+          color="#a879e6"
         />
       </div>
 

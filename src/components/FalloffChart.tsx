@@ -99,7 +99,7 @@ export function FalloffChart({
               type="monotone"
               dataKey="ground"
               name="Ground DPS"
-              stroke="var(--color-weapon)"
+              stroke="#e8834a"
               strokeWidth={2}
               dot={false}
             />
@@ -107,7 +107,7 @@ export function FalloffChart({
               type="monotone"
               dataKey="flight"
               name="Flight DPS"
-              stroke="var(--color-spirit)"
+              stroke="#a879e6"
               strokeWidth={2}
               dot={false}
             />

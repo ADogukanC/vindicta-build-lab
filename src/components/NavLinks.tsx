@@ -12,8 +12,9 @@ export function NavLinks() {
     return (
       <Link
         href={href}
+        aria-current={active ? "page" : undefined}
         className={clsx(
-          "rounded-md px-3 py-1.5 text-sm font-medium transition",
+          "rounded-md px-2.5 py-1.5 text-sm font-medium transition duration-150 ease-out sm:px-3",
           active
             ? "bg-ink-800 text-amber-brand"
             : "text-ink-300 hover:bg-ink-800 hover:text-ink-100",
