@@ -30,8 +30,13 @@ conventions in the export that will silently corrupt numbers if missed:
   independent per-stack tracks in game, but neither entry sits inside a block
   carrying a literal `MaxStacks` key, so the generic detection misses both and
   would otherwise produce a single on/off toggle plus a flat non-hero stat. The
-  override lives right before `items.append(item)` — re-check it by hand if
-  the wiki ever restructures this item's blocks.
+  override also re-maps the non-hero rate onto `weaponDamagePct`, not
+  `weaponDamageVsNpcPct` the way `STAT_MAP` would: both stacks grant the same
+  general weapon damage that applies to everything, a non-hero hit just earns
+  less of it per stack — it is not a bonus restricted to damage dealt *to*
+  non-heroes (confirmed against the user's own in-game knowledge, not the
+  wiki's wording). The override lives right before `items.append(item)` —
+  re-check it by hand if the wiki ever restructures this item's blocks.
 
 Stats that cannot be mapped are kept per-item as display-only info rows rather
 than dropped, so item cards still show the full in-game tooltip.

@@ -591,6 +591,14 @@ def main():
         # and a flat stat instead. Confirmed against the raw export and
         # deadlock.wiki/Ballistic_Enchantment. The hero cap isn't in the data
         # at all; 6 mirrors the enemy team size, the practical ceiling.
+        #
+        # Both tracks grant the *same* general weapon damage (it applies to
+        # everything you shoot afterward, hero or not) - a non-hero hit just
+        # earns a smaller bonus per stack than a hero hit does. This is not
+        # "Weapon Damage vs NPCs" (a bonus that only counts while *hitting* a
+        # non-hero, like Monster Rounds/Cultist Sacrifice); the wiki export's
+        # STAT_MAP entry for WeaponPowerPerStackNonHero is misleading here,
+        # confirmed against the user's own in-game knowledge of the item.
         if rec["Key"] == "upgrade_bulletshredimbue":
             hero_pct = conditional_stats.pop("weaponDamagePct", 20.0)
             non_hero_pct = stats.pop("weaponDamageVsNpcPct", 5.0)
@@ -604,7 +612,7 @@ def main():
             item["maxStacks"] = 6
             item["defaultStacks"] = 6
             item["stackLabel"] = "Hero stacks"
-            item["perStackSecondary"] = {"weaponDamageVsNpcPct": non_hero_pct}
+            item["perStackSecondary"] = {"weaponDamagePct": non_hero_pct}
             item["maxStacksSecondary"] = 8
             item["defaultStacksSecondary"] = 8
             item["stackLabelSecondary"] = "Non-hero stacks"

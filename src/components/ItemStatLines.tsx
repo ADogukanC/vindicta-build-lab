@@ -68,18 +68,22 @@ export function itemStatLines(item: Item, ctx?: ScaleContext): StatLine[] {
       });
     }
   }
+  // Singularises a stack label ("Hero stacks" -> "hero stack") so two
+  // independent stack tracks on one item (Ballistic Enchantment) read as
+  // distinct lines rather than both saying the ambiguous "per stack". Falls
+  // back to "stack" when there's no custom label, matching every
+  // single-track item's existing wording exactly ("Stacks" -> "stack").
+  const singularStackLabel = (label: string | undefined) =>
+    label ? label.toLowerCase().replace(/s$/, "") : "stack";
   for (const [key, value] of Object.entries(item.perStack ?? {})) {
-    if (value)
-      lines.push({ text: `${formatStat(key, value)} ${statLabel(key)} per stack`, perStack: true });
+    if (value) {
+      const label = singularStackLabel(item.stackLabel);
+      lines.push({ text: `${formatStat(key, value)} ${statLabel(key)} per ${label}`, perStack: true });
+    }
   }
   for (const [key, value] of Object.entries(item.perStackSecondary ?? {})) {
     if (value) {
-      // Singularise "Non-hero stacks" -> "non-hero stack" so two stack
-      // tracks on one item (Ballistic Enchantment) read as distinct lines
-      // rather than both saying the ambiguous "per stack".
-      const label = item.stackLabelSecondary
-        ? item.stackLabelSecondary.toLowerCase().replace(/s$/, "")
-        : "stack";
+      const label = singularStackLabel(item.stackLabelSecondary);
       lines.push({ text: `${formatStat(key, value)} ${statLabel(key)} per ${label}`, perStack: true });
     }
   }

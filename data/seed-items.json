@@ -6169,7 +6169,7 @@
     "defaultStacks": 6,
     "stackLabel": "Hero stacks",
     "perStackSecondary": {
-      "weaponDamageVsNpcPct": 5.0
+      "weaponDamagePct": 5.0
     },
     "maxStacksSecondary": 8,
     "defaultStacksSecondary": 8,
