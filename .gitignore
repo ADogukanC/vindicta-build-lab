@@ -15,6 +15,6 @@ data/local-db.json
 
 # Auto-fetched third-party agent skills (Claude tooling cache, not app source)
 .agents/
-.claude/skills/neon/
-.claude/skills/neon-postgres/
+.claude/skills/*
+!.claude/skills/refresh-item-data/
 skills-lock.json
