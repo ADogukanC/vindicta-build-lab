@@ -582,6 +582,37 @@ def main():
             item["damageMultiplier"] = damage_multiplier
         for key, value in SCALING_OVERRIDES.get(item["slug"], {}).items():
             item[key] = {**item.get(key, {}), **value}
+
+        # Ballistic Enchantment tracks two independent stack counts - hero
+        # hits (WeaponPowerPerStack) and non-hero hits (WeaponPowerPerStack-
+        # NonHero, capped by NonHeroStackLimit) - but neither entry sits in a
+        # block carrying the literal MaxStacks key the generic per-stack
+        # detection above looks for, so both land as a single on/off toggle
+        # and a flat stat instead. Confirmed against the raw export and
+        # deadlock.wiki/Ballistic_Enchantment. The hero cap isn't in the data
+        # at all; 6 mirrors the enemy team size, the practical ceiling.
+        if rec["Key"] == "upgrade_bulletshredimbue":
+            hero_pct = conditional_stats.pop("weaponDamagePct", 20.0)
+            non_hero_pct = stats.pop("weaponDamageVsNpcPct", 5.0)
+            item["stats"] = stats
+            if conditional_stats:
+                item["conditionalStats"] = conditional_stats
+            else:
+                item.pop("conditionalStats", None)
+                item.pop("conditional", None)
+            item["perStack"] = {"weaponDamagePct": hero_pct}
+            item["maxStacks"] = 6
+            item["defaultStacks"] = 6
+            item["stackLabel"] = "Hero stacks"
+            item["perStackSecondary"] = {"weaponDamageVsNpcPct": non_hero_pct}
+            item["maxStacksSecondary"] = 8
+            item["defaultStacksSecondary"] = 8
+            item["stackLabelSecondary"] = "Non-hero stacks"
+            # Stacks always have to be earned - same convention as every
+            # other stacking item (see seed.test.ts "never assumes stacks
+            # are already held").
+            item["conditional"] = {"label": "Stacks held", "defaultActive": False}
+
         if info_blocks:
             item["info"] = info_blocks
 

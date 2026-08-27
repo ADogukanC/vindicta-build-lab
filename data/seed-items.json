@@ -6156,17 +6156,24 @@
       "WeaponDamage"
     ],
     "isImbue": true,
-    "stats": {
-      "weaponDamageVsNpcPct": 5.0
-    },
+    "stats": {},
     "enabled": true,
     "sortOrder": 127,
     "imbuedStats": {
       "abilityRangePct": 22.0
     },
-    "conditionalStats": {
+    "perStack": {
       "weaponDamagePct": 20.0
     },
+    "maxStacks": 6,
+    "defaultStacks": 6,
+    "stackLabel": "Hero stacks",
+    "perStackSecondary": {
+      "weaponDamageVsNpcPct": 5.0
+    },
+    "maxStacksSecondary": 8,
+    "defaultStacksSecondary": 8,
+    "stackLabelSecondary": "Non-hero stacks",
     "conditional": {
       "label": "Stacks held",
       "defaultActive": false

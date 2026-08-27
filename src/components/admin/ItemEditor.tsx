@@ -339,6 +339,51 @@ export function ItemEditor({
               patch({ perStack: Object.keys(perStack).length ? perStack : undefined })
             }
           />
+
+          <div className="grid gap-2 sm:grid-cols-3">
+            <Field label="Max stacks (2nd track)" hint="For items with two independent stack counters, e.g. Ballistic Enchantment's hero/non-hero stacks.">
+              <input
+                type="number"
+                className="input tnum"
+                value={item.maxStacksSecondary ?? ""}
+                onChange={(e) =>
+                  patch({
+                    maxStacksSecondary: e.target.value === "" ? undefined : Number(e.target.value),
+                  })
+                }
+              />
+            </Field>
+            <Field label="Default stacks (2nd track)">
+              <input
+                type="number"
+                className="input tnum"
+                value={item.defaultStacksSecondary ?? ""}
+                onChange={(e) =>
+                  patch({
+                    defaultStacksSecondary: e.target.value === "" ? undefined : Number(e.target.value),
+                  })
+                }
+              />
+            </Field>
+            <Field label="Stack label (2nd track)">
+              <input
+                className="input"
+                placeholder="Stacks"
+                value={item.stackLabelSecondary ?? ""}
+                onChange={(e) => patch({ stackLabelSecondary: e.target.value || undefined })}
+              />
+            </Field>
+          </div>
+          <StatGrid
+            title="Per stack (2nd track)"
+            values={item.perStackSecondary ?? {}}
+            onChange={(perStackSecondary) =>
+              patch({
+                perStackSecondary: Object.keys(perStackSecondary).length ? perStackSecondary : undefined,
+              })
+            }
+          />
+
           <StatGrid
             title="Per hero boon"
             values={item.perBoon ?? {}}

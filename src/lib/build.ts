@@ -93,6 +93,7 @@ export function createBuildItem(item: Item): BuildItem {
     slug: item.slug,
     active: item.conditional ? item.conditional.defaultActive : true,
     stacks: item.defaultStacks ?? item.maxStacks ?? 0,
+    stacksSecondary: item.defaultStacksSecondary ?? item.maxStacksSecondary ?? 0,
     shredActive: item.defaultShredActive ?? true,
   };
 }
@@ -243,6 +244,7 @@ export function normalizeBuild(raw: Partial<Build> & LegacyTierFlags): Build {
       slug: i.slug,
       active: i.active ?? true,
       stacks: i.stacks ?? 0,
+      stacksSecondary: i.stacksSecondary ?? 0,
       shredActive: i.shredActive ?? true,
     })),
   };

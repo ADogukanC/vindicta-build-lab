@@ -459,6 +459,24 @@ export function LoadoutPanel({
                           </span>
                         </label>
                       )}
+                      {(item.maxStacksSecondary ?? 0) > 1 && (
+                        <label className="flex items-center gap-1.5 text-[10px] text-ink-300">
+                          <span>{item.stackLabelSecondary ?? "Stacks"}</span>
+                          <input
+                            type="range"
+                            min={0}
+                            max={item.maxStacksSecondary}
+                            value={entry.stacksSecondary}
+                            onChange={(e) =>
+                              onPatch(item.slug, { stacksSecondary: Number(e.target.value) })
+                            }
+                            className="h-1 w-20 accent-[var(--color-amber-brand)]"
+                          />
+                          <span className="tnum w-6 text-right text-ink-100">
+                            {entry.stacksSecondary}/{item.maxStacksSecondary}
+                          </span>
+                        </label>
+                      )}
                     </div>
                   )}
                   {!held && departure.has(item.slug) && (

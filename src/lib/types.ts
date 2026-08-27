@@ -108,6 +108,15 @@ export interface Item {
   maxStacks?: number;
   defaultStacks?: number;
   stackLabel?: string;
+  /**
+   * A second, independent stack track on the same item — Ballistic
+   * Enchantment counts hero stacks (`perStack`) and non-hero stacks
+   * (`perStackSecondary`) separately, each with its own cap and slider.
+   */
+  perStackSecondary?: StatBag;
+  maxStacksSecondary?: number;
+  defaultStacksSecondary?: number;
+  stackLabelSecondary?: string;
   /** Label and default for the situational toggle. */
   conditional?: { label: string; defaultActive: boolean };
   shred?: ShredSpec;
@@ -274,6 +283,8 @@ export interface BuildItem {
   active: boolean;
   /** For stacking items: current stack count. */
   stacks: number;
+  /** For items with a second, independent stack track (see `perStackSecondary`). */
+  stacksSecondary: number;
   /** For shred sources: whether the shred is being applied to the target. */
   shredActive: boolean;
 }

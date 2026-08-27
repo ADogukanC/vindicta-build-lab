@@ -24,6 +24,14 @@ conventions in the export that will silently corrupt numbers if missed:
 - **Resist shred is stored as a negative resist** (`-8` means strip 8%).
 - **`ReloadSpeedMultipler`** (sic) **is inverted** (`-10` means 10% faster).
 - **A block containing `MaxStacks` describes per-stack values** in its `Main` list.
+- **Ballistic Enchantment (`upgrade_bulletshredimbue`) is hand-overridden** after
+  the generic pass: its hero (`WeaponPowerPerStack`) and non-hero
+  (`WeaponPowerPerStackNonHero`, capped by `NonHeroStackLimit`) bonuses are two
+  independent per-stack tracks in game, but neither entry sits inside a block
+  carrying a literal `MaxStacks` key, so the generic detection misses both and
+  would otherwise produce a single on/off toggle plus a flat non-hero stat. The
+  override lives right before `items.append(item)` — re-check it by hand if
+  the wiki ever restructures this item's blocks.
 
 Stats that cannot be mapped are kept per-item as display-only info rows rather
 than dropped, so item cards still show the full in-game tooltip.

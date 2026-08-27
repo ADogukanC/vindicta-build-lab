@@ -72,6 +72,17 @@ export function itemStatLines(item: Item, ctx?: ScaleContext): StatLine[] {
     if (value)
       lines.push({ text: `${formatStat(key, value)} ${statLabel(key)} per stack`, perStack: true });
   }
+  for (const [key, value] of Object.entries(item.perStackSecondary ?? {})) {
+    if (value) {
+      // Singularise "Non-hero stacks" -> "non-hero stack" so two stack
+      // tracks on one item (Ballistic Enchantment) read as distinct lines
+      // rather than both saying the ambiguous "per stack".
+      const label = item.stackLabelSecondary
+        ? item.stackLabelSecondary.toLowerCase().replace(/s$/, "")
+        : "stack";
+      lines.push({ text: `${formatStat(key, value)} ${statLabel(key)} per ${label}`, perStack: true });
+    }
+  }
   // A perBoon/perSpirit key normally rides on a stats/conditionalStats line
   // above (its base value lives there); only shown standalone here if it
   // somehow has no base to attach to.

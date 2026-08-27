@@ -39,7 +39,11 @@ export function ItemPreviewCard({
   const effects = itemStatLines(item, ctx);
   const blocks = (item.info ?? []).filter((b) => b.rows.length > 0 || b.cooldown);
   const hasExtras =
-    effects.length > 0 || blocks.length > 0 || Boolean(item.conditional) || (item.maxStacks ?? 0) > 1;
+    effects.length > 0 ||
+    blocks.length > 0 ||
+    Boolean(item.conditional) ||
+    (item.maxStacks ?? 0) > 1 ||
+    (item.maxStacksSecondary ?? 0) > 1;
 
   return (
     <div
@@ -94,6 +98,12 @@ export function ItemPreviewCard({
             <p className="text-[11px] leading-snug text-ink-300">
               Stacks up to {item.maxStacks}
               {item.stackLabel ? ` ${item.stackLabel.toLowerCase()}` : ""}
+            </p>
+          )}
+          {(item.maxStacksSecondary ?? 0) > 1 && (
+            <p className="text-[11px] leading-snug text-ink-300">
+              Stacks up to {item.maxStacksSecondary}
+              {item.stackLabelSecondary ? ` ${item.stackLabelSecondary.toLowerCase()}` : ""}
             </p>
           )}
 

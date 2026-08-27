@@ -49,6 +49,8 @@ export interface ResolvedItem {
   /** Whether the item's situational bonuses are being counted. */
   contributing: boolean;
   stacks: number;
+  /** Stack count for the item's second, independent stack track, if any. */
+  stacksSecondary: number;
 }
 
 export interface ShredBreakdownRow {
@@ -265,7 +267,10 @@ export function resolveItems(build: Build, items: Item[], held?: BuildItem[]): R
     const contributing = item.conditional ? entry.active : true;
     const maxStacks = item.maxStacks ?? 0;
     const stacks = maxStacks > 0 ? Math.max(0, Math.min(maxStacks, entry.stacks)) : 0;
-    out.push({ item, entry, contributing, stacks });
+    const maxStacksSecondary = item.maxStacksSecondary ?? 0;
+    const stacksSecondary =
+      maxStacksSecondary > 0 ? Math.max(0, Math.min(maxStacksSecondary, entry.stacksSecondary)) : 0;
+    out.push({ item, entry, contributing, stacks, stacksSecondary });
   }
   return out;
 }
@@ -426,6 +431,7 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
     if (r.contributing) {
       addStats(itemStats, r.item.conditionalStats);
       if (r.item.perStack) addStats(itemStats, r.item.perStack, r.stacks);
+      if (r.item.perStackSecondary) addStats(itemStats, r.item.perStackSecondary, r.stacksSecondary);
       if (r.item.perBoon) addStats(itemStats, r.item.perBoon, boons);
     }
   }
