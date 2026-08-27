@@ -644,7 +644,7 @@
     ],
     "isImbue": false,
     "stats": {
-      "spiritResistPct": 10.0
+      "spiritResistPct": 8.0
     },
     "enabled": true,
     "sortOrder": 17,
@@ -3792,7 +3792,7 @@
         "rows": [
           {
             "key": "HealingPerCast",
-            "value": 70,
+            "value": 65,
             "type": "healing",
             "conditional": false,
             "emphasis": true,
