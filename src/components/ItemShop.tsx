@@ -374,7 +374,11 @@ export function ItemShop({
                   "flex-1 rounded-md border px-3 py-1.5 text-xs font-medium transition",
                   category === c
                     ? "border-transparent text-ink-950"
-                    : "border-ink-700 bg-ink-850 text-ink-200 hover:bg-ink-800",
+                    : clsx("bg-ink-850 hover:bg-ink-800", {
+                        "border-weapon/40 text-weapon": c === "Weapon",
+                        "border-vitality/40 text-vitality": c === "Vitality",
+                        "border-spirit/40 text-spirit": c === "Spirit",
+                      }),
                 )}
                 style={category === c ? { background: CATEGORY_COLOR[c] } : undefined}
               >
