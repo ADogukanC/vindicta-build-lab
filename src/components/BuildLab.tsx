@@ -25,6 +25,9 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
     "idle" | "submitting" | "pending" | "already-submitted" | "error"
   >("idle");
   const [sharedBanner, setSharedBanner] = useState<{ name: string } | "error" | null>(null);
+  // Shared by the Output panel's toggle and the falloff chart, so both agree on
+  // whether they're showing this build's own resist shred.
+  const [shred, setShred] = useState(true);
 
   useEffect(() => {
     void store.hydrate();
@@ -305,6 +308,7 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
             result={result}
             rangeMeters={build.rangeMeters}
             onRangeChange={(rangeMeters) => store.updateActive({ rangeMeters })}
+            shred={shred}
           />
           <div className="min-h-[28rem]">
             <ItemShop
@@ -324,6 +328,8 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
               enemyBulletResistPct={build.enemyBulletResistPct}
               enemySpiritResistPct={build.enemySpiritResistPct}
               onEnemyResistChange={(patch) => store.updateActive(patch)}
+              shred={shred}
+              onShredChange={setShred}
             />
           </div>
         </div>

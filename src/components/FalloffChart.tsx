@@ -19,10 +19,13 @@ export function FalloffChart({
   result,
   rangeMeters,
   onRangeChange,
+  shred = true,
 }: {
   result: CalcResult;
   rangeMeters: number;
   onRangeChange: (metres: number) => void;
+  /** Whether to plot this build's own resist shred, matching the Output panel's toggle. */
+  shred?: boolean;
 }) {
   const data = falloffCurve(result, 2, 84);
   const multiplier = falloffMultiplier(
@@ -31,6 +34,7 @@ export function FalloffChart({
     result.falloffMax,
     result.falloffValue,
   );
+  const dpsAtMarker = shred ? result.dpsAtRange : result.dpsAtRangeRaw;
 
   return (
     <section className="panel">
@@ -58,7 +62,7 @@ export function FalloffChart({
         />
         <span className="tnum shrink-0 text-[11px] text-ink-100">{rangeMeters} m</span>
         <span className="tnum shrink-0 text-[11px] text-ink-500">
-          {Math.round(multiplier * 100)}% damage · {fmtInt(result.dpsAtRange)} DPS
+          {Math.round(multiplier * 100)}% damage · {fmtInt(dpsAtMarker)} DPS
         </span>
       </label>
       <div className="h-56 p-2">
@@ -97,7 +101,7 @@ export function FalloffChart({
             />
             <Line
               type="monotone"
-              dataKey="ground"
+              dataKey={shred ? "ground" : "groundRaw"}
               name="Ground DPS"
               stroke="#e8834a"
               strokeWidth={2}
@@ -105,7 +109,7 @@ export function FalloffChart({
             />
             <Line
               type="monotone"
-              dataKey="flight"
+              dataKey={shred ? "flight" : "flightRaw"}
               name="Flight DPS"
               stroke="#a879e6"
               strokeWidth={2}

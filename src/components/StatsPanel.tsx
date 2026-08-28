@@ -1,6 +1,5 @@
 ﻿"use client";
 
-import { useState } from "react";
 import clsx from "clsx";
 import type { CalcResult, DamageSet } from "@/lib/calc/engine";
 import { fmt, fmtInt, fmtPct } from "@/lib/format";
@@ -166,13 +165,17 @@ export function StatsPanel({
   enemyBulletResistPct,
   enemySpiritResistPct,
   onEnemyResistChange,
+  shred,
+  onShredChange,
 }: {
   result: CalcResult;
   enemyBulletResistPct: number;
   enemySpiritResistPct: number;
   onEnemyResistChange: (patch: { enemyBulletResistPct?: number; enemySpiritResistPct?: number }) => void;
+  /** Whether the target's resists are being shredded by this build. Lifted so the falloff chart can share it. */
+  shred: boolean;
+  onShredChange: (shred: boolean) => void;
 }) {
-  const [shred, setShred] = useState(true);
   const pick = (set: DamageSet) => (shred ? set.shredded : set.raw);
   const procTotal = result.expectedProcDps.reduce((s, p) => s + p.dps, 0);
 
@@ -207,7 +210,7 @@ export function StatsPanel({
         <span>Output</span>
         <button
           type="button"
-          onClick={() => setShred((s) => !s)}
+          onClick={() => onShredChange(!shred)}
           className={clsx(
             "rounded px-2 py-0.5 text-[10px] normal-case tracking-normal transition",
             shred ? "bg-amber-brand/20 text-amber-brand" : "bg-ink-800 text-ink-300 hover:text-ink-100",
@@ -385,7 +388,7 @@ export function StatsPanel({
             />
             <Row
               label="At the chart marker"
-              value={fmtInt(result.dpsAtRange)}
+              value={fmtInt(shred ? result.dpsAtRange : result.dpsAtRangeRaw)}
               hint="Ground DPS at the distance set on the damage-vs-distance chart"
             />
             {procTotal > 0 && (
@@ -417,12 +420,16 @@ export function StatsPanel({
               <Row
                 label={`DPS across all ${result.ricochet.targets}`}
                 value={fmtInt(pick(result.ricochet.totalDps.ground))}
+              />
+              <Row
+                label="Per bullet, each target in flight"
+                value={fmt(pick(result.ricochet.perBullet.flight))}
+                hint={`Bullet damage carries at ${result.ricochet.damagePct}%, Flight's spirit bonus carries in full`}
                 strong
               />
               <Row
                 label="DPS, each target in flight"
                 value={fmtInt(pick(result.ricochet.dps.flight))}
-                hint="Flight's bonus is spirit damage, so it carries over in full"
               />
               <Row
                 label={`DPS across all ${result.ricochet.targets} in flight`}

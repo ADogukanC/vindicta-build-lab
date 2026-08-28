@@ -240,6 +240,8 @@ export interface CalcResult {
   groundDps: number;
   flightDps: number;
   dpsAtRange: number;
+  /** Same marker, ignoring this build's own resist shred — pairs with `dpsAtRange` for the shred toggle. */
+  dpsAtRangeRaw: number;
 
   itemStats: StatBag;
   resolvedItems: ResolvedItem[];
@@ -1037,6 +1039,7 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
     groundDps,
     flightDps,
     dpsAtRange: groundDps * rangeMul,
+    dpsAtRangeRaw: burstDps.ground.raw * rangeMul,
 
     itemStats,
     resolvedItems: resolved,
@@ -1046,7 +1049,15 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
 
 /** Points for the damage-vs-distance chart. */
 export function falloffCurve(result: CalcResult, step = 2, maxDistance = 80) {
-  const points: { distance: number; multiplier: number; ground: number; flight: number }[] = [];
+  const points: {
+    distance: number;
+    multiplier: number;
+    ground: number;
+    flight: number;
+    /** No-shred variants, for views with a shred toggle (e.g. the single-build chart). */
+    groundRaw: number;
+    flightRaw: number;
+  }[] = [];
   for (let d = 0; d <= maxDistance; d += step) {
     const m = falloffMultiplier(d, result.falloffMin, result.falloffMax, result.falloffValue);
     points.push({
@@ -1054,6 +1065,8 @@ export function falloffCurve(result: CalcResult, step = 2, maxDistance = 80) {
       multiplier: m,
       ground: result.groundDps * m,
       flight: result.flightDps * m,
+      groundRaw: result.burstDps.ground.raw * m,
+      flightRaw: result.burstDps.flight.raw * m,
     });
   }
   return points;
