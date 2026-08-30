@@ -150,6 +150,8 @@ export interface CalcResult {
   spiritPower: number;
   spiritBreakdown: SpiritSource[];
   baseGunDamage: number;
+  /** Hero + level only, no spirit-scaling passive — what Mercurial Magnum's own bonus is a percentage of. */
+  baseBulletDamage: number;
   bulletDamage: number;
   /** Spirit damage carried by every bullet, e.g. Mercurial Magnum. */
   bulletSpiritDamage: number;
@@ -489,10 +491,13 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
   }
 
   const spiritForGunDamage = build.gunDamageUsesTotalSpirit ? spiritPower : baseSpiritPower;
-  const baseGunDamage =
-    hero.base.gunDamage +
-    boons * hero.perBoon.gunDamage +
-    spiritForGunDamage * hero.gunDamageSpiritScaling;
+  // Hero + level only. Vindicta's own spirit-scaling passive (below) is kept
+  // separate from this: in-game, Mercurial Magnum's own tooltip shows its
+  // bonus as a percentage of a base that does *not* move with that passive
+  // (confirmed against a live tooltip reading — the workbook's E35 used B20,
+  // spirit passive included, but that overshoots the real bonus by ~6-7%).
+  const baseBulletDamage = hero.base.gunDamage + boons * hero.perBoon.gunDamage;
+  const baseGunDamage = baseBulletDamage + spiritForGunDamage * hero.gunDamageSpiritScaling;
 
   const snipeStackBonus = build.snipeStacks * (assassinate?.gunDamagePerStack ?? 0);
 
@@ -597,10 +602,14 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
   const weaponPerBullet = bulletDamage * headshotMultiplier;
 
   // Spirit damage riding along on every bullet. Mercurial Magnum's share is a
-  // percentage of *base* gun damage — 25% plus 0.49% per point of spirit — which
-  // is the workbook's E35: `((0.25 + spirit*0.0049) * B20) * (1 + spiritAmp)`.
+  // percentage of *base* bullet damage — 25% plus 0.49% per point of spirit —
+  // against `baseBulletDamage` (hero + level only), not `baseGunDamage`
+  // (which also carries Vindicta's own spirit-scaling passive). The workbook's
+  // E35 used B20 (equivalent to baseGunDamage) for this, but that reads ~6-7%
+  // high against a live Mercurial Magnum tooltip — a deliberate deviation,
+  // same as `gunDamageUsesTotalSpirit`.
   const bulletSpiritDamage =
-    ((baseGunDamage * statValue(itemStats, "bulletSpiritDamagePctOfBase")) / 100 +
+    ((baseBulletDamage * statValue(itemStats, "bulletSpiritDamagePctOfBase")) / 100 +
       statValue(itemStats, "bulletSpiritDamageFlat")) *
     (1 + spiritAmp);
   const bulletSpiritDamageSources = resolved
@@ -979,6 +988,7 @@ export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
     spiritPower,
     spiritBreakdown,
     baseGunDamage,
+    baseBulletDamage,
     bulletDamage,
     bulletSpiritDamage,
     bulletSpiritDamageSources,

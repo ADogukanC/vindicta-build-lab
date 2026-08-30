@@ -293,20 +293,22 @@ describe("engine rules", () => {
     near(r.spiritResistShred, 1 - 0.92 * 0.93 ** 4);
   });
 
-  it("scales Mercurial Magnum off base gun damage, not a flat amount (E35)", () => {
-    // E35 = ((0.25 + spirit x 0.0049) * B20) * (1 + EE stacks x 0.045).
-    // At the workbook's own numbers - spirit 90.7, base gun damage 26.2134 -
-    // that is 18.203371362.
-    near((0.25 + 90.7 * 0.0049) * 26.213400000000004, 18.203371362000002);
-
+  it("scales Mercurial Magnum off base *bullet* damage, not gun damage or a flat amount", () => {
+    // The workbook's E35 was ((0.25 + spirit x 0.0049) * B20) * (1 + EE stacks
+    // x 0.045) — B20 being baseGunDamage, which also carries Vindicta's own
+    // spirit-scaling passive. A live Mercurial Magnum tooltip reads ~6-7%
+    // lower than that: its bonus is a percentage of baseBulletDamage (hero +
+    // level only), a deliberate deviation from the workbook, same as
+    // gunDamageUsesTotalSpirit.
     const withMM = calculateBuild(
       { ...workbookBuild(), items: [...workbookBuild().items, ...pick(["mercurial-magnum"])] },
       ctx,
     );
     near(
       withMM.bulletSpiritDamage,
-      (0.25 + withMM.spiritPower * 0.0049) * withMM.baseGunDamage,
+      (0.25 + withMM.spiritPower * 0.0049) * withMM.baseBulletDamage,
     );
+    expect(withMM.baseBulletDamage).toBeLessThan(withMM.baseGunDamage);
   });
 
   describe("headshots", () => {
