@@ -726,8 +726,8 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                 <div className="flex overflow-hidden rounded-lg border border-ink-700">
                   {(
                     [
-                      { key: "value", label: "By value" },
                       { key: "raw", label: "By raw gain" },
+                      { key: "value", label: "By value" },
                     ] as const
                   ).map((opt) => (
                     <button
@@ -793,8 +793,8 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                 <div className="flex overflow-hidden rounded-lg border border-ink-700">
                   {(
                     [
-                      { key: "value", label: "By value" },
                       { key: "raw", label: "By raw gain" },
+                      { key: "value", label: "By value" },
                     ] as const
                   ).map((opt) => (
                     <button
