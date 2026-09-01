@@ -68,8 +68,10 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   // rather than a silent guess; conditional items' situational bonuses are
   // always assumed active there regardless (see metrics.ts).
   const [stackAssumption, setStackAssumption] = useState<StackAssumption>("full");
-  // Whether Best Next Purchase ranks by raw metric gain ("which item moves
-  // the needle most") or by value per soul ("which item is worth its cost").
+  // Whether both halves of the value-per-soul section rank by raw metric
+  // gain ("which item moves the needle most") or by value per soul ("which
+  // item is worth its cost"). Shared across both, since it's the same
+  // question either way.
   const [purchaseRanking, setPurchaseRanking] = useState<PurchaseRanking>("value");
 
   useEffect(() => {
@@ -167,8 +169,9 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   );
 
   const contributions = useMemo(
-    () => (valueBuild ? itemContributions(valueBuild, ctx, metricKey, stackAssumption) : []),
-    [valueBuild, ctx, metricKey, stackAssumption],
+    () =>
+      valueBuild ? itemContributions(valueBuild, ctx, metricKey, stackAssumption, purchaseRanking) : [],
+    [valueBuild, ctx, metricKey, stackAssumption, purchaseRanking],
   );
   const candidates = useMemo(
     () =>
@@ -716,9 +719,33 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
           </div>
           <div className="grid gap-4 p-3 lg:grid-cols-2">
             <div>
-              <h3 className="mb-2 text-[11px] uppercase tracking-wider text-ink-300">
-                What each owned item is worth
-              </h3>
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <h3 className="text-[11px] uppercase tracking-wider text-ink-300">
+                  What each owned item is worth
+                </h3>
+                <div className="flex overflow-hidden rounded-lg border border-ink-700">
+                  {(
+                    [
+                      { key: "value", label: "By value" },
+                      { key: "raw", label: "By raw gain" },
+                    ] as const
+                  ).map((opt) => (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      onClick={() => setPurchaseRanking(opt.key)}
+                      className={clsx(
+                        "px-2.5 py-1 text-[10px] font-medium transition",
+                        purchaseRanking === opt.key
+                          ? "bg-amber-brand text-ink-950"
+                          : "bg-ink-900 text-ink-400 hover:bg-ink-850 hover:text-ink-200",
+                      )}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <p className="mb-2 text-[11px] text-ink-500">
                 {metric.label} lost if that item alone is removed, including any category
                 investment bonus that would drop with it.
@@ -734,10 +761,20 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                   >
                     <ItemIcon item={c.item} size="sm" />
                     <span className="min-w-0 flex-1 truncate text-[13px] font-medium">{c.item.name}</span>
-                    <span className="tnum text-[12px] text-ink-400">
+                    <span
+                      className={clsx(
+                        "tnum text-[12px]",
+                        purchaseRanking === "raw" ? "font-semibold text-amber-brand" : "text-ink-400",
+                      )}
+                    >
                       {formatMetric(metric, c.delta)}
                     </span>
-                    <span className="tnum w-24 text-right text-[12px] font-semibold text-ink-200">
+                    <span
+                      className={clsx(
+                        "tnum w-24 text-right text-[12px]",
+                        purchaseRanking === "value" ? "font-semibold text-amber-brand" : "text-ink-400",
+                      )}
+                    >
                       {formatMetric(metric, c.deltaPer1kSouls)}
                       <span className="text-[10px] font-normal text-ink-500"> /1k</span>
                     </span>

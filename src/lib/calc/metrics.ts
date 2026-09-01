@@ -381,11 +381,15 @@ export interface ItemContribution {
  * against the held-only loadout (with the plan truncated to just that list)
  * keeps each item's number isolated to itself.
  */
+/** Whether a value-per-soul ranking sorts by raw metric gain or by value per soul. */
+export type PurchaseRanking = "value" | "raw";
+
 export function itemContributions(
   build: Build,
   ctx: CalcContext,
   metricKey: string,
   stackAssumption: StackAssumption = "full",
+  rankBy: PurchaseRanking = "value",
 ): ItemContribution[] {
   const metric = METRIC_BY_KEY[metricKey] ?? METRICS[0];
   const bySlug = new Map(ctx.items.map((i) => [i.slug, i]));
@@ -408,11 +412,8 @@ export function itemContributions(
       cost: item.cost,
     });
   }
-  return rows.sort((a, b) => b.deltaPer1kSouls - a.deltaPer1kSouls);
+  return rows.sort((a, b) => (rankBy === "raw" ? b.delta - a.delta : b.deltaPer1kSouls - a.deltaPer1kSouls));
 }
-
-/** Whether `purchaseCandidates` ranks by raw metric gain or by value per soul. */
-export type PurchaseRanking = "value" | "raw";
 
 /**
  * What each *unowned* item would add if bought next. Ranked by `rankBy`:

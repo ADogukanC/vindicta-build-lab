@@ -43,6 +43,21 @@ describe("itemContributions", () => {
     const row = itemContributions(build, ctx, "fireRate", "full").find((r) => r.item.slug === "glass-cannon");
     expect(row?.delta).toBeGreaterThan(0);
   });
+
+  it("switches to ranking by raw contribution when rankBy is 'raw'", () => {
+    const build = createBuild({
+      items: [createBuildItem(closeQuarters), createBuildItem(extendedMagazine), createBuildItem(cheatDeath)],
+      soulsEarned: 50000,
+    });
+    const byValue = itemContributions(build, ctx, "health", "full", "value");
+    const byRaw = itemContributions(build, ctx, "health", "full", "raw");
+    expect(byValue.map((r) => r.item.slug)).toEqual(
+      [...byValue].sort((a, b) => b.deltaPer1kSouls - a.deltaPer1kSouls).map((r) => r.item.slug),
+    );
+    expect(byRaw.map((r) => r.item.slug)).toEqual(
+      [...byRaw].sort((a, b) => b.delta - a.delta).map((r) => r.item.slug),
+    );
+  });
 });
 
 describe("purchaseCandidates", () => {
