@@ -405,47 +405,6 @@ export function itemContributions(
 }
 
 /**
- * The item cost a purchase should be judged against at a given souls-earned
- * figure, for ranking purposes only.
- *
- * Pure "value per soul" favours cheap items on paper — a flat bonus on an
- * 800-souls item almost always beats the same bonus on a 6400-souls one,
- * simply because the denominator is smaller — but that ratio stops being the
- * question worth asking once souls stop being the binding constraint. Below
- * ~12.5k souls every tier is still fair game, so the floor is a no-op at the
- * cheapest real price (800) and cheap items compete on their true ratio,
- * same as always. Above ~35k, 800/1600/3200 items have mostly had their
- * moment and a build is filling out with 6400s, so the floor rises to that
- * tier: a cheap item is judged as if it cost 6400, and only wins if its
- * value genuinely clears that bar. Never lowers an item's cost, so a pricier
- * item's own ranking is untouched either way.
- */
-export function sensiblePurchaseCostFloor(soulsEarned: number): number {
-  const rampStart = 12500;
-  const startFloor = 800;
-  const rampEnd = 35000;
-  const endFloor = 6400;
-  if (soulsEarned <= rampStart) return startFloor;
-  if (soulsEarned >= rampEnd) return endFloor;
-  const t = (soulsEarned - rampStart) / (rampEnd - rampStart);
-  return startFloor + t * (endFloor - startFloor);
-}
-
-/**
- * Ranks purchase candidates by cost-floor-adjusted value, highest first. Kept
- * separate from the simulation loop so the weighting can be tested against
- * plain fixtures instead of the live catalogue.
- */
-export function rankPurchaseCandidates(
-  rows: ItemContribution[],
-  soulsEarned: number,
-): ItemContribution[] {
-  const costFloor = sensiblePurchaseCostFloor(soulsEarned);
-  const rankScore = (row: ItemContribution) => (row.delta / Math.max(row.cost, costFloor)) * 1000;
-  return [...rows].sort((a, b) => rankScore(b) - rankScore(a));
-}
-
-/**
  * What each *unowned* item would add if bought next, sorted by value per soul.
  * The counterpart to `itemContributions`, and the basis of the "what to buy
  * next" suggestion list.
@@ -509,8 +468,5 @@ export function purchaseCandidates(
       cost: netCost,
     });
   }
-  // The displayed deltaPer1kSouls above is always the item's true value per
-  // soul; only the sort order is adjusted, so a cheap item out of step with
-  // the build's stage sinks in the list without its own number being altered.
-  return rankPurchaseCandidates(rows, build.soulsEarned).slice(0, limit);
+  return rows.sort((a, b) => b.deltaPer1kSouls - a.deltaPer1kSouls).slice(0, limit);
 }

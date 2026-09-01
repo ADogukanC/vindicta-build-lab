@@ -637,7 +637,8 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
             <span className="flex items-baseline gap-2">
               Value per soul
               <span className="normal-case tracking-normal text-ink-500">
-                at {fmtInt(souls)} souls earned, {headshotRate}% headshots
+                at {fmtInt(souls)} souls earned, {headshotRate}% headshots, {snipeStacks} snipe{" "}
+                {snipeStacks === 1 ? "stack" : "stacks"}
               </span>
             </span>
             <select
@@ -722,10 +723,8 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                 Best next purchase
               </h3>
               <p className="mb-2 text-[11px] text-ink-500">
-                Every unowned item simulated on top of this build, ranked by {metric.label.toLowerCase()}{" "}
-                gained per 1,000 souls — weighted for what's actually worth buying at{" "}
-                {fmtInt(souls)} souls, so a cheap item's ratio doesn't outrank a pricier one
-                unless it truly earns it.
+                Every unowned item simulated on top of this build, ranked by raw{" "}
+                {metric.label.toLowerCase()} gained per 1,000 souls.
               </p>
               <ul className="space-y-1.5">
                 {candidates.map((c, i) => (
