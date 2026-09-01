@@ -25,6 +25,7 @@ import {
   formatMetric,
   itemContributions,
   purchaseCandidates,
+  type PurchaseRanking,
   type StackAssumption,
 } from "@/lib/calc/metrics";
 import type { CalcContext } from "@/lib/types";
@@ -67,6 +68,9 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   // rather than a silent guess; conditional items' situational bonuses are
   // always assumed active there regardless (see metrics.ts).
   const [stackAssumption, setStackAssumption] = useState<StackAssumption>("full");
+  // Whether Best Next Purchase ranks by raw metric gain ("which item moves
+  // the needle most") or by value per soul ("which item is worth its cost").
+  const [purchaseRanking, setPurchaseRanking] = useState<PurchaseRanking>("value");
 
   useEffect(() => {
     void store.hydrate();
@@ -167,8 +171,9 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
     [valueBuild, ctx, metricKey, stackAssumption],
   );
   const candidates = useMemo(
-    () => (valueBuild ? purchaseCandidates(valueBuild, ctx, metricKey, 10, stackAssumption) : []),
-    [valueBuild, ctx, metricKey, stackAssumption],
+    () =>
+      valueBuild ? purchaseCandidates(valueBuild, ctx, metricKey, 10, stackAssumption, purchaseRanking) : [],
+    [valueBuild, ctx, metricKey, stackAssumption, purchaseRanking],
   );
 
   if (!store.hydrated) {
@@ -742,12 +747,45 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
             </div>
 
             <div>
-              <h3 className="mb-2 text-[11px] uppercase tracking-widest text-ink-400">
-                Best next purchase
-              </h3>
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <h3 className="text-[11px] uppercase tracking-widest text-ink-400">
+                  Best next purchase
+                </h3>
+                <div className="flex overflow-hidden rounded-lg border border-ink-700">
+                  {(
+                    [
+                      { key: "value", label: "By value" },
+                      { key: "raw", label: "By raw gain" },
+                    ] as const
+                  ).map((opt) => (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      onClick={() => setPurchaseRanking(opt.key)}
+                      className={clsx(
+                        "px-2.5 py-1 text-[10px] font-medium transition",
+                        purchaseRanking === opt.key
+                          ? "bg-amber-brand text-ink-950"
+                          : "bg-ink-900 text-ink-400 hover:bg-ink-850 hover:text-ink-200",
+                      )}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <p className="mb-2 text-[11px] text-ink-500">
-                Top 10 unowned items simulated on top of this build, ranked by raw{" "}
-                {metric.label.toLowerCase()} gained per 1,000 souls.
+                {purchaseRanking === "value" ? (
+                  <>
+                    Top 10 unowned items simulated on top of this build, ranked by raw{" "}
+                    {metric.label.toLowerCase()} gained per 1,000 souls.
+                  </>
+                ) : (
+                  <>
+                    Top 10 unowned items simulated on top of this build, ranked by raw{" "}
+                    {metric.label.toLowerCase()} gained — the biggest gain, cost aside.
+                  </>
+                )}
               </p>
               <ul className="space-y-1.5">
                 {candidates.map((c, i) => (
@@ -762,10 +800,20 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                   >
                     <ItemIcon item={c.item} size="sm" />
                     <span className="min-w-0 flex-1 truncate text-[13px] font-medium">{c.item.name}</span>
-                    <span className="tnum text-[12px] text-ink-400">
+                    <span
+                      className={clsx(
+                        "tnum text-[12px]",
+                        purchaseRanking === "raw" ? "font-semibold text-amber-brand" : "text-ink-400",
+                      )}
+                    >
                       {formatMetric(metric, c.delta)}
                     </span>
-                    <span className="tnum w-24 text-right text-[12px] font-semibold text-amber-brand">
+                    <span
+                      className={clsx(
+                        "tnum w-24 text-right text-[12px]",
+                        purchaseRanking === "value" ? "font-semibold text-amber-brand" : "text-ink-400",
+                      )}
+                    >
                       {formatMetric(metric, c.deltaPer1kSouls)}
                       <span className="text-[10px] font-normal text-ink-500"> /1k</span>
                     </span>

@@ -411,13 +411,18 @@ export function itemContributions(
   return rows.sort((a, b) => b.deltaPer1kSouls - a.deltaPer1kSouls);
 }
 
+/** Whether `purchaseCandidates` ranks by raw metric gain or by value per soul. */
+export type PurchaseRanking = "value" | "raw";
+
 /**
- * What each *unowned* item would add if bought next, sorted by raw value per
- * soul (`deltaPer1kSouls`) — no net-worth-stage weighting on top of it, so a
- * cheap item's true ratio is judged exactly as computed, never re-scaled
- * because the build happens to be at a high or low souls figure. The
- * counterpart to `itemContributions`, and the basis of the "what to buy
- * next" suggestion list.
+ * What each *unowned* item would add if bought next. Ranked by `rankBy`:
+ * `"value"` sorts on raw value per soul (`deltaPer1kSouls`) — no
+ * net-worth-stage weighting on top of it, so a cheap item's true ratio is
+ * judged exactly as computed, never re-scaled because the build happens to
+ * be at a high or low souls figure — while `"raw"` sorts on the metric gain
+ * itself (`delta`), for "which item moves the needle most" regardless of
+ * cost. The counterpart to `itemContributions`, and the basis of the "what
+ * to buy next" suggestion list.
  *
  * Each candidate is inserted right after the items currently held — not
  * appended after the rest of the plan's still-pending purchases — and only
@@ -435,6 +440,7 @@ export function purchaseCandidates(
   metricKey: string,
   limit = 12,
   stackAssumption: StackAssumption = "full",
+  rankBy: PurchaseRanking = "value",
 ): ItemContribution[] {
   const metric = METRIC_BY_KEY[metricKey] ?? METRICS[0];
   const bySlug = new Map(ctx.items.map((i) => [i.slug, i]));
@@ -491,5 +497,7 @@ export function purchaseCandidates(
       cost: netCost,
     });
   }
-  return rows.sort((a, b) => b.deltaPer1kSouls - a.deltaPer1kSouls).slice(0, limit);
+  return rows
+    .sort((a, b) => (rankBy === "raw" ? b.delta - a.delta : b.deltaPer1kSouls - a.deltaPer1kSouls))
+    .slice(0, limit);
 }

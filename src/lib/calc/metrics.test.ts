@@ -197,4 +197,17 @@ describe("purchaseCandidates", () => {
     const sorted = [...rows].sort((a, b) => b.deltaPer1kSouls - a.deltaPer1kSouls);
     expect(rows.map((r) => r.item.slug)).toEqual(sorted.map((r) => r.item.slug));
   });
+
+  it("switches to ranking by raw gain when rankBy is 'raw'", () => {
+    const build = createBuild({ items: [createBuildItem(closeQuarters)], soulsEarned: 62800 });
+    const byValue = purchaseCandidates(build, ctx, "health", 100, "full", "value");
+    const byRaw = purchaseCandidates(build, ctx, "health", 100, "full", "raw");
+    const sortedByValue = [...byValue].sort((a, b) => b.deltaPer1kSouls - a.deltaPer1kSouls);
+    const sortedByRaw = [...byRaw].sort((a, b) => b.delta - a.delta);
+    expect(byValue.map((r) => r.item.slug)).toEqual(sortedByValue.map((r) => r.item.slug));
+    expect(byRaw.map((r) => r.item.slug)).toEqual(sortedByRaw.map((r) => r.item.slug));
+    // The two orderings actually differ for a real catalogue - otherwise the
+    // toggle wouldn't do anything.
+    expect(byValue.map((r) => r.item.slug)).not.toEqual(byRaw.map((r) => r.item.slug));
+  });
 });
