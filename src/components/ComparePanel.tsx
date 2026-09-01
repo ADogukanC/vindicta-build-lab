@@ -763,7 +763,7 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                     <span className="min-w-0 flex-1 truncate text-[13px] font-medium">{c.item.name}</span>
                     <span
                       className={clsx(
-                        "tnum text-[12px]",
+                        "tnum w-16 text-right text-[12px]",
                         purchaseRanking === "raw" ? "font-semibold text-amber-brand" : "text-ink-400",
                       )}
                     >
@@ -839,7 +839,7 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                     <span className="min-w-0 flex-1 truncate text-[13px] font-medium">{c.item.name}</span>
                     <span
                       className={clsx(
-                        "tnum text-[12px]",
+                        "tnum w-16 text-right text-[12px]",
                         purchaseRanking === "raw" ? "font-semibold text-amber-brand" : "text-ink-400",
                       )}
                     >
