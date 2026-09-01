@@ -360,12 +360,26 @@ export function deriveAbilityUpgradesFromApOrder(
   return taken;
 }
 
-export function calculateBuild(build: Build, ctx: CalcContext): CalcResult {
+export interface CalculateBuildOptions {
+  /**
+   * Overrides the 12-slot cap that forces an (often nonsensical) auto-sell
+   * once a plan runs out of room. Used by `purchaseCandidates` to evaluate a
+   * hypothetical purchase's own value without it being contaminated by a
+   * guessed sell of some unrelated held item — see metrics.ts.
+   */
+  maxSlots?: number;
+}
+
+export function calculateBuild(
+  build: Build,
+  ctx: CalcContext,
+  options?: CalculateBuildOptions,
+): CalcResult {
   const { hero, items, progression } = ctx;
   const warnings: string[] = [];
 
   // Which purchases have happened by this point in the match.
-  const timeline = simulateTimeline(build, items, build.soulsEarned);
+  const timeline = simulateTimeline(build, items, build.soulsEarned, options?.maxSlots);
   warnings.push(...timeline.warnings);
   const resolved = resolveItems(build, items, timeline.held);
 

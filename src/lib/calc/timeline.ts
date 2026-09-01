@@ -82,7 +82,11 @@ export interface TimelineResult {
 }
 
 /** Plans the full sequence once, independent of how far along it you are. */
-export function planTimeline(build: Build, items: Item[]): {
+export function planTimeline(
+  build: Build,
+  items: Item[],
+  maxSlots: number = MAX_ITEM_SLOTS,
+): {
   transactions: TimelineTransaction[];
   warnings: string[];
 } {
@@ -116,7 +120,7 @@ export function planTimeline(build: Build, items: Item[]): {
     netCost = Math.max(0, netCost);
 
     // Free a slot if all twelve are full.
-    while (held.length >= MAX_ITEM_SLOTS) {
+    while (held.length >= maxSlots) {
       let sellSlug = sellQueue.find((slug) => held.includes(slug));
       let assumed = false;
       if (sellSlug) {
@@ -177,10 +181,11 @@ export function simulateTimeline(
   build: Build,
   items: Item[],
   soulsEarned: number,
+  maxSlots: number = MAX_ITEM_SLOTS,
 ): TimelineResult {
   const bySlug = new Map(items.map((i) => [i.slug, i]));
   const entryBySlug = new Map(build.items.map((entry) => [entry.slug, entry]));
-  const { transactions, warnings } = planTimeline(build, items);
+  const { transactions, warnings } = planTimeline(build, items, maxSlots);
 
   const completed = transactions.filter((t) => t.threshold <= soulsEarned);
   const reached = new Set(completed.map((t) => t.index));
@@ -233,7 +238,7 @@ export function simulateTimeline(
 }
 
 /** The souls-earned figure at which the whole plan is complete. */
-export function planCost(build: Build, items: Item[]): number {
-  const { transactions } = planTimeline(build, items);
+export function planCost(build: Build, items: Item[], maxSlots: number = MAX_ITEM_SLOTS): number {
+  const { transactions } = planTimeline(build, items, maxSlots);
   return transactions[transactions.length - 1]?.threshold ?? 0;
 }

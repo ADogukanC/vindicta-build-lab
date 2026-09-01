@@ -12,6 +12,13 @@ import { addItemToBuild } from "../build";
 import { planCost } from "./timeline";
 
 /**
+ * Passed as `maxSlots` when evaluating a purchase candidate, so a loadout
+ * already at 12 items doesn't force the timeline to auto-sell an unrelated
+ * held item just to make room - see the comment in `purchaseCandidates`.
+ */
+const UNLIMITED_SLOTS = Number.POSITIVE_INFINITY;
+
+/**
  * How to size a stacking item's stack count when judging its value. Real
  * stack uptime varies build to build and moment to moment (kill stacks,
  * debuff stacks that fall off, …), so the value-per-soul section lets the
@@ -456,11 +463,16 @@ export function purchaseCandidates(
       ...withItemAssumed,
       // Give the plan enough souls to actually reach this one purchase, but
       // never fewer than what the player already has.
-      soulsEarned: Math.max(build.soulsEarned, planCost(withItemAssumed, ctx.items)),
+      soulsEarned: Math.max(build.soulsEarned, planCost(withItemAssumed, ctx.items, UNLIMITED_SLOTS)),
       boonsFromSouls: false,
       boons: baselineResult.boons,
     };
-    const after = calculateBuild(candidate, ctx);
+    // A held loadout already at 12 items would otherwise force the timeline
+    // to auto-sell whatever was bought earliest just to make room, drowning
+    // the candidate's own value in the unrelated item it "sold". This is a
+    // "what does this item add" question, not a "what would I sell for it"
+    // one, so the slot cap is lifted for this one hypothetical evaluation.
+    const after = calculateBuild(candidate, ctx, { maxSlots: UNLIMITED_SLOTS });
     const netCost = Math.max(0, after.timeline.soulsSpent - baselineSpent);
     const delta = metric.get(after) - baseline;
     if (Math.abs(delta) < 1e-9) continue;

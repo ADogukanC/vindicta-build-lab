@@ -122,6 +122,28 @@ describe("purchaseCandidates", () => {
     expect(half!.delta).toBeLessThan(full!.delta);
   });
 
+  it("doesn't contaminate a candidate's value with an unrelated auto-sell when the loadout is already full", () => {
+    // Twelve held items - a real build reaching max souls will often be at
+    // the 12-slot cap. Without a sell order, buying a 13th item there
+    // normally forces the timeline to auto-sell whatever was bought first
+    // just to make room, and that unrelated loss used to swamp the
+    // candidate's own number. Evaluating "what should I buy next" is a
+    // hypothetical, not a concrete sell decision, so the slot cap must be
+    // lifted for this one simulation.
+    const fillers = SEED_ITEMS.filter((i) => i.enabled && i.slug !== "extra-health").slice(0, 12);
+    const build = createBuild({
+      items: fillers.map((i) => createBuildItem(i)),
+      soulsEarned: 100000,
+    });
+    const candidate = purchaseCandidates(build, ctx, "health", 100).find(
+      (c) => c.item.slug === "extra-health",
+    );
+    expect(candidate).toBeDefined();
+    // Extra Health only ever adds health - a leftover slot-cap bug would show
+    // a large negative number here instead, from auto-selling a filler item.
+    expect(candidate!.delta).toBeGreaterThan(0);
+  });
+
   it("ranks candidates purely by raw value per soul, with no net-worth-stage weighting", () => {
     // At a late-game souls figure, a net-worth-weighted floor would have
     // penalised cheap items in the ranking. With that gone, the returned
