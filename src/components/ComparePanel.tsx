@@ -761,23 +761,25 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                   >
                     <ItemIcon item={c.item} size="sm" />
                     <span className="min-w-0 flex-1 truncate text-[13px] font-medium">{c.item.name}</span>
-                    <span
-                      className={clsx(
-                        "tnum w-16 text-right text-[12px]",
-                        purchaseRanking === "raw" ? "font-semibold text-amber-brand" : "text-ink-400",
-                      )}
-                    >
-                      {formatMetric(metric, c.delta)}
-                    </span>
-                    <span
-                      className={clsx(
-                        "tnum w-24 text-right text-[12px]",
-                        purchaseRanking === "value" ? "font-semibold text-amber-brand" : "text-ink-400",
-                      )}
-                    >
-                      {formatMetric(metric, c.deltaPer1kSouls)}
-                      <span className="text-[10px] font-normal text-ink-500"> /1k</span>
-                    </span>
+                    <div className="flex w-32 items-center justify-between">
+                      <span
+                        className={clsx(
+                          "tnum text-left text-[12px]",
+                          purchaseRanking === "raw" ? "font-semibold text-amber-brand" : "text-ink-400",
+                        )}
+                      >
+                        {formatMetric(metric, c.delta)}
+                      </span>
+                      <span
+                        className={clsx(
+                          "tnum text-right text-[12px]",
+                          purchaseRanking === "value" ? "font-semibold text-amber-brand" : "text-ink-400",
+                        )}
+                      >
+                        {formatMetric(metric, c.deltaPer1kSouls)}
+                        <span className="text-[10px] font-normal text-ink-500"> /1k</span>
+                      </span>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -837,23 +839,25 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                   >
                     <ItemIcon item={c.item} size="sm" />
                     <span className="min-w-0 flex-1 truncate text-[13px] font-medium">{c.item.name}</span>
-                    <span
-                      className={clsx(
-                        "tnum w-16 text-right text-[12px]",
-                        purchaseRanking === "raw" ? "font-semibold text-amber-brand" : "text-ink-400",
-                      )}
-                    >
-                      {formatMetric(metric, c.delta)}
-                    </span>
-                    <span
-                      className={clsx(
-                        "tnum w-24 text-right text-[12px]",
-                        purchaseRanking === "value" ? "font-semibold text-amber-brand" : "text-ink-400",
-                      )}
-                    >
-                      {formatMetric(metric, c.deltaPer1kSouls)}
-                      <span className="text-[10px] font-normal text-ink-500"> /1k</span>
-                    </span>
+                    <div className="flex w-32 items-center justify-between">
+                      <span
+                        className={clsx(
+                          "tnum text-left text-[12px]",
+                          purchaseRanking === "raw" ? "font-semibold text-amber-brand" : "text-ink-400",
+                        )}
+                      >
+                        {formatMetric(metric, c.delta)}
+                      </span>
+                      <span
+                        className={clsx(
+                          "tnum text-right text-[12px]",
+                          purchaseRanking === "value" ? "font-semibold text-amber-brand" : "text-ink-400",
+                        )}
+                      >
+                        {formatMetric(metric, c.deltaPer1kSouls)}
+                        <span className="text-[10px] font-normal text-ink-500"> /1k</span>
+                      </span>
+                    </div>
                   </li>
                 ))}
               </ul>
