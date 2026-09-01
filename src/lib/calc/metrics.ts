@@ -405,9 +405,13 @@ export function itemContributions(
 }
 
 /**
- * What each *unowned* item would add if bought next, sorted by value per soul.
- * The counterpart to `itemContributions`, and the basis of the "what to buy
- * next" suggestion list.
+ * What each *unowned* item would add if bought next, sorted by raw value —
+ * the biggest metric gain first, not the best per-soul ratio. The counterpart
+ * to `itemContributions`, and the basis of the "what to buy next" suggestion
+ * list: this answers "which item moves the needle most right now", the
+ * question a "top 10" leaderboard is for, not "which item is the most
+ * efficient use of souls at this exact net worth". `deltaPer1kSouls` is still
+ * returned on each row for display, it just is not what orders them.
  *
  * Each candidate is inserted right after the items currently held — not
  * appended after the rest of the plan's still-pending purchases — and only
@@ -468,5 +472,9 @@ export function purchaseCandidates(
       cost: netCost,
     });
   }
-  return rows.sort((a, b) => b.deltaPer1kSouls - a.deltaPer1kSouls).slice(0, limit);
+  // Ranked by raw value, not value per soul: this is "what actually moves the
+  // metric most if bought next", not a cost-efficiency ratio - a cheap item
+  // with a great ratio but a tiny absolute gain should not outrank a big
+  // pricier upgrade here.
+  return rows.sort((a, b) => b.delta - a.delta).slice(0, limit);
 }
