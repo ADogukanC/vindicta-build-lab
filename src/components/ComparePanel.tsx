@@ -654,6 +654,29 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
             </select>
           </header>
           <div className="flex flex-wrap items-center gap-3 border-b border-ink-800 bg-ink-900/60 px-4 py-2.5">
+            <span className="text-[10px] uppercase tracking-wider text-ink-400">DPS metric</span>
+            <div className="flex overflow-hidden rounded-lg border border-ink-700">
+              {(
+                [
+                  { key: "groundDps", label: "Ground DPS" },
+                  { key: "flightDps", label: "Flight DPS" },
+                ] as const
+              ).map((opt) => (
+                <button
+                  key={opt.key}
+                  type="button"
+                  onClick={() => setMetricKey(opt.key)}
+                  className={clsx(
+                    "px-3 py-1 text-[11px] font-medium transition",
+                    metricKey === opt.key
+                      ? "bg-amber-brand text-ink-950"
+                      : "bg-ink-900 text-ink-400 hover:bg-ink-850 hover:text-ink-200",
+                  )}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
             <span className="text-[10px] uppercase tracking-wider text-ink-400">
               Stack assumption
             </span>
