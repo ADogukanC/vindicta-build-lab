@@ -122,14 +122,14 @@ describe("purchaseCandidates", () => {
     expect(half!.delta).toBeLessThan(full!.delta);
   });
 
-  it("ranks candidates by raw value gained, not by value per soul", () => {
-    // This is a "biggest gain" leaderboard, not a cost-efficiency ranking:
-    // the returned order must match a plain sort on the candidates' own raw
-    // delta, not their deltaPer1kSouls ratio - a cheap item with a great
-    // ratio but a tiny absolute gain should not outrank a bigger upgrade.
+  it("ranks candidates purely by raw value per soul, with no net-worth-stage weighting", () => {
+    // At a late-game souls figure, a net-worth-weighted floor would have
+    // penalised cheap items in the ranking. With that gone, the returned
+    // order must exactly match a plain sort on the candidates' own
+    // deltaPer1kSouls, unweighted by the build's souls-earned figure.
     const build = createBuild({ items: [createBuildItem(closeQuarters)], soulsEarned: 62800 });
     const rows = purchaseCandidates(build, ctx, "health", 100);
-    const sorted = [...rows].sort((a, b) => b.delta - a.delta);
+    const sorted = [...rows].sort((a, b) => b.deltaPer1kSouls - a.deltaPer1kSouls);
     expect(rows.map((r) => r.item.slug)).toEqual(sorted.map((r) => r.item.slug));
   });
 });

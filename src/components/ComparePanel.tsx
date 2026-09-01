@@ -724,8 +724,7 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
               </h3>
               <p className="mb-2 text-[11px] text-ink-500">
                 Top 10 unowned items simulated on top of this build, ranked by raw{" "}
-                {metric.label.toLowerCase()} gained — the biggest gain, not the best per-soul
-                ratio.
+                {metric.label.toLowerCase()} gained per 1,000 souls.
               </p>
               <ul className="space-y-1.5">
                 {candidates.map((c, i) => (
@@ -741,11 +740,11 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
                     <ItemIcon item={c.item} size="sm" />
                     <span className="min-w-0 flex-1 truncate text-[13px] font-medium">{c.item.name}</span>
                     <span className="tnum text-[12px] text-ink-400">
+                      {formatMetric(metric, c.delta)}
+                    </span>
+                    <span className="tnum w-24 text-right text-[12px] font-semibold text-amber-brand">
                       {formatMetric(metric, c.deltaPer1kSouls)}
                       <span className="text-[10px] font-normal text-ink-500"> /1k</span>
-                    </span>
-                    <span className="tnum w-20 text-right text-[12px] font-semibold text-amber-brand">
-                      {formatMetric(metric, c.delta)}
                     </span>
                   </li>
                 ))}
