@@ -50,14 +50,14 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   const [valueBuildId, setValueBuildId] = useState<string | null>(null);
   // One souls-earned figure drives every build here, so the comparison is
   // always at an equal point in the match rather than each build's own.
-  const [souls, setSouls] = useState(50000);
+  const [souls, setSouls] = useState(MAX_SOULS);
   // Headshot rate is an assumption about play, so it has to be the same for
   // every build or the comparison is measuring two different players.
-  const [headshotRate, setHeadshotRate] = useState(0);
+  const [headshotRate, setHeadshotRate] = useState(10);
   // Same reasoning for snipe stacks: how many kills you've banked is a
   // playstyle/match assumption, not something one build "has" and another
   // doesn't, so every build is measured holding the same count.
-  const [snipeStacks, setSnipeStacks] = useState(0);
+  const [snipeStacks, setSnipeStacks] = useState(10);
   // Same reasoning for the target's resist: it describes who you're fighting,
   // not any one build, so every build has to be measured against the same one.
   const [enemyBulletResistPct, setEnemyBulletResistPct] = useState(0);
