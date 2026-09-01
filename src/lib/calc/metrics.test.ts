@@ -9,7 +9,7 @@
 import { describe, expect, it } from "vitest";
 import { SEED_HERO, SEED_ITEMS, SEED_PROGRESSION } from "../data/seed";
 import { createBuild, createBuildItem } from "../build";
-import type { Item } from "../types";
+import type { BuildItem, Item } from "../types";
 import {
   itemContributions,
   purchaseCandidates,
@@ -24,6 +24,9 @@ const closeQuarters = bySlug.get("close-quarters")!;
 const extendedMagazine = bySlug.get("extended-magazine")!;
 const cheatDeath = bySlug.get("cheat-death")!; // 6400 souls, well past the souls figure below
 const extraHealth = bySlug.get("extra-health")!;
+// Fire rate only from a conditional (defaults off) per-stack bonus — a good
+// probe for the active/stack assumption behaviour below.
+const glassCannon = bySlug.get("glass-cannon")!;
 
 describe("itemContributions", () => {
   it("only scores items actually held at the build's souls figure", () => {
@@ -35,6 +38,16 @@ describe("itemContributions", () => {
     });
     const rows = itemContributions(build, ctx, "groundDps");
     expect(rows.map((r) => r.item.slug).sort()).toEqual(["close-quarters", "extended-magazine"]);
+  });
+
+  it("forces a held conditional item's bonus on even if the saved build has it toggled off", () => {
+    // Glass Cannon's fire rate lives entirely behind a conditional the item
+    // defaults to off; a saved build sitting on that default should not zero
+    // out its own value-per-soul figure.
+    const entry: BuildItem = { ...createBuildItem(glassCannon), active: false };
+    const build = createBuild({ items: [entry], soulsEarned: 50000 });
+    const row = itemContributions(build, ctx, "fireRate", "full").find((r) => r.item.slug === "glass-cannon");
+    expect(row?.delta).toBeGreaterThan(0);
   });
 });
 
@@ -86,6 +99,33 @@ describe("purchaseCandidates", () => {
     // by more than a single copy of the item's own bonus could explain.
     expect(withoutBump.delta).toBeLessThan(300);
     expect(withoutBump.delta).toBeGreaterThan(0);
+  });
+
+  it("assumes an unowned conditional item is active and honors the stack assumption toggle", () => {
+    const build = createBuild({ items: [createBuildItem(closeQuarters)], soulsEarned: 50000 });
+
+    const full = purchaseCandidates(build, ctx, "fireRate", 200, "full").find(
+      (c) => c.item.slug === "glass-cannon",
+    );
+    // Glass Cannon's only fire rate comes from its per-stack bonus, gated
+    // behind a conditional the item defaults to *off* - "what should I buy
+    // next" must assume it's actually used, or the item's whole value here
+    // vanishes from the ranking.
+    expect(full?.delta).toBeGreaterThan(0);
+
+    // At "no stacks" the per-stack bonus is zero regardless of the forced
+    // active toggle, so the item contributes nothing to fire rate and drops
+    // out of the candidate list entirely.
+    const none = purchaseCandidates(build, ctx, "fireRate", 200, "none").find(
+      (c) => c.item.slug === "glass-cannon",
+    );
+    expect(none).toBeUndefined();
+
+    const half = purchaseCandidates(build, ctx, "fireRate", 200, "half").find(
+      (c) => c.item.slug === "glass-cannon",
+    );
+    expect(half?.delta).toBeGreaterThan(0);
+    expect(half!.delta).toBeLessThan(full!.delta);
   });
 });
 

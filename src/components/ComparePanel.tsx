@@ -20,7 +20,13 @@ import {
 import Link from "next/link";
 import { useBuilds } from "@/lib/store/useBuilds";
 import { calculateBuild, falloffCurve } from "@/lib/calc/engine";
-import { METRICS, formatMetric, itemContributions, purchaseCandidates } from "@/lib/calc/metrics";
+import {
+  METRICS,
+  formatMetric,
+  itemContributions,
+  purchaseCandidates,
+  type StackAssumption,
+} from "@/lib/calc/metrics";
 import type { CalcContext } from "@/lib/types";
 import { fmtDelta, fmtInt, fmtPct } from "@/lib/format";
 import { ItemIcon } from "./ItemIcon";
@@ -56,6 +62,11 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   // not any one build, so every build has to be measured against the same one.
   const [enemyBulletResistPct, setEnemyBulletResistPct] = useState(0);
   const [enemySpiritResistPct, setEnemySpiritResistPct] = useState(0);
+  // How hard to assume stacking items are stacked in the value-per-soul
+  // section below. Real uptime varies build to build, so this is a toggle
+  // rather than a silent guess; conditional items' situational bonuses are
+  // always assumed active there regardless (see metrics.ts).
+  const [stackAssumption, setStackAssumption] = useState<StackAssumption>("full");
 
   useEffect(() => {
     void store.hydrate();
@@ -152,12 +163,12 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   );
 
   const contributions = useMemo(
-    () => (valueBuild ? itemContributions(valueBuild, ctx, metricKey) : []),
-    [valueBuild, ctx, metricKey],
+    () => (valueBuild ? itemContributions(valueBuild, ctx, metricKey, stackAssumption) : []),
+    [valueBuild, ctx, metricKey, stackAssumption],
   );
   const candidates = useMemo(
-    () => (valueBuild ? purchaseCandidates(valueBuild, ctx, metricKey, 10) : []),
-    [valueBuild, ctx, metricKey],
+    () => (valueBuild ? purchaseCandidates(valueBuild, ctx, metricKey, 10, stackAssumption) : []),
+    [valueBuild, ctx, metricKey, stackAssumption],
   );
 
   if (!store.hydrated) {
@@ -641,6 +652,39 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
               ))}
             </select>
           </header>
+          <div className="flex flex-wrap items-center gap-3 border-b border-ink-800 bg-ink-900/60 px-4 py-2.5">
+            <span className="text-[10px] uppercase tracking-wider text-ink-400">
+              Stack assumption
+            </span>
+            <div className="flex overflow-hidden rounded-lg border border-ink-700">
+              {(
+                [
+                  { key: "none", label: "No stacks" },
+                  { key: "half", label: "Half stacks" },
+                  { key: "full", label: "Full stacks" },
+                ] as const
+              ).map((opt) => (
+                <button
+                  key={opt.key}
+                  type="button"
+                  onClick={() => setStackAssumption(opt.key)}
+                  className={clsx(
+                    "px-3 py-1 text-[11px] font-medium transition",
+                    stackAssumption === opt.key
+                      ? "bg-amber-brand text-ink-950"
+                      : "bg-ink-900 text-ink-400 hover:bg-ink-850 hover:text-ink-200",
+                  )}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            <span className="text-[11px] text-ink-500">
+              How stacked items like Glass Cannon or Spirit Rend are assumed to be below.
+              Situational bonuses (procs, buff windows) are always assumed active — see how
+              much each item is worth when you actually get to use it.
+            </span>
+          </div>
           <div className="grid gap-4 p-3 lg:grid-cols-2">
             <div>
               <h3 className="mb-2 text-[11px] uppercase tracking-wider text-ink-300">

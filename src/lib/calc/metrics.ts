@@ -7,9 +7,53 @@
  */
 import type { CalcResult } from "./engine";
 import { calculateBuild } from "./engine";
-import type { Build, CalcContext, Item } from "../types";
+import type { Build, BuildItem, CalcContext, Item } from "../types";
 import { addItemToBuild } from "../build";
 import { planCost } from "./timeline";
+
+/**
+ * How to size a stacking item's stack count when judging its value. Real
+ * stack uptime varies build to build and moment to moment (kill stacks,
+ * debuff stacks that fall off, …), so the value-per-soul section lets the
+ * user pick the assumption rather than silently defaulting to one.
+ */
+export type StackAssumption = "none" | "half" | "full";
+
+function stacksForAssumption(maxStacks: number | undefined, assumption: StackAssumption): number {
+  if (!maxStacks) return 0;
+  if (assumption === "none") return 0;
+  if (assumption === "half") return Math.round(maxStacks / 2);
+  return maxStacks;
+}
+
+/**
+ * Forces every conditional item's situational bonus on, and every stacking
+ * item's stack count to the chosen assumption. Value-per-soul is a decision
+ * tool answering "is this worth buying" - judging it by whatever a saved
+ * build's toggles or stack sliders happen to be sitting at (often just left
+ * at the item's own default, which is *off* for cooldown-gated procs per the
+ * item-authoring rule in calc/CLAUDE.md) systematically undercounts items
+ * whose value lives behind a toggle, which is exactly backwards for a "what
+ * should I buy" ranking.
+ */
+function withAssumptions(
+  entries: BuildItem[],
+  itemsBySlug: Map<string, Item>,
+  stackAssumption: StackAssumption,
+): BuildItem[] {
+  return entries.map((entry) => {
+    const item = itemsBySlug.get(entry.slug);
+    if (!item) return entry;
+    return {
+      ...entry,
+      active: item.conditional ? true : entry.active,
+      stacks: item.maxStacks ? stacksForAssumption(item.maxStacks, stackAssumption) : entry.stacks,
+      stacksSecondary: item.maxStacksSecondary
+        ? stacksForAssumption(item.maxStacksSecondary, stackAssumption)
+        : entry.stacksSecondary,
+    };
+  });
+}
 
 export type MetricUnit = "flat" | "dps" | "souls" | "percent" | "seconds" | "mps";
 
@@ -334,18 +378,20 @@ export function itemContributions(
   build: Build,
   ctx: CalcContext,
   metricKey: string,
+  stackAssumption: StackAssumption = "full",
 ): ItemContribution[] {
   const metric = METRIC_BY_KEY[metricKey] ?? METRICS[0];
-  const baselineResult = calculateBuild(build, ctx);
-  const baseline = metric.get(baselineResult);
   const bySlug = new Map(ctx.items.map((i) => [i.slug, i]));
+  const assumedBuild: Build = { ...build, items: withAssumptions(build.items, bySlug, stackAssumption) };
+  const baselineResult = calculateBuild(assumedBuild, ctx);
+  const baseline = metric.get(baselineResult);
   const held = baselineResult.timeline.held;
 
   const rows: ItemContribution[] = [];
   for (const entry of held) {
     const item = bySlug.get(entry.slug);
     if (!item) continue;
-    const withoutBuild: Build = { ...build, items: held.filter((h) => h.slug !== entry.slug) };
+    const withoutBuild: Build = { ...assumedBuild, items: held.filter((h) => h.slug !== entry.slug) };
     const without = metric.get(calculateBuild(withoutBuild, ctx));
     const delta = baseline - without;
     rows.push({
@@ -419,9 +465,12 @@ export function purchaseCandidates(
   ctx: CalcContext,
   metricKey: string,
   limit = 12,
+  stackAssumption: StackAssumption = "full",
 ): ItemContribution[] {
   const metric = METRIC_BY_KEY[metricKey] ?? METRICS[0];
-  const baselineResult = calculateBuild(build, ctx);
+  const bySlug = new Map(ctx.items.map((i) => [i.slug, i]));
+  const assumedBuild: Build = { ...build, items: withAssumptions(build.items, bySlug, stackAssumption) };
+  const baselineResult = calculateBuild(assumedBuild, ctx);
   const baseline = metric.get(baselineResult);
   const baselineSpent = baselineResult.timeline.soulsSpent;
   const held = baselineResult.timeline.held;
@@ -435,12 +484,17 @@ export function purchaseCandidates(
     // Appending the purchase right after the held loadout and re-running the
     // timeline prices it the way the game does: components already held are
     // absorbed, so the true cost is the difference, not the sticker price.
-    const withItem = addItemToBuild({ ...build, items: held }, item);
+    // The candidate itself is a fresh BuildItem seeded from the item's own
+    // defaults, so it needs the same assumption pass as everything else -
+    // otherwise a cooldown-gated proc item would price its own conditional
+    // bonus at off even though every held item was just forced on.
+    const withItem = addItemToBuild({ ...assumedBuild, items: held }, item);
+    const withItemAssumed: Build = { ...withItem, items: withAssumptions(withItem.items, bySlug, stackAssumption) };
     const candidate: Build = {
-      ...withItem,
+      ...withItemAssumed,
       // Give the plan enough souls to actually reach this one purchase, but
       // never fewer than what the player already has.
-      soulsEarned: Math.max(build.soulsEarned, planCost(withItem, ctx.items)),
+      soulsEarned: Math.max(build.soulsEarned, planCost(withItemAssumed, ctx.items)),
       boonsFromSouls: false,
       boons: baselineResult.boons,
     };
