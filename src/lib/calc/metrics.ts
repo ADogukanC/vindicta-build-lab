@@ -441,8 +441,16 @@ export function purchaseCandidates(
   const assumedBuild: Build = { ...build, items: withAssumptions(build.items, bySlug, stackAssumption) };
   const baselineResult = calculateBuild(assumedBuild, ctx);
   const baseline = metric.get(baselineResult);
-  const baselineSpent = baselineResult.timeline.soulsSpent;
   const held = baselineResult.timeline.held;
+  // The real plan's own soulsSpent is gross spend over its whole purchase
+  // history, including anything bought and later sold to free a slot - once
+  // a build has sold even one item, that figure runs well above what the
+  // loadout it's currently holding actually costs. A candidate's netCost
+  // below is computed the same isolated way (just the held items, replayed
+  // fresh), so the baseline it's compared against has to be priced the same
+  // way, or every candidate's netCost silently floors to 0 and its ranking
+  // number vanishes.
+  const baselineSpent = calculateBuild({ ...assumedBuild, items: held }, ctx).timeline.soulsSpent;
   // Anything already in the plan - held or still pending - is not a "next
   // purchase" suggestion; it's already spoken for.
   const owned = new Set(build.items.map((i) => i.slug));

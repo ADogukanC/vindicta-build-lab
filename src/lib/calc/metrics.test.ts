@@ -122,6 +122,49 @@ describe("purchaseCandidates", () => {
     expect(half!.delta).toBeLessThan(full!.delta);
   });
 
+  it("prices a candidate off the held loadout's own cost, not the plan's gross historical spend", () => {
+    // Cheat Death (6400 souls) is bought first and then sold to free a slot
+    // for a twelfth item, so the plan's gross historical spend (all thirteen
+    // buys) runs 6400 souls above what the twelve items it's currently
+    // holding are actually worth - the situation any build reaches once it
+    // has sold something pricier than a later candidate on the way to its
+    // current loadout. A candidate's netCost must be priced off the held
+    // loadout alone: pricing it against gross spend instead would make
+    // Extra Health's netCost negative, clamp to 0, and zero out its /1k
+    // ranking number along with every other candidate's. The fillers below
+    // are all standalone (no components field, no upgrade built from one of
+    // the others), so nothing here frees a slot by absorption instead of by
+    // the sell this test means to exercise.
+    const fillerSlugs = [
+      "close-quarters",
+      "extra-regen",
+      "extra-stamina",
+      "grit",
+      "healing-rite",
+      "melee-lifesteal",
+      "rebuttal",
+      "battle-vest",
+      "bullet-lifesteal",
+      "debuff-reducer",
+      "enchanters-emblem",
+      "spirit-lifesteal",
+    ];
+    const fillers = fillerSlugs.map((slug) => bySlug.get(slug)!);
+    const build = createBuild({
+      items: [createBuildItem(cheatDeath), ...fillers.map((i) => createBuildItem(i))],
+      sellOrder: [cheatDeath.slug],
+      soulsEarned: 100000,
+    });
+    const candidate = purchaseCandidates(build, ctx, "health", 100).find(
+      (c) => c.item.slug === "extra-health",
+    );
+    expect(candidate).toBeDefined();
+    // Extra Health's true net cost is its own sticker price (no components
+    // to absorb) - not ~0, and not deflated by the sold Cheat Death.
+    expect(candidate!.cost).toBe(extraHealth.cost);
+    expect(candidate!.deltaPer1kSouls).toBeGreaterThan(0);
+  });
+
   it("doesn't contaminate a candidate's value with an unrelated auto-sell when the loadout is already full", () => {
     // Twelve held items - a real build reaching max souls will often be at
     // the 12-slot cap. Without a sell order, buying a 13th item there
