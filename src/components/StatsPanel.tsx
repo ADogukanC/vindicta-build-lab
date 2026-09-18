@@ -2,7 +2,9 @@
 
 import clsx from "clsx";
 import type { CalcResult, DamageSet } from "@/lib/calc/engine";
+import type { BuildItem, Item } from "@/lib/types";
 import { fmt, fmtInt, fmtPct } from "@/lib/format";
+import { InventoryGrid } from "./InventoryGrid";
 
 function Row({
   label,
@@ -162,6 +164,7 @@ function DamageProfile({
 
 export function StatsPanel({
   result,
+  rows,
   enemyBulletResistPct,
   enemySpiritResistPct,
   onEnemyResistChange,
@@ -169,6 +172,8 @@ export function StatsPanel({
   onShredChange,
 }: {
   result: CalcResult;
+  /** Every purchase in the plan, in buy order — drives the inventory grid. */
+  rows: { item: Item; entry: BuildItem }[];
   enemyBulletResistPct: number;
   enemySpiritResistPct: number;
   onEnemyResistChange: (patch: { enemyBulletResistPct?: number; enemySpiritResistPct?: number }) => void;
@@ -278,6 +283,8 @@ export function StatsPanel({
           <span className="tnum font-semibold text-ink-100">{fmtPct(effectiveSpiritResist, 0)}</span>
         </div>
       </div>
+
+      <InventoryGrid rows={rows} heldSlugs={result.timeline.heldSlugs} itemValue={result.timeline.itemValue} />
 
       <div className="grid grid-cols-2 gap-2 p-3">
         <Headline
