@@ -65,6 +65,7 @@ export function createBuild(partial: Partial<Build> = {}): Build {
     headshotRate: 0,
     enemyBulletResistPct: 0,
     enemySpiritResistPct: 0,
+    enemyHasPlatedArmor: false,
     abilityUpgrades: structuredCloneUpgrades(DEFAULT_ABILITY_UPGRADES),
     apOrder: [],
     crowShredActive: true,

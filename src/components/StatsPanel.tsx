@@ -167,6 +167,7 @@ export function StatsPanel({
   rows,
   enemyBulletResistPct,
   enemySpiritResistPct,
+  enemyHasPlatedArmor,
   onEnemyResistChange,
   shred,
   onShredChange,
@@ -176,7 +177,13 @@ export function StatsPanel({
   rows: { item: Item; entry: BuildItem }[];
   enemyBulletResistPct: number;
   enemySpiritResistPct: number;
-  onEnemyResistChange: (patch: { enemyBulletResistPct?: number; enemySpiritResistPct?: number }) => void;
+  /** Whether the target is holding Plated Armor — see the Build type for what that changes. */
+  enemyHasPlatedArmor: boolean;
+  onEnemyResistChange: (patch: {
+    enemyBulletResistPct?: number;
+    enemySpiritResistPct?: number;
+    enemyHasPlatedArmor?: boolean;
+  }) => void;
   /** Whether the target's resists are being shredded by this build. Lifted so the falloff chart can share it. */
   shred: boolean;
   onShredChange: (shred: boolean) => void;
@@ -269,6 +276,19 @@ export function StatsPanel({
           />
         </label>
       </div>
+
+      <label
+        className="flex items-center gap-1.5 px-3 pt-2 text-[11px] text-ink-300"
+        title="Plated Armor gives the target a chance per bullet to deflect its weapon damage entirely, plus a separate chance to block whatever on-hit effect the bullet would trigger (spirit damage riding on it, procs). Armor Piercing Rounds bypasses both halves of it entirely when it triggers."
+      >
+        <input
+          type="checkbox"
+          className="accent-[var(--color-amber-brand)]"
+          checked={enemyHasPlatedArmor}
+          onChange={(e) => onEnemyResistChange({ enemyHasPlatedArmor: e.target.checked })}
+        />
+        Enemy has Plated Armor
+      </label>
 
       <div
         className="grid grid-cols-2 gap-3 px-3 pt-1 text-[10px] uppercase tracking-wider text-ink-400"

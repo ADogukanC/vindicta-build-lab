@@ -576,6 +576,28 @@ export function calculateBuild(
 
   const bulletResistShred = combineShred(bulletShredParts);
   const spiritResistShred = combineShred(spiritShredParts);
+  // Armor Piercing Rounds' proc makes bullet resist shred combine additively
+  // instead of diminishing (deadlock.wiki: "2 sources of 50% shred will count
+  // as 100% shred whereas normally it would be counted as 75%") - a straight
+  // sum of the same per-source values `combineShred` above blends the normal
+  // way. Equal to `bulletResistShred` whenever there is 0 or 1 source, so a
+  // pierce only ever helps, never hurts, and does nothing extra when there is
+  // nothing to re-combine.
+  const bulletResistShredAdditive = bulletShredParts.reduce((sum, v) => sum + v, 0);
+
+  // Armor Piercing Rounds: a chance for the gun's own bullets to become
+  // "unavoidable", ignoring the target's Bullet Resistance outright (not a
+  // blend toward "no resist AND no shred" - your own shred still applies, on
+  // top of the target's own resist being zeroed, via the additive combination
+  // above). Computed here, ahead of the resist multipliers below, because
+  // both the weapon-resist and Plated Armor calculations need it.
+  let armorPierceChance = 0;
+  for (const r of resolved) {
+    if (!r.item.ignoresBulletResist) continue;
+    const stats: StatBag = { ...(r.item.stats ?? {}) };
+    if (r.contributing) addStats(stats, r.item.conditionalStats);
+    armorPierceChance = Math.max(armorPierceChance, statValue(stats, "procChancePct") / 100);
+  }
 
   // Deadlock resist: damage taken = raw x (1 - resist), and shred subtracts
   // straight off the target's resist rather than being its own multiplier
@@ -592,6 +614,42 @@ export function calculateBuild(
   const spiritResistMul = Math.max(0, 1 - enemySpiritResist + spiritResistShred);
   const bulletNoShredMul = Math.max(0, 1 - enemyBulletResist);
   const spiritNoShredMul = Math.max(0, 1 - enemySpiritResist);
+  // A pierced bullet's target-resist term is 0 (ignored outright) rather than
+  // `enemyBulletResist`, with your own shred still applied - now combined
+  // additively per the item's own mechanic, always >= 0, so this is always
+  // >= 1: a pierce can never deal *less* than fully-unresisted damage.
+  const piercedBulletResistMul = 1 + bulletResistShredAdditive;
+  // "Raw" already excludes your own shred by definition, and the target's
+  // resist is ignored on a pierce, so there is nothing left to reduce it.
+  const piercedBulletNoShredMul = 1;
+
+  // Plated Armor is the *target's* own gear, not Vindicta's, so it can't live
+  // in the item stat pipeline like everything else — read straight off the
+  // item's own info rows so a future patch to these numbers is picked up
+  // automatically rather than duplicated as a hard-coded constant here.
+  const plateArmorItem = items.find((i) => i.slug === "plated-armor");
+  const plateInfoValue = (key: string): number => {
+    for (const block of plateArmorItem?.info ?? []) {
+      const row = block.rows.find((r) => r.key === key);
+      if (row && typeof row.value === "number") return row.value;
+    }
+    return 0;
+  };
+  const enemyHasPlatedArmor = Boolean(build.enemyHasPlatedArmor);
+  // Chance per bullet the target's weapon-damage deflection triggers.
+  const plateDeflectChance = enemyHasPlatedArmor ? plateInfoValue("DeflectionPercent") / 100 : 0;
+  // Chance per bullet the target prevents whatever on-hit effect it would
+  // otherwise trigger — spirit damage riding on the bullet (Mercurial
+  // Magnum, Flight) and procs (Lucky Shot, Tesla Bullets, Capacitor) alike.
+  const plateOnHitDeflectChance = enemyHasPlatedArmor
+    ? plateInfoValue("BulletProcDeflectionPercent") / 100
+    : 0;
+  // deadlock.wiki, Armor Piercing Rounds patch history, Dec 16 2025: "When
+  // Armor Piercing Rounds Proc's, Plated Armor can no longer stop the
+  // Proc'd Bullet" — an Armor Piercing Rounds proc bypasses *both* of
+  // Plated Armor's effects entirely, not just the weapon-damage deflection,
+  // so only a non-pierced bullet can be blocked here.
+  const onHitMul = 1 - (1 - armorPierceChance) * plateOnHitDeflectChance;
 
   // -------------------------------------------------------------- weapon ---
   const bulletDamage =
@@ -625,7 +683,8 @@ export function calculateBuild(
   const bulletSpiritDamage =
     ((baseBulletDamage * statValue(itemStats, "bulletSpiritDamagePctOfBase")) / 100 +
       statValue(itemStats, "bulletSpiritDamageFlat")) *
-    (1 + spiritAmp);
+    (1 + spiritAmp) *
+    onHitMul;
   const bulletSpiritDamageSources = resolved
     .filter(
       (r) =>
@@ -661,7 +720,8 @@ export function calculateBuild(
   const flightBonusDamage =
     (flightBase + flightScaling * flightSpiritPower) *
     (1 + spiritAmp) *
-    (1 + statValue(flightImbue.bag, "abilityDamagePct") / 100);
+    (1 + statValue(flightImbue.bag, "abilityDamagePct") / 100) *
+    onHitMul;
 
   // ------------------------------------------------------------ vitality ---
   const health =
@@ -719,8 +779,8 @@ export function calculateBuild(
     if (r.contributing) addStats(stats, r.item.conditionalStats);
     const chance = statValue(stats, "procChancePct") / 100;
     if (chance <= 0) continue;
-    const weaponPart = chance * (statValue(stats, "procWeaponDamagePct") / 100) * bulletDamage;
-    const spiritPart = chance * statValue(stats, "procSpiritDamageFlat") * (1 + spiritAmp);
+    const weaponPart = chance * (statValue(stats, "procWeaponDamagePct") / 100) * bulletDamage * onHitMul;
+    const spiritPart = chance * statValue(stats, "procSpiritDamageFlat") * (1 + spiritAmp) * onHitMul;
     procWeaponPerBullet += weaponPart;
     procSpiritPerBullet += spiritPart;
     const dps =
@@ -730,23 +790,22 @@ export function calculateBuild(
     if (dps > 0) expectedProcDps.push({ label: r.item.name, dps });
   }
 
-  // Armor Piercing Rounds: a chance for the gun's own bullets to ignore the
-  // target's Bullet Resistance entirely, rather than add bonus damage like
-  // every other procChancePct item. Modelled as an expected-value blend of
-  // the weapon-damage resist multiplier toward 1 (fully unresisted) - not
-  // toward the no-shred multiplier, since a pierce bypasses the target's
-  // resist outright, so any of *your own* shred stops mattering for that
-  // bullet too. Only the gun's weapon damage is affected; its spirit half and
-  // ability damage still go through the normal resist untouched.
-  let armorPierceChance = 0;
-  for (const r of resolved) {
-    if (!r.item.ignoresBulletResist) continue;
-    const stats: StatBag = { ...(r.item.stats ?? {}) };
-    if (r.contributing) addStats(stats, r.item.conditionalStats);
-    armorPierceChance = Math.max(armorPierceChance, statValue(stats, "procChancePct") / 100);
-  }
-  const bulletWeaponResistMul = bulletResistMul + armorPierceChance * (1 - bulletResistMul);
-  const bulletWeaponNoShredMul = bulletNoShredMul + armorPierceChance * (1 - bulletNoShredMul);
+  // Only the gun's weapon damage is affected by any of this; ability damage
+  // goes through the plain resist multipliers untouched (Plated Armor's own
+  // tooltip and Armor Piercing Rounds' both talk about *bullets* only).
+  // Three mutually exclusive outcomes per bullet: pierced (armorPierceChance -
+  // full, target-resist-ignored damage via piercedBulletResistMul, and
+  // Plated Armor's deflection bypassed entirely too, per its patch history),
+  // not pierced but deflected ((1 - armorPierceChance) * plateDeflectChance -
+  // zero), or neither (normal bulletResistMul applies). Collapses to a plain
+  // `bulletResistMul` when there is no Armor Piercing Rounds and no Plated
+  // Armor (both chances 0).
+  const bulletWeaponResistMul =
+    armorPierceChance * piercedBulletResistMul +
+    (1 - armorPierceChance) * (1 - plateDeflectChance) * bulletResistMul;
+  const bulletWeaponNoShredMul =
+    armorPierceChance * piercedBulletNoShredMul +
+    (1 - armorPierceChance) * (1 - plateDeflectChance) * bulletNoShredMul;
 
   // ------------------------------------------------------- damage rollups ---
   // "raw" is the no-shred toggle: the target's own Enemy Resist still

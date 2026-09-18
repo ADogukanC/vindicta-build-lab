@@ -330,6 +330,7 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
               rows={loadoutRows}
               enemyBulletResistPct={build.enemyBulletResistPct}
               enemySpiritResistPct={build.enemySpiritResistPct}
+              enemyHasPlatedArmor={build.enemyHasPlatedArmor}
               onEnemyResistChange={(patch) => store.updateActive(patch)}
               shred={shred}
               onShredChange={setShred}

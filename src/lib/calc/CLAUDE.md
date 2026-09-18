@@ -103,3 +103,27 @@ mechanic Mercurial Magnum uses for its imbued ability's `abilityBonusDamage`
 Reload's (44 flat, same +0.16/spirit) — via `abilityBonusDamagePerSpirit`,
 since the wiki's bare `Damage` key is ambiguous across items and both are
 opted in by hand in `IMBUED_BONUS_DAMAGE` already.
+
+**Armor Piercing Rounds does not "ignore Bullet Resistance" by blending the
+resist multiplier toward 1.** Per deadlock.wiki's patch history for the item
+("When Armor Piercing Rounds procs the bypass bullet resistance passive, all
+bullet resist shred will become additive instead of diminishing — 2 sources
+of 50% shred will count as 100% shred whereas normally it would be counted
+as 75%"), a pierced bullet zeroes the *target's* resist but still applies
+*your own* shred, now combined additively (`bulletResistShredAdditive`, a
+plain sum) instead of through the usual diminishing `combineShred` formula.
+The pierced multiplier is therefore `1 + bulletResistShredAdditive`, always
+>= 1 — and always >= the normal `bulletResistMul`, since additive shred can
+only be >= the diminishing combination of the same values and the target's
+resist can only be >= 0. **This guarantees a pierce can never cost DPS**,
+which the older "blend `bulletResistMul` itself toward 1" model violated
+whenever a build's own passive shred (Crow Familiar's, on by default) alone
+already pushed the target's *effective* resist negative — the common case at
+the 0% Enemy Resist default — since blending a value above 1 toward 1 moves
+it *down*. Confirmed against a real report of buying Armor Piercing Rounds
+lowering the calculator's own DPS number, which is how this got caught.
+**Armor Piercing Rounds also bypasses Plated Armor entirely on a pierce**,
+per the same page's patch history ("Dec 16 2025: When Armor Piercing Rounds
+Proc's, Plated Armor can no longer stop the Proc'd Bullet") — both Plated
+Armor's weapon-damage deflection *and* its separate on-hit-effect block
+(spirit riding on the bullet, procs), not just one half.

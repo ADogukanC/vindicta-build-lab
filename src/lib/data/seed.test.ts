@@ -387,11 +387,21 @@ describe("hero configuration", () => {
     expect(resisted.groundDps).toBeLessThan(bare.groundDps);
   });
 
-  it("lets Armor Piercing Rounds' proc bypass Enemy Bullet Resist on the gun's weapon damage", () => {
+  it("lets Armor Piercing Rounds' proc ignore Enemy Bullet Resist on the gun's weapon damage, never costing DPS", () => {
     // The item's own ProcChance (55%) means something different from every
     // other proc item: a chance for the bullet to ignore Bullet Resistance
-    // entirely, not a chance of bonus damage. Folded in as an expected-value
-    // blend of the resist multiplier toward 1 (fully unresisted).
+    // entirely, not a chance of bonus damage. Per deadlock.wiki's patch notes
+    // for the item, a pierced bullet zeroes the *target's* resist but still
+    // applies *your own* shred - now combined additively across sources
+    // instead of the normal diminishing formula ("2 sources of 50% shred
+    // will count as 100% shred whereas normally it would be counted as
+    // 75%"). With only one shred source in play here (Crow Familiar's own),
+    // additive and diminishing agree, so the pierced multiplier is simply
+    // `1 + shred`, always >= 1 - a pierce can never deal less than fully
+    // unresisted damage, unlike the old "blend the whole multiplier toward
+    // 1" model this replaced, which went *backwards* once your own shred
+    // already exceeded the target's resist (a build's own passive shred
+    // regularly does, e.g. against the 0% Enemy Resist default).
     const ctx = { hero: SEED_HERO, items: SEED_ITEMS, progression: SEED_PROGRESSION };
     const apRounds = bySlug.get("armor-piercing-rounds")!;
     expect(apRounds.ignoresBulletResist).toBe(true);
@@ -405,11 +415,14 @@ describe("hero configuration", () => {
     );
 
     const bareMul = 1 - enemyBulletResistPct / 100 + bare.bulletResistShred;
-    const expectedMul = bareMul + chance * (1 - bareMul);
+    const piercedMul = 1 + bare.bulletResistShred;
+    const expectedMul = chance * piercedMul + (1 - chance) * bareMul;
     expect(withItem.perBulletParts.ground.weapon.shredded).toBeCloseTo(
       withItem.bulletDamage * expectedMul,
       6,
     );
+    // Buying a weapon-damage item must never reduce weapon DPS.
+    expect(withItem.burstDps.ground.shredded).toBeGreaterThan(bare.burstDps.ground.shredded);
     // The pierce chance must not touch the bullet's spirit half or leak into
     // ability damage - Stake is untouched by a weapon-only bypass.
     const stakeBare = bare.abilities.find((a) => a.key === "stake")!;
@@ -417,18 +430,21 @@ describe("hero configuration", () => {
     expect(withItem.spiritPower).toBeCloseTo(bare.spiritPower, 6);
     expect(stakeWithItem.totalDamage.shredded).toBeCloseTo(stakeBare.totalDamage.shredded, 4);
 
-    // At 0% Enemy Resist and no shred, the multiplier is already 1, so the
-    // pierce chance has nothing left to add.
+    // At 0% Enemy Resist, there is no target resist left to ignore, so the
+    // pierce chance changes nothing about the resist math (Armor Piercing
+    // Rounds' own +8% Weapon Damage still applies, so DPS still goes up).
     const unresisted = calculateBuild(createBuild({ boons: 27 }), ctx);
     const unresistedWithItem = calculateBuild(
       addItemToBuild(createBuild({ boons: 27 }), apRounds),
       ctx,
     );
-    const noResistExpectedMul = 1 + unresisted.bulletResistShred;
-    const noResistBlendedMul = noResistExpectedMul + chance * (1 - noResistExpectedMul);
+    const noResistMul = 1 + unresisted.bulletResistShred;
     expect(unresistedWithItem.perBulletParts.ground.weapon.shredded).toBeCloseTo(
-      unresistedWithItem.bulletDamage * noResistBlendedMul,
+      unresistedWithItem.bulletDamage * noResistMul,
       6,
+    );
+    expect(unresistedWithItem.burstDps.ground.shredded).toBeGreaterThan(
+      unresisted.burstDps.ground.shredded,
     );
   });
 

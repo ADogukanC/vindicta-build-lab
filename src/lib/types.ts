@@ -334,6 +334,20 @@ export interface Build {
   enemyBulletResistPct: number;
   enemySpiritResistPct: number;
   /**
+   * Whether the target is holding Plated Armor: a chance per bullet to
+   * deflect its weapon damage entirely, plus a separate chance to prevent
+   * any on-hit effect the bullet would otherwise trigger (spirit damage
+   * riding on the bullet — Mercurial Magnum, Flight — and procs like Lucky
+   * Shot or Tesla Bullets). Both percentages are read from the Plated Armor
+   * item itself (`info` rows `DeflectionPercent` / `BulletProcDeflectionPercent`),
+   * not hard-coded, so a future patch to that item is picked up automatically.
+   * Armor Piercing Rounds' pierce chance bypasses *both* halves of this
+   * entirely — per deadlock.wiki's patch history for that item ("Plated
+   * Armor can no longer stop the Proc'd Bullet") — not just the weapon
+   * deflection.
+   */
+  enemyHasPlatedArmor: boolean;
+  /**
    * Which ability upgrades are taken, as `{ abilityKey: [t1, t2, t3] }`.
    * Replaces the old crowT3 / flightT3 / snipeT3 booleans. Ignored (and kept
    * only as a manual fallback) whenever `apOrder` is non-empty — see below.

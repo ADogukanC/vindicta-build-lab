@@ -63,6 +63,7 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
   // not any one build, so every build has to be measured against the same one.
   const [enemyBulletResistPct, setEnemyBulletResistPct] = useState(0);
   const [enemySpiritResistPct, setEnemySpiritResistPct] = useState(0);
+  const [enemyHasPlatedArmor, setEnemyHasPlatedArmor] = useState(false);
   // How hard to assume stacking items are stacked in the value-per-soul
   // section below. Real uptime varies build to build, so this is a toggle
   // rather than a silent guess; conditional items' situational bonuses are
@@ -97,11 +98,21 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
           headshotRate,
           enemyBulletResistPct,
           enemySpiritResistPct,
+          enemyHasPlatedArmor,
           snipeStacks,
         };
         return { build: at, result: calculateBuild(at, ctx) };
       }),
-    [selected, ctx, souls, headshotRate, enemyBulletResistPct, enemySpiritResistPct, snipeStacks],
+    [
+      selected,
+      ctx,
+      souls,
+      headshotRate,
+      enemyBulletResistPct,
+      enemySpiritResistPct,
+      enemyHasPlatedArmor,
+      snipeStacks,
+    ],
   );
 
   /**
@@ -123,6 +134,7 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
               headshotRate,
               enemyBulletResistPct,
               enemySpiritResistPct,
+              enemyHasPlatedArmor,
               snipeStacks,
             },
             ctx,
@@ -133,7 +145,16 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
     }
     return points;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected, ctx, metricKey, headshotRate, enemyBulletResistPct, enemySpiritResistPct, snipeStacks]);
+  }, [
+    selected,
+    ctx,
+    metricKey,
+    headshotRate,
+    enemyBulletResistPct,
+    enemySpiritResistPct,
+    enemyHasPlatedArmor,
+    snipeStacks,
+  ]);
 
   const itemsBySlug = useMemo(() => new Map(ctx.items.map((i) => [i.slug, i])), [ctx.items]);
 
@@ -162,10 +183,19 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
             headshotRate,
             enemyBulletResistPct,
             enemySpiritResistPct,
+            enemyHasPlatedArmor,
             snipeStacks,
           }
         : null,
-    [valueBuildRaw, souls, headshotRate, enemyBulletResistPct, enemySpiritResistPct, snipeStacks],
+    [
+      valueBuildRaw,
+      souls,
+      headshotRate,
+      enemyBulletResistPct,
+      enemySpiritResistPct,
+      enemyHasPlatedArmor,
+      snipeStacks,
+    ],
   );
 
   const contributions = useMemo(
@@ -363,6 +393,19 @@ export function ComparePanel({ ctx }: { ctx: CalcContext }) {
               />
             </label>
           </div>
+
+          <label
+            className="flex items-center gap-1.5 text-[11px] text-ink-300"
+            title="Plated Armor gives the target a chance per bullet to deflect its weapon damage entirely, plus a separate chance to block whatever on-hit effect the bullet would trigger (spirit damage riding on it, procs). Armor Piercing Rounds bypasses both halves of it entirely when it triggers."
+          >
+            <input
+              type="checkbox"
+              className="accent-[var(--color-amber-brand)]"
+              checked={enemyHasPlatedArmor}
+              onChange={(e) => setEnemyHasPlatedArmor(e.target.checked)}
+            />
+            Enemy has Plated Armor
+          </label>
 
           <div
             className="grid grid-cols-2 gap-3 text-[10px] uppercase tracking-wider text-ink-400"
