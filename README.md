@@ -37,9 +37,10 @@ npm install
 npm run dev
 ```
 
-Open <http://localhost:3000>. **There is no database, full stop.** The app
-serves the bundled item catalogue and Vindicta's stats from JSON, and any
-admin edits are written to `data/local-db.json` on your machine. Builds live
+Open <http://localhost:3000>. The app serves the item catalogue and
+Vindicta's stats from a shared Postgres database, seeded from bundled JSON;
+admin edits write straight to that database, so they persist wherever the
+app runs (see "Deploying to Vercel" for the connection string). Builds live
 in your browser and are shared as copy-pasteable codes (see "Sharing" further
 down).
 
@@ -58,10 +59,15 @@ npm run build   # production build
 
 ## Deploying to Vercel
 
-No database, no add-ons — just the app.
+1. **Add a Postgres database.** Provision one through the Vercel Marketplace
+   (Neon is what this project uses) and link it to the project — this
+   populates `DATABASE_URL`/`DATABASE_URL_UNPOOLED` for you. Run
+   `npm run db:migrate` once (needs `.env.local` pulled via `vercel env pull`)
+   to create the schema, then `npm run db:sync-seed` to seed it from the
+   bundled item catalogue.
 
-1. **Set two environment variables.** Create `.env` locally (and the same two
-   in the Vercel project settings):
+2. **Set two more environment variables.** Create `.env` locally (and the
+   same two in the Vercel project settings):
 
    ```
    ADMIN_PASSWORD="something-only-you-know"
@@ -74,20 +80,19 @@ No database, no add-ons — just the app.
    node -e "console.log(crypto.randomUUID()+crypto.randomUUID())"
    ```
 
-2. **Push to GitHub**, import the repo at [vercel.com](https://vercel.com),
+3. **Push to GitHub**, import the repo at [vercel.com](https://vercel.com),
    deploy.
 
-One thing worth knowing: admin edits (items, hero stats, progression) write to
-`data/local-db.json` on whatever machine handles the request. That works
-great locally, but Vercel's serverless filesystem is ephemeral, so edits made
-against the live site won't persist between requests. Edit locally with
-`npm run dev` and redeploy instead — builds themselves are unaffected, since
-they never touch this file at all.
+Admin edits (items, hero stats, progression) write straight to that database,
+so — unlike a plain file on Vercel's ephemeral serverless filesystem — they
+persist immediately on the live site, no redeploy needed.
 
 ### Environment variables
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
+| `DATABASE_URL` | Yes | Pooled connection string; the app's own reads/writes. |
+| `DATABASE_URL_UNPOOLED` | Migrations only | Direct connection string `drizzle-kit` needs. |
 | `ADMIN_PASSWORD` | Production | Unlocks `/admin`. Defaults to `admin` in development. |
 | `ADMIN_SESSION_SECRET` | Production | Signs the admin session cookie. Any long random string. |
 

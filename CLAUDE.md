@@ -17,7 +17,7 @@ game data before defending a calculation.
 ```bash
 npm install
 npm run dev      # http://localhost:3000
-npm test         # 89 tests, all must pass
+npm test         # 118 tests, all must pass
 npm run build    # production build
 ```
 
@@ -30,8 +30,8 @@ session. The `.bat` runs under the user's own account and persists — prefer it
 
 ### Moving machines
 
-Copy everything except `node_modules/`, `.next/`, `data/local-db.json`. Then
-`npm install`. Recreate `.env` (gitignored):
+Copy everything except `node_modules/` and `.next/`. Then `npm install`.
+Recreate `.env` (gitignored):
 
 ```
 ADMIN_PASSWORD="…"
@@ -41,21 +41,24 @@ ADMIN_SESSION_SECRET="…long random…"
 The database connection strings (`DATABASE_URL`, `DATABASE_URL_UNPOOLED`,
 ...) live in `.env.local` and are pulled from Vercel rather than typed by
 hand: install the Vercel CLI, `vercel link` (both `.env.local` and `.vercel/`
-are gitignored, so a fresh clone has neither), then `vercel env pull`.
+are gitignored, so a fresh clone has neither), then `vercel env pull`. Without
+it, the app still runs, but serves the bundled seed instead of whatever the
+admin panel has edited into the database — see "Data layer" below.
 
 ---
 
 ## Architecture
 
 Next.js 15 App Router, TypeScript, Tailwind v4. Builds live in the browser
-(IndexedDB) and are edited entirely client-side; a **Postgres database**
-(Neon, via Drizzle) exists solely for sharing — see "Sharing builds" and
-"Build browser" below.
+(IndexedDB) and are edited entirely client-side. A **Postgres database**
+(Neon, via Drizzle) holds everything server-side: the game catalogue the
+admin panel edits, and shared builds — see "Data layer", "Sharing builds"
+and "Build browser" below.
 
 ```
-data/                 seed-items.json, seed-hero.json, seed-progression.json
+data/                 seed-items.json, seed-hero.json, seed-progression.json — bundled fallback only
 public/items/         183 item icons
-scripts/              re-import item data from deadlock.wiki
+scripts/              re-import item data from deadlock.wiki; sync the seed into the database
 src/lib/
   stats.ts            THE STAT REGISTRY — add a stat here first
   types.ts            Item, HeroConfig, Ability, Build
@@ -66,22 +69,35 @@ src/lib/
     engine.ts         all damage/survivability math
     metrics.ts        comparable metrics + value-per-soul analysis
     __fixtures__/     frozen workbook values the parity tests run against
-  data/store.ts       the local JSON file backing the admin panel
+  data/store.ts       the database-backed store behind the admin panel
 src/components/       build page, compare page, admin panel
 ```
 
 **Data layer**: the game catalogue (items, hero stats, abilities,
-progression) is a bundled seed plus whatever the admin panel has edited into
-`data/local-db.json` on whatever machine runs it — no database involved, and
-admin edits against a serverless deploy (Vercel's filesystem is ephemeral)
-won't persist there — edit locally and redeploy instead. **Shared builds**
-are the one thing that does live in a real database: Neon Postgres,
-provisioned through the Vercel Marketplace, queried via Drizzle
-(`src/lib/data/db/`). `drizzle.config.ts` + `npm run db:generate` /
-`npm run db:migrate` manage its one table, `shared_builds`
-(`src/lib/data/db/schema.ts`). Migrations need the direct/unpooled
-connection string (`DATABASE_URL_UNPOOLED`); the app's own queries use the
-pooled one (`DATABASE_URL`) — see the comment in `drizzle.config.ts`.
+progression) lives in the `game_data` table of the same Neon Postgres
+database as shared builds (one JSON-blob row per kind: `items`, `hero`,
+`progression`), provisioned through the Vercel Marketplace and queried via
+Drizzle (`src/lib/data/db/`, store logic in `src/lib/data/store.ts`). Admin
+edits write straight there, so they persist everywhere the app runs — local
+dev and the deployed Vercel site read and write the exact same rows, unlike
+the old per-machine `data/local-db.json` file this replaced. `data/seed-*.json`
+is now only a bundled fallback: what a brand-new database starts from, and
+what the app falls back to serving (read-only, edits silently won't stick)
+if `DATABASE_URL` is unset or the database is briefly unreachable.
+
+A balance patch hand-edited into `data/seed-items.json` (as opposed to
+edited live through the admin panel) needs one more step to actually go
+live: `npm run db:sync-seed` overwrites the database's `items`/`hero`/
+`progression` rows with the current bundled seed
+(`scripts/sync-seed-to-db.ts`). Same after `refresh-item-data`'s wiki
+re-import. This clobbers any admin-panel edits made since the last sync, so
+export first (Admin panel → Export items) if in doubt.
+
+`drizzle.config.ts` + `npm run db:generate` / `npm run db:migrate` manage the
+schema (`src/lib/data/db/schema.ts`): `game_data` and `shared_builds`.
+Migrations need the direct/unpooled connection string
+(`DATABASE_URL_UNPOOLED`); the app's own queries use the pooled one
+(`DATABASE_URL`) — see the comment in `drizzle.config.ts`.
 
 **Admin** is at `/admin`, gated by `ADMIN_PASSWORD` (single password, no
 accounts). Items, hero stats and abilities are editable there, and a
@@ -139,7 +155,7 @@ that implements them: `src/lib/calc/CLAUDE.md`.
 
 ## Testing
 
-`npm test` — 110 tests in five files.
+`npm test` — 118 tests in five files.
 
 - **`calc/engine.test.ts`** — parity against the workbook's own cached values,
   each assertion labelled with the cell it reproduces (`B20`, `E36`, `M30`…),

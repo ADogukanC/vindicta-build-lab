@@ -73,10 +73,11 @@ describe("item catalogue", () => {
   });
 
   it("keeps the spirit power the workbook independently derived", () => {
-    // Spiritual Overflow: 6 innate + 40 while charged = the workbook's 46.
+    // Spiritual Overflow: 6 innate + 30 while charged, nerfed from 40 in the
+    // patch that also slowed its buildup and cut its fire rate bonus.
     const overflow = bySlug.get("spiritual-overflow")!;
     expect(overflow.stats.spiritPowerFlat).toBe(6);
-    expect(overflow.conditionalStats?.spiritPowerFlat).toBe(40);
+    expect(overflow.conditionalStats?.spiritPowerFlat).toBe(30);
     expect(bySlug.get("improved-spirit")!.stats.spiritPowerFlat).toBe(18);
     expect(bySlug.get("boundless-spirit")!.stats.spiritPowerFlat).toBe(30);
     expect(bySlug.get("boundless-spirit")!.stats.spiritPowerPct).toBe(15);
@@ -151,8 +152,9 @@ describe("item catalogue", () => {
     const mm = bySlug.get("mercurial-magnum")!;
     // Bullets only deal the bonus damage "until your next reload" after the
     // imbued ability fires, so this is gated behind the item's toggle.
-    expect(mm.conditionalStats?.bulletSpiritDamagePctOfBase).toBe(25);
-    expect(mm.perSpirit?.bulletSpiritDamagePctOfBase).toBe(0.49);
+    // Nerfed from 25% + 0.49/spirit to 20% + 0.38/spirit.
+    expect(mm.conditionalStats?.bulletSpiritDamagePctOfBase).toBe(20);
+    expect(mm.perSpirit?.bulletSpiritDamagePctOfBase).toBe(0.38);
     expect(mm.stats.bulletSpiritDamageFlat ?? 0).toBe(0);
   });
 
@@ -224,8 +226,8 @@ describe("item catalogue", () => {
     // Escalating Exposure: 4.5% spirit amp per stack.
     expect(bySlug.get("escalating-exposure")!.perStack?.spiritAmpPct).toBe(4.5);
 
-    // Golden Goose Egg still costs you 10% of your outgoing damage.
-    expect(bySlug.get("golden-goose-egg")!.damageMultiplier).toBe(0.9);
+    // Golden Goose Egg costs you 15% of your outgoing damage, up from 10%.
+    expect(bySlug.get("golden-goose-egg")!.damageMultiplier).toBe(0.85);
   });
 
   it("stores resist shred as a positive fraction", () => {

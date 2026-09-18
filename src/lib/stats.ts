@@ -81,6 +81,13 @@ export const STAT_DEFS: StatDef[] = [
   { key: "spiritPowerPct", label: "Spirit Power", group: "spirit", kind: "percent" },
   { key: "spiritAmpPct", label: "Spirit Amp", group: "spirit", kind: "percent", hint: "Multiplies all spirit damage you deal, including Flight's bonus bullet damage." },
   { key: "cooldownReductionPct", label: "Cooldown Reduction", group: "spirit", kind: "percent" },
+  {
+    key: "ultimateCooldownReductionPct",
+    label: "Ultimate Cooldown Reduction",
+    group: "spirit",
+    kind: "percent",
+    hint: "Only reduces the cooldown of the ultimate (slot 4), e.g. Diviner's Kevlar.",
+  },
   { key: "abilityDurationPct", label: "Ability Duration", group: "spirit", kind: "percent" },
   { key: "abilityRangePct", label: "Ability Range", group: "spirit", kind: "percent" },
   { key: "spiritLifestealPct", label: "Spirit Lifesteal", group: "spirit", kind: "percent" },

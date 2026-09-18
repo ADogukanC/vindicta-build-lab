@@ -661,7 +661,7 @@
             "conditional": true,
             "emphasis": true,
             "scale": {
-              "value": 0.5,
+              "value": 0.45,
               "kind": "boon"
             }
           },
@@ -676,6 +676,13 @@
             "key": "MaxStaminaRestore",
             "value": 3,
             "type": null,
+            "conditional": true,
+            "emphasis": false
+          },
+          {
+            "key": "Range",
+            "value": "32m",
+            "type": "range",
             "conditional": true,
             "emphasis": false
           }
@@ -872,7 +879,7 @@
         "rows": [
           {
             "key": "GoldPerMinute",
-            "value": 18,
+            "value": 16,
             "type": "souls",
             "conditional": false,
             "emphasis": true
@@ -1155,7 +1162,7 @@
           },
           {
             "key": "HealLifePercentOutOfCombat",
-            "value": 2,
+            "value": 2.25,
             "type": null,
             "conditional": false,
             "emphasis": true
@@ -1315,18 +1322,18 @@
           },
           {
             "key": "LifestealHeal",
-            "value": 100,
+            "value": 120,
             "type": "healing",
             "conditional": false,
             "emphasis": true,
             "scale": {
-              "value": 1.5,
+              "value": 1.75,
               "kind": "boon"
             }
           },
           {
             "key": "LifestealHealPercent",
-            "value": 30,
+            "value": 35,
             "type": "healing",
             "conditional": false,
             "emphasis": true,
@@ -1617,19 +1624,15 @@
     "activation": "Passive",
     "iconUrl": "/items/veil-walker.png",
     "description": "Walking through a cosmic veil grants you Stealth, Heal and increased Move Speed.",
-    "components": [
-      "sprint-boots"
-    ],
+    "components": [],
     "shopFilters": [
       "Durability",
       "ClipSize"
     ],
     "isImbue": false,
     "stats": {
-      "sprintSpeedFlat": 2.0,
-      "outOfCombatHealthRegen": 2.0,
       "bonusHealthFlat": 125.0,
-      "spiritPowerFlat": 10.0
+      "spiritPowerFlat": 6.0
     },
     "enabled": true,
     "sortOrder": 35,
@@ -1637,7 +1640,7 @@
       "moveSpeedFlat": 3.5
     },
     "conditional": {
-      "label": "Buff window active",
+      "label": "Buff window active (move speed drops the instant invisibility ends)",
       "defaultActive": false
     },
     "info": [
@@ -1932,7 +1935,8 @@
     ],
     "isImbue": false,
     "stats": {
-      "abilityDurationPct": 15.0
+      "abilityDurationPct": 15.0,
+      "ultimateCooldownReductionPct": 10.0
     },
     "enabled": true,
     "sortOrder": 40,
@@ -2269,8 +2273,8 @@
     ],
     "isImbue": false,
     "stats": {
-      "spiritLifestealPct": 25.0,
-      "bulletLifestealPct": 25.0,
+      "spiritLifestealPct": 28.0,
+      "bulletLifestealPct": 28.0,
       "bonusHealthFlat": 180.0,
       "weaponDamagePct": 12.0,
       "spiritPowerFlat": 12.0
@@ -2371,6 +2375,7 @@
     },
     "enabled": true,
     "sortOrder": 48,
+    "notes": "Patch fix: on-hit damage prevention now correctly blocks the on-hit spirit damage riding on a bullet from Mercurial Magnum, Vindicta's Flight, Wraith's Full Auto and Tesla Bullets/Capacitor, which it previously let through. This only affects damage taken from enemies with those items, not anything Vindicta herself deals, so it changes no number this tool calculates.",
     "info": [
       {
         "type": "Passive",
@@ -2728,7 +2733,8 @@
     },
     "enabled": true,
     "sortOrder": 56,
-    "damageMultiplier": 0.9,
+    "damageMultiplier": 0.85,
+    "notes": "Stored, uncollected souls now count towards net worth for comeback bounty calculations — not modelled by this tool, which only counts spent-on-items net worth (see the app's own Economy convention).",
     "info": [
       {
         "type": "Active",
@@ -2737,7 +2743,7 @@
         "rows": [
           {
             "key": "BonusGoldPerMinute",
-            "value": 90,
+            "value": 80,
             "type": "souls",
             "conditional": true,
             "emphasis": true
@@ -3370,7 +3376,7 @@
     "info": [
       {
         "type": "Active",
-        "cooldown": 27,
+        "cooldown": 29,
         "chargeUp": null,
         "rows": [
           {
@@ -3543,12 +3549,12 @@
         "rows": [
           {
             "key": "DotHealthPercent",
-            "value": 2.6,
+            "value": 1.95,
             "type": "tech_damage",
             "conditional": true,
             "emphasis": true,
             "scale": {
-              "value": 0.004,
+              "value": 0.003,
               "kind": "spirit"
             }
           },
@@ -3576,7 +3582,7 @@
           },
           {
             "key": "AbilityDuration",
-            "value": 10,
+            "value": 12,
             "type": "duration",
             "conditional": true,
             "emphasis": false
@@ -3797,7 +3803,7 @@
             "conditional": false,
             "emphasis": true,
             "scale": {
-              "value": 2,
+              "value": 1.7,
               "kind": "boon"
             }
           },
@@ -4119,7 +4125,7 @@
           },
           {
             "key": "CurrentHealthDamage",
-            "value": 8,
+            "value": 7.5,
             "type": "tech_damage",
             "conditional": true,
             "emphasis": true
@@ -4518,7 +4524,7 @@
           },
           {
             "key": "PercentDamage",
-            "value": 30,
+            "value": 35,
             "type": "damage",
             "conditional": true,
             "emphasis": true
@@ -4532,7 +4538,7 @@
           },
           {
             "key": "AbilityCastRange",
-            "value": "20m",
+            "value": "25m",
             "type": "range",
             "conditional": true,
             "emphasis": false
@@ -4727,7 +4733,7 @@
       "abilityBonusDamage": 60
     },
     "conditionalStats": {
-      "bulletSpiritDamagePctOfBase": 25.0,
+      "bulletSpiritDamagePctOfBase": 20.0,
       "fireRatePct": 22.0
     },
     "conditional": {
@@ -4735,7 +4741,7 @@
       "defaultActive": false
     },
     "perSpirit": {
-      "bulletSpiritDamagePctOfBase": 0.49
+      "bulletSpiritDamagePctOfBase": 0.38
     },
     "info": [
       {
@@ -6048,7 +6054,7 @@
     "sortOrder": 125,
     "defaultShredActive": false,
     "shred": {
-      "bullet": 0.13
+      "bullet": 0.12
     },
     "info": [
       {
@@ -6178,6 +6184,7 @@
       "label": "Stacks held",
       "defaultActive": false
     },
+    "warning": "It's very unlikely you'll get anywhere near max stacks: 6 hero stacks means landing the imbued ability on 6 different enemy heroes before the buff expires. Judge its value at a realistic stack count, not the maximum.",
     "info": [
       {
         "type": "Passive",
@@ -6186,7 +6193,7 @@
         "rows": [
           {
             "key": "AbilityDuration",
-            "value": 14,
+            "value": 20,
             "type": "duration",
             "conditional": false,
             "emphasis": false
@@ -6396,7 +6403,7 @@
     "tier": 3,
     "activation": "Press",
     "iconUrl": "/items/cultist-sacrifice.png",
-    "description": "Target an enemy NPC and consume it for 180% Bonus Souls and grants a powerful long lasting buff.",
+    "description": "Target an enemy NPC and consume it for 170% Bonus Souls and grants a powerful long lasting buff.",
     "components": [
       "monster-rounds"
     ],
@@ -6730,7 +6737,7 @@
     },
     "defaultShredActive": false,
     "shred": {
-      "bullet": 0.09
+      "bullet": 0.1
     },
     "info": [
       {
@@ -6866,7 +6873,9 @@
     "activation": "InstantCast",
     "iconUrl": "/items/shadow-weave.png",
     "description": "Become Stealthed. Whenever you take damage while Stealthed you get briefly revealed.",
-    "components": [],
+    "components": [
+      "sprint-boots"
+    ],
     "shopFilters": [
       "MagicDamage",
       "FireRate",
@@ -6875,7 +6884,7 @@
     "isImbue": false,
     "stats": {
       "outOfCombatHealthRegen": 5.0,
-      "sprintSpeedFlat": 1.5
+      "sprintSpeedFlat": 2.0
     },
     "enabled": true,
     "sortOrder": 139,
@@ -6891,7 +6900,7 @@
     "info": [
       {
         "type": "Active",
-        "cooldown": 45,
+        "cooldown": 37,
         "chargeUp": null,
         "rows": [
           {
@@ -7155,7 +7164,7 @@
             "conditional": false,
             "emphasis": true,
             "scale": {
-              "value": 0.005,
+              "value": 0.006,
               "kind": "spirit"
             }
           },
@@ -7807,8 +7816,8 @@
     "enabled": true,
     "sortOrder": 155,
     "conditionalStats": {
-      "fireRatePct": 30.0,
-      "spiritPowerFlat": 40.0,
+      "fireRatePct": 25.0,
+      "spiritPowerFlat": 30.0,
       "spiritLifestealPct": 10.0
     },
     "conditional": {
@@ -7823,7 +7832,7 @@
         "rows": [
           {
             "key": "BuildUpPerShot",
-            "value": 0.75,
+            "value": 0.4875,
             "type": null,
             "conditional": false,
             "emphasis": false

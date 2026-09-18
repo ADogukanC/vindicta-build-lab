@@ -26,3 +26,18 @@ export const sharedBuilds = pgTable(
   // recency — approved/pending are the only statuses ever listed in bulk.
   (table) => [index("shared_builds_status_created_at_idx").on(table.status, table.createdAt)],
 );
+
+/**
+ * The game catalogue the admin panel edits: items, hero config, progression.
+ * One row per kind, each holding its whole JSON blob — this used to be
+ * `data/local-db.json` on whichever machine ran the app, which meant admin
+ * edits against the deployed Vercel site (an ephemeral filesystem) never
+ * stuck. Moving it into the same Postgres database `shared_builds` already
+ * lives in makes admin edits durable everywhere the app runs, local dev and
+ * production alike, off the one shared source of truth.
+ */
+export const gameData = pgTable("game_data", {
+  key: text("key").primaryKey().$type<"items" | "hero" | "progression">(),
+  value: jsonb("value").notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});

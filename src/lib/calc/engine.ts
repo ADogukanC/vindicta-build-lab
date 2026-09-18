@@ -844,6 +844,10 @@ export function calculateBuild(
 
   // ------------------------------------------------------------- abilities ---
   const cooldownReductionPct = statValue(itemStats, "cooldownReductionPct");
+  // Only ever applies to the ultimate (slot 4) — e.g. Diviner's Kevlar's "+10%
+  // Ultimate Ability Cooldown Reduction" — never folded into the general
+  // cooldownReductionPct above, which every ability shares.
+  const ultimateCooldownReductionPct = statValue(itemStats, "ultimateCooldownReductionPct");
   const extraCharges = statValue(itemStats, "chargesFlat");
 
   const abilityResults: AbilityResult[] = resolvedAbilities.map((r) => {
@@ -881,7 +885,13 @@ export function calculateBuild(
     const effectiveCooldown =
       r.cooldown *
       (1 -
-        Math.min(90, cooldownReductionPct + statValue(imbue.bag, "cooldownReductionPct")) / 100);
+        Math.min(
+          90,
+          cooldownReductionPct +
+            statValue(imbue.bag, "cooldownReductionPct") +
+            (a.slot === 4 ? ultimateCooldownReductionPct : 0),
+        ) /
+          100);
     const charges = r.charges + extraCharges + statValue(imbue.bag, "chargesFlat");
     // Charges cancel out for sustained throughput: N charges refill in N x cooldown.
     const dps: DamageSet =

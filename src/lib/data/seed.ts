@@ -1,7 +1,9 @@
 /**
- * The bundled seed: 71 items, their icons and Vindicta's configuration, all
- * lifted straight out of the workbook. This is what the app serves until the
- * admin panel writes edits into `data/local-db.json` (see `data/store.ts`).
+ * The bundled seed: the item catalogue and Vindicta's configuration. This is
+ * what a brand-new `game_data` database starts from (`npm run db:sync-seed`,
+ * see `data/store.ts`) and what the app falls back to serving if the
+ * database is unset or unreachable — the admin panel's live edits live in
+ * the database, not here.
  */
 import rawItems from "../../../data/seed-items.json";
 import rawHero from "../../../data/seed-hero.json";

@@ -206,8 +206,8 @@ export function AdminPanel({
             </button>
           ))}
         </div>
-        <span className="chip" title="Changes are written to data/local-db.json on this machine.">
-          Local file store
+        <span className="chip" title="Changes are written to the shared database and apply everywhere, including the deployed site.">
+          Database-backed
         </span>
         <span className="flex-1" />
         {message && <span className="text-[12px] text-amber-brand">{message}</span>}

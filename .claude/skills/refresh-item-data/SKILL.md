@@ -15,7 +15,8 @@ Refresh after a patch:
 python scripts/fetch_wiki_data.py
 python scripts/convert_items.py
 python scripts/fetch_icons.py
-npm test        # seed.test.ts fails on unmapped stats, bad components, missing icons
+npm test           # seed.test.ts fails on unmapped stats, bad components, missing icons
+npm run db:sync-seed   # pushes the refreshed seed into the live database — see CLAUDE.md's Data layer
 ```
 
 `scripts/convert_items.py` holds `STAT_MAP` (game key → registry key). Three
