@@ -42,6 +42,7 @@ export function ItemPreviewCard({
     effects.length > 0 ||
     blocks.length > 0 ||
     Boolean(item.conditional) ||
+    Boolean(item.notes) ||
     (item.maxStacks ?? 0) > 1 ||
     (item.maxStacksSecondary ?? 0) > 1;
 
@@ -89,8 +90,16 @@ export function ItemPreviewCard({
         )}
       </div>
 
+      {item.warning && (
+        <p className="flex items-start gap-1.5 border-t border-amber-brand/30 bg-amber-brand/10 px-3 py-2 text-[11px] leading-snug text-amber-brand">
+          <span aria-hidden>⚠</span>
+          <span>{item.warning}</span>
+        </p>
+      )}
+
       {hasExtras && (
         <div className="space-y-2.5 bg-ink-900 p-3">
+          {item.notes && <p className="text-[11px] leading-snug text-ink-500">{item.notes}</p>}
           {item.conditional && (
             <p className="text-[11px] leading-snug text-amber-brand">◇ {item.conditional.label}</p>
           )}

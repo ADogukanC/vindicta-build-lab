@@ -276,6 +276,8 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
             onChange={(patch) => store.updateActive(patch)}
           />
           <LoadoutPanel
+            build={build}
+            ctx={ctx}
             rows={loadoutRows}
             result={result}
             dpsContributions={dpsContributions}

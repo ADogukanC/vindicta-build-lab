@@ -137,6 +137,12 @@ export interface Item {
   /** Numbers the game displays that the engine does not consume. */
   info?: InfoBlock[];
   notes?: string;
+  /**
+   * A cautionary note shown prominently (not just in the hover card), e.g.
+   * Ballistic Enchantment's max hero stacks being unrealistic to reach in a
+   * real match. Distinct from `notes`, which is plain informational text.
+   */
+  warning?: string;
   enabled: boolean;
   sortOrder: number;
 }

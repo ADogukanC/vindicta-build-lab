@@ -458,6 +458,17 @@ export function ItemEditor({
         />
       </Field>
 
+      <Field
+        label="Warning"
+        hint="Shown prominently wherever the item appears, not just in the hover card — for things worth flagging before someone buys it, e.g. a stat that's unrealistic to reach in a real match."
+      >
+        <textarea
+          className="input min-h-16"
+          value={item.warning ?? ""}
+          onChange={(e) => patch({ warning: e.target.value || undefined })}
+        />
+      </Field>
+
       <div className="flex items-center gap-2 border-t border-ink-800 pt-3">
         <label className="flex items-center gap-1.5 text-[12px] text-ink-200">
           <input

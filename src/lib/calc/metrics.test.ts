@@ -10,7 +10,7 @@ import { describe, expect, it } from "vitest";
 import { SEED_HERO, SEED_ITEMS, SEED_PROGRESSION } from "../data/seed";
 import { createBuild, createBuildItem } from "../build";
 import type { BuildItem } from "../types";
-import { itemContributions, purchaseCandidates } from "./metrics";
+import { itemContributions, purchaseCandidates, sameTierAlternatives } from "./metrics";
 
 const ctx = { hero: SEED_HERO, items: SEED_ITEMS, progression: SEED_PROGRESSION };
 const bySlug = new Map(SEED_ITEMS.map((i) => [i.slug, i]));
@@ -224,5 +224,62 @@ describe("purchaseCandidates", () => {
     // The two orderings actually differ for a real catalogue - otherwise the
     // toggle wouldn't do anything.
     expect(byValue.map((r) => r.item.slug)).not.toEqual(byRaw.map((r) => r.item.slug));
+  });
+});
+
+describe("sameTierAlternatives", () => {
+  const weakeningHeadshot = bySlug.get("weakening-headshot")!; // tier 2
+  const hollowPoint = bySlug.get("hollow-point")!; // tier 3, bought after
+
+  it("only offers same-tier items, sorted by flight DPS, including the actual pick", () => {
+    const build = createBuild({
+      items: [createBuildItem(closeQuarters), createBuildItem(weakeningHeadshot), createBuildItem(hollowPoint)],
+      soulsEarned: 62800,
+    });
+    const rows = sameTierAlternatives(build, ctx, 1);
+    expect(rows.length).toBeGreaterThan(0);
+    for (const row of rows) expect(row.item.tier).toBe(2);
+    expect(rows.some((r) => r.isCurrent && r.item.slug === "weakening-headshot")).toBe(true);
+    const current = rows.find((r) => r.isCurrent)!;
+    expect(current.groundDelta).toBe(0);
+    expect(current.flightDelta).toBe(0);
+    const sorted = [...rows].sort((a, b) => b.flightDps - a.flightDps);
+    expect(rows.map((r) => r.item.slug)).toEqual(sorted.map((r) => r.item.slug));
+  });
+
+  it("ignores purchases later in the plan and excludes items already owned earlier", () => {
+    // Extended Magazine (tier 1) bought before the tier-2 slot must not leak
+    // in as a "tier 2" candidate, and buying it again should not be offered.
+    const build = createBuild({
+      items: [createBuildItem(extendedMagazine), createBuildItem(weakeningHeadshot)],
+      soulsEarned: 62800,
+    });
+    const rows = sameTierAlternatives(build, ctx, 1);
+    expect(rows.some((r) => r.item.slug === "extended-magazine")).toBe(false);
+  });
+
+  it("caps the list at the requested limit but always keeps the actual pick", () => {
+    const build = createBuild({
+      items: [createBuildItem(weakeningHeadshot)],
+      soulsEarned: 62800,
+    });
+    const rows = sameTierAlternatives(build, ctx, 0, 3);
+    expect(rows.length).toBe(3);
+    expect(rows.some((r) => r.isCurrent)).toBe(true);
+  });
+
+  it("returns nothing for an out-of-range index", () => {
+    const build = createBuild({ items: [createBuildItem(weakeningHeadshot)], soulsEarned: 1600 });
+    expect(sameTierAlternatives(build, ctx, 5)).toEqual([]);
+  });
+
+  it("honors the stack assumption, same as itemContributions/purchaseCandidates", () => {
+    // Glass Cannon's fire rate lives entirely behind a conditional per-stack
+    // bonus that defaults off - "full" stacks should score it higher than
+    // "none", the same distinction the compare page's toggle makes.
+    const build = createBuild({ items: [createBuildItem(glassCannon)], soulsEarned: 62800 });
+    const none = sameTierAlternatives(build, ctx, 0, 5, "none").find((r) => r.isCurrent)!;
+    const full = sameTierAlternatives(build, ctx, 0, 5, "full").find((r) => r.isCurrent)!;
+    expect(full.flightDps).toBeGreaterThan(none.flightDps);
   });
 });

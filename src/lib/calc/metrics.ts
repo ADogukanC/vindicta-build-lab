@@ -8,7 +8,7 @@
 import type { CalcResult } from "./engine";
 import { calculateBuild } from "./engine";
 import type { Build, BuildItem, CalcContext, Item } from "../types";
-import { addItemToBuild } from "../build";
+import { addItemToBuild, createBuildItem } from "../build";
 import { planCost } from "./timeline";
 
 /**
@@ -501,4 +501,102 @@ export function purchaseCandidates(
   return rows
     .sort((a, b) => (rankBy === "raw" ? b.delta - a.delta : b.deltaPer1kSouls - a.deltaPer1kSouls))
     .slice(0, limit);
+}
+
+export interface TierAlternative {
+  item: Item;
+  isCurrent: boolean;
+  groundDps: number;
+  flightDps: number;
+  /** vs. the row's actual item — 0 for the actual item itself. */
+  groundDelta: number;
+  flightDelta: number;
+}
+
+/**
+ * "What if I'd bought something else here": every other same-tier item
+ * (plus the item actually bought, for comparison) evaluated as if it had
+ * been bought in that exact slot instead — with everything bought *before*
+ * it in the plan, and nothing after, so the swap doesn't get credit for or
+ * blamed for purchases that came later. Ranked by Flight DPS — Vindicta's
+ * own damage gimmick, and the number the rest of the build page treats as
+ * her headline output — with ground DPS carried alongside as a secondary
+ * figure. Since every item at a given tier costs the same, ranking by raw
+ * value is equivalent to ranking by value per soul; there is no cost
+ * difference between candidates to normalize away.
+ *
+ * Souls earned is bumped to whatever this hypothetical plan costs (never
+ * lowered below what the real build already has), the same "just enough to
+ * reach this one purchase" rule `purchaseCandidates` uses — but unlike that
+ * function, boons are read from the build's own settings rather than pinned
+ * to today's count, so a swap early in the plan is judged with the boons the
+ * player actually had at that point in the match, not the boons they have
+ * now.
+ *
+ * `stackAssumption` sizes every stacking candidate's stack count the same
+ * way `itemContributions`/`purchaseCandidates` do (see `withAssumptions`),
+ * so a "what if" swap involving Glass Cannon or Ballistic Enchantment is
+ * judged consistently with the rest of the app's value-per-soul tools
+ * rather than always assuming full stacks.
+ */
+export function sameTierAlternatives(
+  build: Build,
+  ctx: CalcContext,
+  index: number,
+  limit = 5,
+  stackAssumption: StackAssumption = "full",
+): TierAlternative[] {
+  const groundMetric = METRIC_BY_KEY.groundDps;
+  const flightMetric = METRIC_BY_KEY.flightDps;
+  const bySlug = new Map(ctx.items.map((i) => [i.slug, i]));
+  const currentEntry = build.items[index];
+  const currentItem = currentEntry && bySlug.get(currentEntry.slug);
+  if (!currentItem) return [];
+
+  const priorItems = build.items.slice(0, index);
+  // Anything already bought earlier in the plan can't be bought again here.
+  const ownedBefore = new Set(priorItems.map((i) => i.slug));
+  const candidates = ctx.items.filter(
+    (item) =>
+      item.enabled &&
+      item.tier === currentItem.tier &&
+      (item.slug === currentItem.slug || !ownedBefore.has(item.slug)),
+  );
+
+  const rows = candidates.map((item) => {
+    const entries = [...priorItems, createBuildItem(item)];
+    const assumedEntries = withAssumptions(entries, bySlug, stackAssumption);
+    const hypoBuild: Build = {
+      ...build,
+      items: assumedEntries,
+      soulsEarned: Math.max(
+        build.soulsEarned,
+        planCost({ ...build, items: assumedEntries }, ctx.items, UNLIMITED_SLOTS),
+      ),
+    };
+    const result = calculateBuild(hypoBuild, ctx, { maxSlots: UNLIMITED_SLOTS });
+    return {
+      item,
+      isCurrent: item.slug === currentItem.slug,
+      groundDps: groundMetric.get(result),
+      flightDps: flightMetric.get(result),
+    };
+  });
+
+  const current = rows.find((r) => r.isCurrent);
+  const withDelta: TierAlternative[] = rows.map((r) => ({
+    ...r,
+    groundDelta: r.groundDps - (current?.groundDps ?? 0),
+    flightDelta: r.flightDps - (current?.flightDps ?? 0),
+  }));
+  withDelta.sort((a, b) => b.flightDps - a.flightDps);
+
+  const top = withDelta.slice(0, limit);
+  // The actual purchase is always shown, even outside the top N, so the
+  // player can see exactly how it stacks up against the best alternatives.
+  if (!top.some((r) => r.isCurrent)) {
+    const currentRow = withDelta.find((r) => r.isCurrent);
+    if (currentRow) top[top.length - 1] = currentRow;
+  }
+  return top;
 }

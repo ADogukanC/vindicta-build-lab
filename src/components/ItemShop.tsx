@@ -142,7 +142,14 @@ function ItemCard({
         <ItemIcon item={item} size="md" />
         <span className="min-w-0 flex-1">
           <span className="flex items-baseline justify-between gap-1.5">
-            <span className="truncate text-[13px] font-medium">{item.name}</span>
+            <span className="flex min-w-0 items-baseline gap-1">
+              <span className="truncate text-[13px] font-medium">{item.name}</span>
+              {item.warning && (
+                <span className="shrink-0 text-amber-brand" title={item.warning} aria-label="Warning">
+                  ⚠
+                </span>
+              )}
+            </span>
             <span className="tnum shrink-0 text-[11px] text-ink-300">
               {item.cost >= 9999 ? "—" : fmtSouls(item.cost)}
             </span>
@@ -223,6 +230,12 @@ function DetailPanel({
           </div>
           {item.description && (
             <p className="mt-1.5 text-[12px] leading-relaxed text-ink-200">{item.description}</p>
+          )}
+          {item.warning && (
+            <p className="mt-1.5 flex items-start gap-1.5 rounded-md border border-amber-brand/30 bg-amber-brand/10 px-2 py-1.5 text-[11px] leading-snug text-amber-brand">
+              <span aria-hidden>⚠</span>
+              <span>{item.warning}</span>
+            </p>
           )}
         </div>
         <button

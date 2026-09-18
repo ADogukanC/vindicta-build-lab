@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import clsx from "clsx";
-import type { BuildItem, Item } from "@/lib/types";
+import type { Build, BuildItem, CalcContext, Item } from "@/lib/types";
 import type { CalcResult } from "@/lib/calc/engine";
 import { MAX_ITEM_SLOTS } from "@/lib/calc/timeline";
+import { sameTierAlternatives, type StackAssumption } from "@/lib/calc/metrics";
 import { CATEGORY_COLOR, fmtDelta, fmtInt, fmtSouls } from "@/lib/format";
 import { ItemIcon } from "./ItemIcon";
 
@@ -133,7 +134,101 @@ function SellOrderEditor({
   );
 }
 
+/**
+ * "What if you'd bought something else here": the best same-tier picks,
+ * evaluated with exactly the items (and boons) the plan had bought up to
+ * this slot — including the item actually bought, so its rank among the
+ * alternatives is visible rather than assumed.
+ */
+function WhatIfPanel({
+  build,
+  ctx,
+  index,
+}: {
+  build: Build;
+  ctx: CalcContext;
+  index: number;
+}) {
+  const [stackAssumption, setStackAssumption] = useState<StackAssumption>("full");
+  const rows = useMemo(
+    () => sameTierAlternatives(build, ctx, index, 5, stackAssumption),
+    [build, ctx, index, stackAssumption],
+  );
+  if (rows.length === 0) return null;
+  const tier = rows[0].item.tier;
+
+  return (
+    <div className="mt-1.5 rounded-md border border-ink-700 bg-ink-950/40 p-2">
+      <div className="mb-1.5 flex flex-wrap items-center justify-between gap-1.5">
+        <p className="text-[10px] uppercase tracking-wider text-ink-500">
+          Best tier {tier} picks, with the items and boons bought up to here
+        </p>
+        <div className="flex overflow-hidden rounded border border-ink-700">
+          {(
+            [
+              { key: "none", label: "No stacks" },
+              { key: "half", label: "Half stacks" },
+              { key: "full", label: "Full stacks" },
+            ] as const
+          ).map((opt) => (
+            <button
+              key={opt.key}
+              type="button"
+              onClick={() => setStackAssumption(opt.key)}
+              className={clsx(
+                "px-1.5 py-0.5 text-[10px] font-medium transition",
+                stackAssumption === opt.key
+                  ? "bg-amber-brand text-ink-950"
+                  : "bg-ink-900 text-ink-400 hover:bg-ink-850 hover:text-ink-200",
+              )}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      <ol className="space-y-1">
+        {rows.map((r, i) => (
+          <li
+            key={r.item.slug}
+            className={clsx(
+              "flex items-center gap-2 rounded px-1.5 py-1",
+              r.isCurrent ? "border border-amber-brand/50 bg-amber-brand/10" : "border border-transparent",
+            )}
+          >
+            <span className="tnum w-3.5 shrink-0 text-[10px] text-ink-500">{i + 1}</span>
+            <ItemIcon item={r.item} size="sm" className="!h-6 !w-6 shrink-0" />
+            <span className="min-w-0 flex-1 truncate text-[12px]">
+              {r.item.name}
+              {r.isCurrent && <span className="ml-1.5 text-[10px] text-amber-brand">bought here</span>}
+            </span>
+            <span className="tnum shrink-0 text-[11px] text-ink-100">
+              {fmtInt(r.flightDps)} <span className="text-ink-500">flight</span>
+            </span>
+            <span className="tnum shrink-0 text-[11px] text-ink-400">
+              {fmtInt(r.groundDps)} <span className="text-ink-500">ground</span>
+            </span>
+            {!r.isCurrent && (
+              <span
+                className={clsx(
+                  "tnum w-14 shrink-0 text-right text-[10px]",
+                  r.flightDelta >= 0 ? "text-emerald-400" : "text-red-400",
+                )}
+                title="Flight DPS vs. the item actually bought here"
+              >
+                {fmtDelta(r.flightDelta, 0)}
+              </span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
 export function LoadoutPanel({
+  build,
+  ctx,
   rows,
   result,
   dpsContributions,
@@ -148,6 +243,8 @@ export function LoadoutPanel({
   imbueTargets,
   onImbue,
 }: {
+  build: Build;
+  ctx: CalcContext;
   /** Every purchase in the plan, in buy order. */
   rows: Row[];
   result: CalcResult;
@@ -165,6 +262,7 @@ export function LoadoutPanel({
   onImbue: (slug: string, abilityKey: string) => void;
 }) {
   const [showSells, setShowSells] = useState(false);
+  const [whatIfIndex, setWhatIfIndex] = useState<number | null>(null);
   // Drag-to-reorder state, kept local since it never outlives this panel.
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
@@ -311,7 +409,7 @@ export function LoadoutPanel({
                   setOverIndex(null);
                 }}
                 className={clsx(
-                  "flex items-start gap-2 p-1.5 transition",
+                  "p-1.5 transition",
                   !held && "opacity-45",
                   dragIndex === index && "opacity-30",
                   dragIndex !== null &&
@@ -321,6 +419,7 @@ export function LoadoutPanel({
                 )}
                 style={{ borderLeft: `2px solid ${held ? CATEGORY_COLOR[item.category] : "transparent"}` }}
               >
+              <div className="flex items-start gap-2">
                 <span className="flex flex-col items-center gap-1 pt-0.5">
                   {/* Only this handle is `draggable`, not the whole row — a
                       draggable row swallows drag gestures anywhere inside it,
@@ -352,7 +451,14 @@ export function LoadoutPanel({
 
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-2">
-                    <span className="truncate text-[13px]">{item.name}</span>
+                    <span className="flex min-w-0 items-baseline gap-1">
+                      <span className="truncate text-[13px]">{item.name}</span>
+                      {item.warning && (
+                        <span className="shrink-0 text-amber-brand" title={item.warning} aria-label="Warning">
+                          ⚠
+                        </span>
+                      )}
+                    </span>
                     <span className="flex shrink-0 items-baseline gap-2">
                       <span className="tnum text-[10px] text-ink-500">
                         {threshold !== undefined ? `at ${fmtSouls(threshold)}` : ""}
@@ -479,6 +585,12 @@ export function LoadoutPanel({
                       )}
                     </div>
                   )}
+                  {held && item.warning && (
+                    <p className="mt-1 flex items-start gap-1 text-[10px] leading-snug text-amber-brand">
+                      <span aria-hidden>⚠</span>
+                      <span>{item.warning}</span>
+                    </p>
+                  )}
                   {!held && departure.has(item.slug) && (
                     <p className="mt-0.5 text-[10px] text-ink-500">
                       {departure.get(item.slug) === "sold"
@@ -490,12 +602,29 @@ export function LoadoutPanel({
 
                 <button
                   type="button"
+                  onClick={() => setWhatIfIndex((cur) => (cur === index ? null : index))}
+                  className={clsx(
+                    "shrink-0 rounded px-1.5 py-1 text-[10px]",
+                    whatIfIndex === index
+                      ? "bg-amber-brand/20 text-amber-brand"
+                      : "text-ink-500 hover:bg-ink-700 hover:text-ink-100",
+                  )}
+                  title="See the best same-tier picks with the items bought up to here"
+                >
+                  What if?
+                </button>
+
+                <button
+                  type="button"
                   onClick={() => onRemove(item.slug)}
-                  className="rounded p-1 text-ink-500 hover:bg-ink-700 hover:text-ink-100"
+                  className="shrink-0 rounded p-1 text-ink-500 hover:bg-ink-700 hover:text-ink-100"
                   aria-label={`Remove ${item.name}`}
                 >
                   ✕
                 </button>
+              </div>
+
+              {whatIfIndex === index && <WhatIfPanel build={build} ctx={ctx} index={index} />}
               </li>
             );
           })}
