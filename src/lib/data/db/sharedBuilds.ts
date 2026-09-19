@@ -37,31 +37,29 @@ export async function getSharedBuildByCode(code: string) {
 }
 
 /**
- * Opts a build into the public browser. A no-op if it's already pending or
- * approved; returns the row's resulting status either way, plus whether this
- * call is what changed it.
+ * Lists a build on the public build browser immediately — no admin approval
+ * gate. A no-op if it's already public; returns the row's resulting status
+ * either way, plus whether this call is what changed it.
  */
-export async function submitForReview(
+export async function publishSharedBuild(
   code: string,
-): Promise<{ status: "pending" | "approved"; changed: boolean } | "not-found"> {
+): Promise<{ status: "public"; changed: boolean } | "not-found"> {
   const row = await getSharedBuildByCode(code);
   if (!row) return "not-found";
-  if (row.status === "pending" || row.status === "approved") {
-    return { status: row.status, changed: false };
-  }
+  if (row.status === "public") return { status: "public", changed: false };
   await getDb()
     .update(sharedBuilds)
-    .set({ status: "pending", reviewedAt: null })
+    .set({ status: "public", publishedAt: new Date() })
     .where(eq(sharedBuilds.code, code));
-  return { status: "pending", changed: true };
+  return { status: "public", changed: true };
 }
 
 const PAGE_SIZE = 30;
 
-/** Approved builds for the public browser, newest first. */
-export async function listApprovedBuilds({ q, offset = 0 }: { q?: string; offset?: number } = {}) {
+/** Public builds for the build browser, newest first. */
+export async function listPublicBuilds({ q, offset = 0 }: { q?: string; offset?: number } = {}) {
   const db = getDb();
-  const conditions = [eq(sharedBuilds.status, "approved")];
+  const conditions = [eq(sharedBuilds.status, "public")];
   if (q?.trim()) conditions.push(ilike(sharedBuilds.name, `%${q.trim()}%`));
   return db
     .select({
@@ -77,8 +75,8 @@ export async function listApprovedBuilds({ q, offset = 0 }: { q?: string; offset
     .offset(offset);
 }
 
-/** Submissions waiting on admin review, oldest first (first in, first reviewed). */
-export async function listPendingBuilds() {
+/** Every public build, for the admin's own management view — not paginated like the public browser. */
+export async function listAllPublicBuilds() {
   return getDb()
     .select({
       code: sharedBuilds.code,
@@ -87,39 +85,16 @@ export async function listPendingBuilds() {
       createdAt: sharedBuilds.createdAt,
     })
     .from(sharedBuilds)
-    .where(eq(sharedBuilds.status, "pending"))
-    .orderBy(sharedBuilds.createdAt);
-}
-
-/** Admin approve/reject. Returns false if the code doesn't exist. */
-export async function reviewSubmission(code: string, approve: boolean): Promise<boolean> {
-  const result = await getDb()
-    .update(sharedBuilds)
-    .set({ status: approve ? "approved" : "rejected", reviewedAt: new Date() })
-    .where(eq(sharedBuilds.code, code))
-    .returning({ code: sharedBuilds.code });
-  return result.length > 0;
-}
-
-/** Every approved build, for the admin's own management view — not paginated like the public browser. */
-export async function listAllApprovedBuilds() {
-  return getDb()
-    .select({
-      code: sharedBuilds.code,
-      name: sharedBuilds.name,
-      payload: sharedBuilds.payload,
-      createdAt: sharedBuilds.createdAt,
-    })
-    .from(sharedBuilds)
-    .where(eq(sharedBuilds.status, "approved"))
+    .where(eq(sharedBuilds.status, "public"))
     .orderBy(desc(sharedBuilds.createdAt));
 }
 
 /**
- * Removes a shared build outright — used to pull a stale approved listing
- * once its owner has a better version to submit instead. Also kills the
- * `/b/<code>` link, not just the browse listing; there's no "unlist but keep
- * the link" middle ground here, same as the rest of this table has no soft-delete.
+ * Removes a shared build outright — used to pull a stale public listing once
+ * its owner has a better version to share instead. Also kills the
+ * `/b/<code>` link, not just the browse listing; there's no soft "unlist but
+ * keep the link" middle ground here, same as the rest of this table has no
+ * soft-delete. Admin-only (see the route).
  */
 export async function deleteSharedBuild(code: string): Promise<boolean> {
   const result = await getDb()

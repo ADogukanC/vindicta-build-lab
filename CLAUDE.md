@@ -101,34 +101,37 @@ Migrations need the direct/unpooled connection string
 
 **Admin** is at `/admin`, gated by `ADMIN_PASSWORD` (single password, no
 accounts). Items, hero stats and abilities are editable there, and a
-"Submissions" tab (`src/components/admin/SubmissionsPanel.tsx`) is the
-build-browser moderation queue — see "Build browser" below.
+"Builds" tab (`src/components/admin/PublishedBuildsPanel.tsx`) lists every
+publicly-listed build with a **Delete** action — see "Build browser" below.
 
-**Sharing builds**: the "Share" button `POST`s the build's shareable subset
-(name, items, sell order, imbue targets, AP order — everything else is the
+**Sharing builds**: clicking "Share" opens a prompt (`SharePrompt.tsx`)
+asking up front whether to also list the build on the build browser, before
+anything is sent. Confirming `POST`s the build's shareable subset (name,
+items, sell order, imbue targets, AP order — everything else is the
 sender's local viewing state, not part of the build) to `/api/builds`,
-which stores it in `shared_builds` and returns a short code for a `/b/<code>`
-URL. Opening that link, or pasting the bare code into "Import code",
-resolves it via `resolveBuildCode` (`src/lib/buildCode.ts`): the database
-first, falling back to the older client-only gzip+base64url codec
+which stores it in `shared_builds` (status `private`) and returns a short
+code for a `/b/<code>` URL; if the prompt's checkbox was on, a second call
+to `POST /api/builds/[code]/publish` immediately flips it to `public` — no
+approval step. Opening the link, or pasting the bare code into "Import
+code", resolves it via `resolveBuildCode` (`src/lib/buildCode.ts`): the
+database first, falling back to the older client-only gzip+base64url codec
 (`encodeBuildCode`/`decodeBuildCode`, same file) if the API call fails —
 offline, or the database is down — or for links shared before the database
-existed. A freshly-shared build is **private by default**: reachable by its
-code, but not listed anywhere.
+existed. A build shared without checking the box stays **private by
+default** (reachable by its code, not listed anywhere), and the share
+result box still offers a "List it" button afterward for the same
+immediate, no-approval publish.
 
-**Build browser** (`/browse`): opt-in, moderated visibility for shared
-builds. After sharing, a "Submit for review" button (still in the Share
-panel) flips the row's status from `private` to `pending`
-(`POST /api/builds/[code]/submit`); an admin then approves or rejects it
-from the Submissions tab (`PATCH /api/builds/[code]/review`), and only
-`approved` rows are ever returned by `GET /api/builds/directory`, which
-`/browse` lists and searches by name. This admin gate is the anti-spam
-mechanism — there is no other moderation. A submission is a snapshot: later
-edits to the sender's local build never propagate to it, so the Submissions
-tab also lists already-approved builds with a **Delete** action
-(`DELETE /api/builds/[code]`) — a hard delete, killing the share link too —
-for when someone's improved their build and the stale public listing should
-make way for a resubmission.
+**Build browser** (`/browse`): self-service, unmoderated visibility for
+shared builds — anyone can list their own build the moment they share it,
+or afterward. `GET /api/builds/directory` returns only `public` rows, which
+`/browse` lists and searches by name. There is no approval gate and no
+"pending"/"rejected" status any more; the only backstop against spam or
+stale listings is an admin manually deleting a row (`DELETE
+/api/builds/[code]`, from the admin panel's Builds tab) — a hard delete,
+killing the share link too, for when a listing is outdated and someone's
+improved build should take its place. A public build is a snapshot: later
+edits to the sender's local build never propagate to it.
 
 ---
 

@@ -128,7 +128,7 @@ export function BrowsePanel({
       <div className="flex items-center gap-2">
         <h1 className="text-[15px] font-semibold">Build browser</h1>
         <span className="text-[12px] text-ink-500">
-          Community builds, approved by an admin before they show up here.
+          Community builds, shared and published by their owners.
         </span>
         <span className="flex-1" />
         <input
@@ -141,7 +141,7 @@ export function BrowsePanel({
 
       {builds.length === 0 ? (
         <p className="py-16 text-center text-sm text-ink-300">
-          {loading ? "Loading…" : "No approved builds yet — be the first to submit one from the Share panel."}
+          {loading ? "Loading…" : "No published builds yet — be the first to list one from the Share panel."}
         </p>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

@@ -11,19 +11,21 @@ import { BuildTabs } from "./BuildTabs";
 import { HeroControls } from "./HeroControls";
 import { ItemShop } from "./ItemShop";
 import { LoadoutPanel } from "./LoadoutPanel";
+import { SharePrompt } from "./SharePrompt";
 import { StatsPanel } from "./StatsPanel";
 import { FalloffChart } from "./FalloffChart";
 import { buildBreakpoints, NetWorthSlider } from "./NetWorthSlider";
 
 export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: string }) {
   const store = useBuilds();
+  const [sharePromptOpen, setSharePromptOpen] = useState(false);
   const [shareResult, setShareResult] = useState<
-    { code: string; url: string; dbBacked: boolean } | null
+    { code: string; url: string; dbBacked: boolean; published: boolean } | null
   >(null);
   const [sharing, setSharing] = useState(false);
-  const [submission, setSubmission] = useState<
-    "idle" | "submitting" | "pending" | "already-submitted" | "error"
-  >("idle");
+  // Tracks only the post-hoc "list it" button's own async lifecycle —
+  // whether a build ended up listed lives on `shareResult.published` itself.
+  const [submission, setSubmission] = useState<"idle" | "submitting" | "error">("idle");
   const [sharedBanner, setSharedBanner] = useState<{ name: string } | "error" | null>(null);
   // Shared by the Output panel's toggle and the falloff chart, so both agree on
   // whether they're showing this build's own resist shred.
@@ -105,7 +107,7 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
     return map;
   }, [build, ctx]);
 
-  async function share() {
+  async function share(publish: boolean) {
     if (!build) return;
     setSharing(true);
     setSubmission("idle");
@@ -123,12 +125,24 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
       } catch {
         // Offline, or the database is down — fall back to the old
         // client-only code so sharing still works, just longer (and without
-        // a "submit to browser" option, since there's no row to submit).
+        // a "list on the build browser" option, since there's no row to list).
         code = await encodeBuildCode(build);
         dbBacked = false;
       }
       const url = `${window.location.origin}/b/${code}`;
-      setShareResult({ code, url, dbBacked });
+      // Listing is immediate — no admin approval queue — so this either
+      // succeeds right away or the result box below offers the same "list
+      // it" button as a fallback.
+      let published = false;
+      if (publish && dbBacked) {
+        try {
+          const response = await fetch(`/api/builds/${code}/publish`, { method: "POST" });
+          published = response.ok;
+        } catch {
+          published = false;
+        }
+      }
+      setShareResult({ code, url, dbBacked, published });
       await navigator.clipboard.writeText(code).catch(() => {});
     } catch {
       alert("Could not generate a share code for this build.");
@@ -137,14 +151,14 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
     }
   }
 
-  async function submitToDirectory() {
+  async function publishToDirectory() {
     if (!shareResult) return;
     setSubmission("submitting");
     try {
-      const response = await fetch(`/api/builds/${shareResult.code}/submit`, { method: "POST" });
-      if (!response.ok) throw new Error("submit failed");
-      const body = (await response.json()) as { status: string; changed: boolean };
-      setSubmission(body.changed ? "pending" : "already-submitted");
+      const response = await fetch(`/api/builds/${shareResult.code}/publish`, { method: "POST" });
+      if (!response.ok) throw new Error("publish failed");
+      setShareResult((current) => (current ? { ...current, published: true } : current));
+      setSubmission("idle");
     } catch {
       setSubmission("error");
     }
@@ -168,9 +182,21 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
         onDelete={store.deleteBuild}
         onToggleCompare={store.toggleCompare}
         onImport={(builds) => store.importBuilds(builds)}
-        onShare={() => void share()}
+        onShare={() => setSharePromptOpen(true)}
         soulsFor={(b) => calculateBuild(b, ctx).timeline.itemValue}
       />
+
+      {sharePromptOpen && (
+        <SharePrompt
+          buildName={build.name}
+          submitting={sharing}
+          onCancel={() => setSharePromptOpen(false)}
+          onConfirm={(publish) => {
+            setSharePromptOpen(false);
+            void share(publish);
+          }}
+        />
+      )}
 
       {sharedBanner && sharedBanner !== "error" && (
         <div className="mb-3 flex items-center gap-2 rounded-lg border border-amber-brand/40 bg-amber-brand/10 px-3 py-2 text-[13px] text-amber-brand">
@@ -223,26 +249,22 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
           </div>
           {shareResult.dbBacked && (
             <div className="mt-1.5 flex items-center gap-2 border-t border-amber-brand/20 pt-1.5 text-[11px]">
-              {submission === "pending" ? (
-                <span className="text-amber-brand">
-                  Submitted — visible in the build browser once an admin approves it.
-                </span>
-              ) : submission === "already-submitted" ? (
-                <span className="text-ink-400">Already submitted for review.</span>
+              {shareResult.published ? (
+                <span className="text-emerald-400">✓ Listed on the build browser.</span>
               ) : (
                 <>
                   <span className="text-ink-500">
-                    Want this listed in the build browser for others to find?
+                    Want this listed on the build browser for others to find?
                   </span>
                   <button
                     className="btn shrink-0 px-2 py-0.5 text-[10px]"
                     disabled={submission === "submitting"}
-                    onClick={() => void submitToDirectory()}
+                    onClick={() => void publishToDirectory()}
                   >
-                    {submission === "submitting" ? "Submitting…" : "Submit for review"}
+                    {submission === "submitting" ? "Listing…" : "List it"}
                   </button>
                   {submission === "error" && (
-                    <span className="text-red-300">Submission failed — try again.</span>
+                    <span className="text-red-300">Listing failed — try again.</span>
                   )}
                 </>
               )}

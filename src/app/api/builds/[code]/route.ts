@@ -12,7 +12,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ cod
   return NextResponse.json({ ...row.payload, status: row.status });
 }
 
-/** Admin-only: removes a shared build outright, e.g. a stale approved listing its owner has replaced. */
+/** Admin-only: removes a shared build outright, e.g. a stale public listing its owner has replaced. */
 export async function DELETE(_request: Request, { params }: { params: Promise<{ code: string }> }) {
   try {
     await requireAdmin();

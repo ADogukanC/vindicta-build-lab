@@ -2,13 +2,19 @@
  * Shared/public builds — the one thing this app keeps in a real database
  * rather than `data/local-db.json`. A row is created the moment someone hits
  * Share (status `private`, reachable only by its code) and stays private
- * unless they separately submit it to the build browser (`pending`), which an
- * admin then has to approve before it's listable.
+ * unless the sharer opts it into the build browser (`public`) — no admin
+ * approval gate; an admin can still delete a stale public listing outright
+ * (see `deleteSharedBuild`) to make room for a fresher one.
+ *
+ * `publishedAt` still lives in the `reviewed_at` column (no migration for a
+ * rename of an audit timestamp nobody reads outside this file) — it marked
+ * when a submission was reviewed back when that was a thing; now it marks
+ * when a build was made public.
  */
 import { index, jsonb, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 import type { SharedBuild } from "../../buildCode";
 
-export type BuildStatus = "private" | "pending" | "approved" | "rejected";
+export type BuildStatus = "private" | "public";
 
 export const sharedBuilds = pgTable(
   "shared_builds",
@@ -20,10 +26,10 @@ export const sharedBuilds = pgTable(
     payload: jsonb("payload").notNull().$type<SharedBuild>(),
     status: text("status").notNull().default("private").$type<BuildStatus>(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+    publishedAt: timestamp("reviewed_at", { withTimezone: true }),
   },
-  // Both the browse page and the admin queue filter by status and sort by
-  // recency — approved/pending are the only statuses ever listed in bulk.
+  // Both the browse page and the admin's management view filter by status
+  // and sort by recency — public is the only status ever listed in bulk.
   (table) => [index("shared_builds_status_created_at_idx").on(table.status, table.createdAt)],
 );
 
