@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const DISCORD_USERNAME = ".dokhan";
+export const DISCORD_USERNAME = ".dokhan";
 
 /**
  * Discord has no public deep-link for DMing someone by username alone (that

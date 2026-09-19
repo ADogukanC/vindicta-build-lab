@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { DISCORD_USERNAME } from "./Footer";
 
 /**
  * Shown the moment "Share" is clicked, before a code is even generated — the
@@ -47,6 +48,10 @@ export function SharePrompt({
             You can list it later instead, and it can always be taken down after.
           </span>
         </label>
+        <p className="mb-4 text-[11px] leading-relaxed text-ink-500">
+          If a listed build doesn&apos;t show up, or you want an outdated one taken down, message{" "}
+          <span className="text-ink-300">Discord: {DISCORD_USERNAME}</span>.
+        </p>
         <div className="flex justify-end gap-2">
           <button
             type="button"
