@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
-import { deleteSharedBuild, getSharedBuildByCode } from "@/lib/data/db/sharedBuilds";
+import { deleteSharedBuild, getSharedBuildByCode, renameSharedBuild } from "@/lib/data/db/sharedBuilds";
 
 export const dynamic = "force-dynamic";
 
@@ -23,4 +23,22 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
   const ok = await deleteSharedBuild(code);
   if (!ok) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json({ ok: true });
+}
+
+/** Admin-only: renames a shared build, e.g. to de-clutter the browse listing without deleting it outright. */
+export async function PATCH(request: Request, { params }: { params: Promise<{ code: string }> }) {
+  try {
+    await requireAdmin();
+  } catch (response) {
+    return response as Response;
+  }
+  const body = await request.json().catch(() => null);
+  const name = body && typeof body === "object" ? (body as Record<string, unknown>).name : null;
+  if (typeof name !== "string" || !name.trim()) {
+    return NextResponse.json({ error: "Expected a non-empty name." }, { status: 400 });
+  }
+  const { code } = await params;
+  const ok = await renameSharedBuild(code, name);
+  if (!ok) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  return NextResponse.json({ ok: true, name: name.trim().slice(0, 200) });
 }

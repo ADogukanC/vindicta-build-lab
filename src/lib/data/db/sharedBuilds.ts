@@ -1,6 +1,6 @@
 import "server-only";
 import { randomBytes } from "node:crypto";
-import { and, desc, eq, ilike } from "drizzle-orm";
+import { and, desc, eq, ilike, ne, sql } from "drizzle-orm";
 import { getDb } from "./client";
 import { sharedBuilds } from "./schema";
 import type { SharedBuild } from "../../buildCode";
@@ -37,21 +37,88 @@ export async function getSharedBuildByCode(code: string) {
 }
 
 /**
+ * Finds a name safe to list publicly as `desired` — unchanged if nothing
+ * public already uses it (case-insensitive exact match via `lower()`, not
+ * `ilike`, since a name can itself contain `%` or `_`, which `ilike` would
+ * treat as wildcards), otherwise `"<desired> (2)"`, `"(3)"`, ... `excludeCode`
+ * is the row being published itself, so republishing an already-public build
+ * doesn't collide with its own name.
+ */
+async function uniquePublicName(
+  db: ReturnType<typeof getDb>,
+  desired: string,
+  excludeCode: string,
+): Promise<string> {
+  const base = desired.trim() || "Unnamed build";
+  let candidate = base;
+  for (let suffix = 2; suffix <= 200; suffix++) {
+    const [clash] = await db
+      .select({ code: sharedBuilds.code })
+      .from(sharedBuilds)
+      .where(
+        and(
+          eq(sharedBuilds.status, "public"),
+          eq(sql`lower(${sharedBuilds.name})`, candidate.toLowerCase()),
+          ne(sharedBuilds.code, excludeCode),
+        ),
+      )
+      .limit(1);
+    if (!clash) return candidate;
+    candidate = `${base} (${suffix})`;
+  }
+  return `${base} (${Date.now()})`;
+}
+
+/**
  * Lists a build on the public build browser immediately — no admin approval
  * gate. A no-op if it's already public; returns the row's resulting status
- * either way, plus whether this call is what changed it.
+ * and name either way, plus whether this call is what changed it.
+ *
+ * Names aren't unique and every Share click mints a brand new row rather
+ * than updating one in place, so two unrelated people (or the same person,
+ * twice) can easily submit the same name. Nothing here can tell "this is my
+ * own updated build" from "a stranger happened to pick the same title", so
+ * rather than guessing and silently replacing someone else's listing, a
+ * newly-published build that collides with an already-public name gets
+ * renamed instead — "Name (2)", "(3)", etc. — so both stay visible and
+ * distinct on /browse. This also means a name can never again end up with
+ * two simultaneously-public rows for an admin to lose track of (the original
+ * trigger for this: deleting one still left the other looking like the
+ * deleted build had come back).
  */
 export async function publishSharedBuild(
   code: string,
-): Promise<{ status: "public"; changed: boolean } | "not-found"> {
+): Promise<{ status: "public"; changed: boolean; name: string } | "not-found"> {
   const row = await getSharedBuildByCode(code);
   if (!row) return "not-found";
-  if (row.status === "public") return { status: "public", changed: false };
+  if (row.status === "public") return { status: "public", changed: false, name: row.name };
+  const db = getDb();
+  const name = await uniquePublicName(db, row.name, code);
+  await db
+    .update(sharedBuilds)
+    .set({ status: "public", publishedAt: new Date(), name, payload: { ...row.payload, name } })
+    .where(eq(sharedBuilds.code, code));
+  return { status: "public", changed: true, name };
+}
+
+/**
+ * Admin-only rename of a shared build's display name — updates both the
+ * indexed `name` column and the `name` inside its `payload` (the latter is
+ * what a direct `/b/<code>` open and an /browse import actually surface),
+ * so the two can't drift apart. No uniqueness enforcement: the admin can
+ * already see the whole public list, so a collision they create on purpose
+ * (or don't notice) is theirs to fix, not something to second-guess here.
+ */
+export async function renameSharedBuild(code: string, name: string): Promise<boolean> {
+  const trimmed = name.trim().slice(0, 200);
+  if (!trimmed) return false;
+  const row = await getSharedBuildByCode(code);
+  if (!row) return false;
   await getDb()
     .update(sharedBuilds)
-    .set({ status: "public", publishedAt: new Date() })
+    .set({ name: trimmed, payload: { ...row.payload, name: trimmed } })
     .where(eq(sharedBuilds.code, code));
-  return { status: "public", changed: true };
+  return true;
 }
 
 const PAGE_SIZE = 30;

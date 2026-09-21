@@ -20,7 +20,7 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
   const store = useBuilds();
   const [sharePromptOpen, setSharePromptOpen] = useState(false);
   const [shareResult, setShareResult] = useState<
-    { code: string; url: string; dbBacked: boolean; published: boolean } | null
+    { code: string; url: string; dbBacked: boolean; published: boolean; publishedName?: string } | null
   >(null);
   const [sharing, setSharing] = useState(false);
   // Tracks only the post-hoc "list it" button's own async lifecycle —
@@ -134,15 +134,17 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
       // succeeds right away or the result box below offers the same "list
       // it" button as a fallback.
       let published = false;
+      let publishedName: string | undefined;
       if (publish && dbBacked) {
         try {
           const response = await fetch(`/api/builds/${code}/publish`, { method: "POST" });
           published = response.ok;
+          if (response.ok) ({ name: publishedName } = (await response.json()) as { name: string });
         } catch {
           published = false;
         }
       }
-      setShareResult({ code, url, dbBacked, published });
+      setShareResult({ code, url, dbBacked, published, publishedName });
       await navigator.clipboard.writeText(code).catch(() => {});
     } catch {
       alert("Could not generate a share code for this build.");
@@ -157,7 +159,8 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
     try {
       const response = await fetch(`/api/builds/${shareResult.code}/publish`, { method: "POST" });
       if (!response.ok) throw new Error("publish failed");
-      setShareResult((current) => (current ? { ...current, published: true } : current));
+      const { name } = (await response.json()) as { name: string };
+      setShareResult((current) => (current ? { ...current, published: true, publishedName: name } : current));
       setSubmission("idle");
     } catch {
       setSubmission("error");
@@ -250,7 +253,12 @@ export function BuildLab({ ctx, sharedCode }: { ctx: CalcContext; sharedCode?: s
           {shareResult.dbBacked && (
             <div className="mt-1.5 flex items-center gap-2 border-t border-amber-brand/20 pt-1.5 text-[11px]">
               {shareResult.published ? (
-                <span className="text-emerald-400">✓ Listed on the build browser.</span>
+                <span className="text-emerald-400">
+                  ✓ Listed on the build browser
+                  {shareResult.publishedName && shareResult.publishedName !== build.name
+                    ? ` as "${shareResult.publishedName}" (that name was already taken).`
+                    : "."}
+                </span>
               ) : (
                 <>
                   <span className="text-ink-500">
