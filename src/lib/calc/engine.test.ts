@@ -461,6 +461,54 @@ describe("engine rules", () => {
     );
   });
 
+  it("scales a proc's flat spirit damage with spirit power (Tesla Bullets / Capacitor)", () => {
+    // Tesla Bullets and Capacitor both carry a `perSpirit` scalar on their
+    // `procSpiritDamageFlat` base. A prior bug rebuilt this item's local stat
+    // bag from scratch inside the proc loop without folding `perSpirit` in,
+    // so the proc's damage silently stopped scaling with spirit power.
+    const teslaLike = {
+      ...bySlug.get("mercurial-magnum")!,
+      slug: "tesla-like",
+      name: "Tesla-like",
+      stats: { procChancePct: 15, procSpiritDamageFlat: 33 },
+      perSpirit: { procSpiritDamageFlat: 0.19 },
+    };
+    const improvedSpirit = bySlug.get("improved-spirit")!; // +18 spiritPowerFlat
+    const localCtx = { ...ctx, items: [...WORKBOOK_ITEMS, teslaLike] };
+
+    const lowSpirit = calculateBuild(
+      { ...workbookBuild(), items: [...workbookBuild().items, createBuildItem(teslaLike)] },
+      localCtx,
+    );
+    const highSpirit = calculateBuild(
+      {
+        ...workbookBuild(),
+        items: [
+          ...workbookBuild().items,
+          createBuildItem(teslaLike),
+          createBuildItem(improvedSpirit),
+        ],
+      },
+      localCtx,
+    );
+
+    expect(highSpirit.spiritPower).toBeGreaterThan(lowSpirit.spiritPower);
+
+    const chance = 0.15;
+    near(
+      lowSpirit.perBulletParts.ground.proc.raw,
+      chance * (33 + 0.19 * lowSpirit.spiritPower) * lowSpirit.damageMultiplier,
+    );
+    near(
+      highSpirit.perBulletParts.ground.proc.raw,
+      chance * (33 + 0.19 * highSpirit.spiritPower) * highSpirit.damageMultiplier,
+    );
+    // The whole point: more spirit power must raise this proc's own damage.
+    expect(highSpirit.perBulletParts.ground.proc.raw).toBeGreaterThan(
+      lowSpirit.perBulletParts.ground.proc.raw,
+    );
+  });
+
   it("passes bullet damage to ricochet targets at a discount and spirit damage in full", () => {
     const ricochet = {
       ...bySlug.get("mercurial-magnum")!,

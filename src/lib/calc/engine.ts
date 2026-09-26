@@ -776,7 +776,13 @@ export function calculateBuild(
   let procSpiritPerBullet = 0;
   for (const r of resolved) {
     const stats: StatBag = { ...(r.item.stats ?? {}) };
-    if (r.contributing) addStats(stats, r.item.conditionalStats);
+    if (r.contributing) {
+      addStats(stats, r.item.conditionalStats);
+      if (r.item.perStack) addStats(stats, r.item.perStack, r.stacks);
+      if (r.item.perStackSecondary) addStats(stats, r.item.perStackSecondary, r.stacksSecondary);
+      if (r.item.perBoon) addStats(stats, r.item.perBoon, boons);
+      if (r.item.perSpirit) addStats(stats, r.item.perSpirit, spiritPower);
+    }
     const chance = statValue(stats, "procChancePct") / 100;
     if (chance <= 0) continue;
     const weaponPart = chance * (statValue(stats, "procWeaponDamagePct") / 100) * bulletDamage * onHitMul;
