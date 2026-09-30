@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export const DISCORD_USERNAME = ".dokhan";
 
@@ -49,7 +50,15 @@ export function Footer() {
           </a>
           .
         </p>
-        <ContactButton />
+        <div className="flex shrink-0 items-center gap-2">
+          <Link
+            href="/privacy"
+            className="chip text-ink-300 transition hover:border-ink-500 hover:text-ink-100"
+          >
+            Privacy
+          </Link>
+          <ContactButton />
+        </div>
       </div>
     </footer>
   );
