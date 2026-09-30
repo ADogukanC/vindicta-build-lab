@@ -1,10 +1,9 @@
 /**
  * The data layer for the game catalogue: items, hero config and progression,
  * held in the `game_data` table of the same Postgres database `shared_builds`
- * lives in (see `lib/data/db/schema.ts`). The admin panel's edits persist
- * there, which — unlike the old `data/local-db.json` file this replaced —
- * means they stick no matter which machine or deployment made them: local
- * dev and the deployed Vercel site both read and write the same rows.
+ * lives in (see `lib/data/db/schema.ts`). Read-only here — a patch is applied
+ * by hand-editing `data/seed-items.json` and running `npm run db:sync-seed`,
+ * not through the admin panel, which only moderates shared builds now.
  *
  * Builds are different: they live in the browser's IndexedDB, and sharing
  * one snapshots it into `shared_builds` (via `lib/data/db/sharedBuilds.ts`)
@@ -73,34 +72,8 @@ export const store = {
     return db.items.slice().sort((a, b) => a.sortOrder - b.sortOrder);
   },
 
-  async saveItem(item: Item) {
-    const db = await read();
-    const items = db.items.slice();
-    const index = items.findIndex((i) => i.slug === item.slug);
-    if (index >= 0) items[index] = item;
-    else items.push(item);
-    await write({ ...db, items }, "items");
-    return item;
-  },
-
-  async deleteItem(slug: string) {
-    const db = await read();
-    await write({ ...db, items: db.items.filter((i) => i.slug !== slug) }, "items");
-  },
-
-  async replaceAllItems(items: Item[]) {
-    const db = await read();
-    await write({ ...db, items }, "items");
-  },
-
   async getHero() {
     return (await read()).hero;
-  },
-
-  async saveHero(hero: HeroConfig) {
-    const db = await read();
-    await write({ ...db, hero }, "hero");
-    return hero;
   },
 
   async getProgression() {

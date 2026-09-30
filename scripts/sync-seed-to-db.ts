@@ -5,13 +5,11 @@
  *
  * Item/hero/progression data used to live in data/local-db.json on whichever
  * machine ran the app, so a balance patch landed the moment its edit to
- * data/seed-items.json (or the admin panel) was saved. Now that this data
- * lives in the shared Postgres database instead — so admin edits persist on
- * the deployed site, not just wherever `npm run dev` happens to be running —
- * a patch written directly into the seed JSON (as opposed to made through the
- * admin panel, which writes straight to the database) needs this script to
- * actually go live. The admin panel remains the way to make one-off edits
- * that persist immediately with no script to run.
+ * data/seed-items.json was saved. Now that this data lives in the shared
+ * Postgres database instead — so every deployment reads the same rows, not
+ * just wherever `npm run dev` happens to be running — a patch written into
+ * the seed JSON needs this script to actually go live. There is no other way
+ * to edit items/hero any more: the admin panel only moderates shared builds.
  *
  * Run after hand-editing data/seed-items.json for a patch, or after
  * `refresh-item-data`'s wiki re-import:
@@ -19,8 +17,7 @@
  *   npm run db:sync-seed
  *
  * This overwrites the live items/hero/progression with the bundled seed
- * unconditionally — any admin-panel edits made since the last sync are lost.
- * Re-export first (Admin panel > Export items) if in doubt.
+ * unconditionally.
  */
 import { neon } from "@neondatabase/serverless";
 import { SEED_HERO, SEED_ITEMS, SEED_PROGRESSION } from "../src/lib/data/seed";

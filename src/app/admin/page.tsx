@@ -8,8 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminPage() {
   if (!(await isAdmin())) return <AdminLogin />;
 
-  const store = getStore();
-  const [items, hero] = await Promise.all([store.getItems(), store.getHero()]);
+  const items = await getStore().getItems();
 
-  return <AdminPanel initialItems={items} initialHero={hero} />;
+  return <AdminPanel initialItems={items} />;
 }
