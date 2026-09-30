@@ -96,6 +96,10 @@ export function createBuildItem(item: Item): BuildItem {
     stacks: item.defaultStacks ?? item.maxStacks ?? 0,
     stacksSecondary: item.defaultStacksSecondary ?? item.maxStacksSecondary ?? 0,
     shredActive: item.defaultShredActive ?? true,
+    corrupted: false,
+    corruptionDownsideId: null,
+    corruptionUpgradeRoll: "average",
+    corruptionDownsideRoll: "average",
   };
 }
 
@@ -247,6 +251,10 @@ export function normalizeBuild(raw: Partial<Build> & LegacyTierFlags): Build {
       stacks: i.stacks ?? 0,
       stacksSecondary: i.stacksSecondary ?? 0,
       shredActive: i.shredActive ?? true,
+      corrupted: i.corrupted ?? false,
+      corruptionDownsideId: i.corruptionDownsideId ?? null,
+      corruptionUpgradeRoll: i.corruptionUpgradeRoll ?? "average",
+      corruptionDownsideRoll: i.corruptionDownsideRoll ?? "average",
     })),
   };
 }

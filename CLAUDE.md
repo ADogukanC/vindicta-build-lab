@@ -17,7 +17,7 @@ game data before defending a calculation.
 ```bash
 npm install
 npm run dev      # http://localhost:3000
-npm test         # 118 tests, all must pass
+npm test         # 142 tests, all must pass
 npm run build    # production build
 ```
 
@@ -100,8 +100,10 @@ Migrations need the direct/unpooled connection string
 (`DATABASE_URL`) — see the comment in `drizzle.config.ts`.
 
 **Admin** is at `/admin`, gated by `ADMIN_PASSWORD` (single password, no
-accounts). Items, hero stats and abilities are editable there, and a
-"Builds" tab (`src/components/admin/PublishedBuildsPanel.tsx`) lists every
+accounts). It no longer edits items or hero stats — a patch is applied by
+hand-editing `data/seed-items.json` (the user tells Claude when one drops)
+and running `npm run db:sync-seed`. The only thing left there is
+`src/components/admin/PublishedBuildsPanel.tsx`, which lists every
 publicly-listed build with a **Delete** action — see "Build browser" below.
 
 **Sharing builds**: clicking "Share" opens a prompt (`SharePrompt.tsx`)
@@ -145,20 +147,29 @@ For the patch-refresh workflow and the `STAT_MAP` gotchas (resist shred sign,
 `ReloadSpeedMultipler` inversion, `MaxStacks` per-stack values), see the
 `refresh-item-data` skill (`.claude/skills/refresh-item-data/SKILL.md`).
 
+### Corruption (the Broker)
+
+Tier 3/4 items can be corrupted (build page, per row): a much stronger item
+plus one downside, with the upgrade and downside each rolled Low/Avg/High
+(±15%). Data comes from `scripts/build_corruption.py`, which writes only
+`item.corruption` into the seed — see the `refresh-item-data` skill. There
+are no per-item corrupted icons anywhere (wiki, game assets, statlocker); the
+game uses the normal icon in a shared frame, `public/corruption/frame-corrupted.webp`.
+
 ---
 
 ## Game rules the engine encodes
 
 Established with the user over several rounds; several contradict a naive
 reading of the data (souls/timeline, headshots, damage types, procs, ricochet,
-imbue items, damage multipliers, Mercurial Magnum). Documented next to the code
+imbue items, damage multipliers, Mercurial Magnum, corruption). Documented next to the code
 that implements them: `src/lib/calc/CLAUDE.md`.
 
 ---
 
 ## Testing
 
-`npm test` — 118 tests in five files.
+`npm test` — 142 tests in seven files.
 
 - **`calc/engine.test.ts`** — parity against the workbook's own cached values,
   each assertion labelled with the cell it reproduces (`B20`, `E36`, `M30`…),
@@ -175,6 +186,9 @@ that implements them: `src/lib/calc/CLAUDE.md`.
   share codec (the fallback path; the database-backed `/api/builds` routes
   and `shared_builds` moderation flow are exercised manually, not by this
   suite).
+- **`calc/corruption.test.ts`** — the Broker: rolls, downsides, fixed and
+  rounded bonuses, stack caps, plus checks against the live catalogue
+  (Spellslinger's corrupted numbers match the game's own Corrupted tab).
 
 Where the current patch disagrees with the workbook, the app follows the game
 and the README's "Where the current patch disagrees" section explains it.

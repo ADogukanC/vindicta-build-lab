@@ -2,7 +2,9 @@
 
 import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import clsx from "clsx";
 import type { BuildItem, Item } from "@/lib/types";
+import { applyCorruption } from "@/lib/corruption";
 import { MAX_ITEM_SLOTS } from "@/lib/calc/timeline";
 import { CATEGORY_COLOR, fmtInt } from "@/lib/format";
 import { ITEM_PREVIEW_WIDTH, ItemPreviewCard } from "./ItemPreviewCard";
@@ -36,7 +38,7 @@ interface Row {
   entry: BuildItem;
 }
 
-function Cell({ item }: { item: Item }) {
+function Cell({ item, entry }: { item: Item; entry: BuildItem }) {
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ top?: number; bottom?: number; left: number; maxHeight: number } | null>(
     null,
@@ -60,8 +62,11 @@ function Cell({ item }: { item: Item }) {
       ref={ref}
       onMouseEnter={show}
       onMouseLeave={hide}
-      className="relative aspect-square overflow-hidden rounded-md border bg-ink-900"
-      style={{ borderColor: CATEGORY_COLOR[item.category] }}
+      className={clsx(
+        "relative aspect-square overflow-hidden rounded-md border bg-ink-900",
+        entry.corrupted && "shadow-[0_0_6px_rgba(217,70,239,0.55)]",
+      )}
+      style={{ borderColor: entry.corrupted ? "rgba(217,70,239,0.7)" : CATEGORY_COLOR[item.category] }}
     >
       {item.iconUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -70,6 +75,15 @@ function Cell({ item }: { item: Item }) {
         <span className="grid h-full w-full place-items-center text-[10px] font-semibold text-ink-300">
           {item.name.slice(0, 2).toUpperCase()}
         </span>
+      )}
+      {entry.corrupted && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src="/corruption/frame-corrupted.webp"
+          alt=""
+          className="pointer-events-none absolute inset-0 h-full w-full mix-blend-screen"
+          draggable={false}
+        />
       )}
       <span
         className="absolute right-0.5 top-0.5 rounded px-1 text-[9px] font-bold leading-[14px]"
@@ -83,7 +97,8 @@ function Cell({ item }: { item: Item }) {
             className="pointer-events-none fixed z-50"
             style={{ top: pos.top, bottom: pos.bottom, left: pos.left }}
           >
-            <ItemPreviewCard item={item} maxHeight={pos.maxHeight} />
+            {/* A corrupted item previews with its corrupted numbers and downside. */}
+            <ItemPreviewCard item={applyCorruption(item, entry)} maxHeight={pos.maxHeight} />
           </div>,
           document.body,
         )}
@@ -128,7 +143,7 @@ export function InventoryGrid({
       >
         {Array.from({ length: MAX_ITEM_SLOTS }, (_, i) =>
           held[i] ? (
-            <Cell key={held[i].item.slug} item={held[i].item} />
+            <Cell key={held[i].item.slug} item={held[i].item} entry={held[i].entry} />
           ) : (
             <div
               key={`empty-${i}`}
