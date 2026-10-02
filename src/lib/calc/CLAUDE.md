@@ -127,26 +127,3 @@ per the same page's patch history ("Dec 16 2025: When Armor Piercing Rounds
 Proc's, Plated Armor can no longer stop the Proc'd Bullet") — both Plated
 Armor's weapon-damage deflection *and* its separate on-hit-effect block
 (spirit riding on the bullet, procs), not just one half.
-
-**Corruption (the Broker)** is folded into the item itself by
-`applyCorruption` (`src/lib/corruption.ts`) inside `resolveItems`, so the rest
-of the engine never special-cases it. Established from the game's own data
-(deadlock.wiki `CorruptedUpgrades` + statlocker.gg's `citadel_corrupted_*`
-extraction), not guesswork:
-- A corrupted item is **base + delta on the item's own keys**, routed into the
-  same bag as the base value — Spellslinger's +7 fire rate goes *per stack*
-  and its +2 raises the *cap* (6 → 8), Tesla Bullets' +47 goes to *proc*
-  damage, Escalating Exposure's +1.5 to spirit amp *per stack*, Hollow
-  Point's to *shred*. Deltas come from `scripts/build_corruption.py`; never
-  hand-write them.
-- **Two independent rolls.** Each upgrade rolls ±15% of its *bonus* (not of
-  the total: Spellslinger 11% → 18% lands on 17–19%); the downside rolls ±15%
-  of its own value. The build picks each (Low/Avg/High). Stack caps round to
-  a whole stack; `corruption.fixed` (charges, ricochet targets, Stamina
-  Mastery's stamina, Infuser/Vampiric Burst lifesteal) never rolls.
-- **One downside**, uniform over the 11-penalty pool minus the item's
-  exclusions (every penalty has weight 1), tier-3 or tier-4 magnitude by the
-  item's tier. It goes into `stats` — a flat hero penalty, not gated by the
-  item's own trigger or stacks.
-- Keys the engine doesn't model for the base item either (most cooldowns,
-  slows, radii, Toxic Bullets' bleed) are display-only (`corruption.rows`).

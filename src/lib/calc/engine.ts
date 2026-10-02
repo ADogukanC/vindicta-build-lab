@@ -22,7 +22,6 @@ import type {
   Progression,
 } from "../types";
 import { addStats, statValue, type StatBag } from "../stats";
-import { applyCorruption } from "../corruption";
 import { simulateTimeline, type TimelineResult } from "./timeline";
 
 /** Excel's `XLOOKUP(x, keys, values, 0, -1)`: the last row whose key is <= x. */
@@ -267,10 +266,8 @@ export function resolveItems(build: Build, items: Item[], held?: BuildItem[]): R
   const bySlug = new Map(items.map((i) => [i.slug, i]));
   const out: ResolvedItem[] = [];
   for (const entry of held ?? build.items) {
-    const base = bySlug.get(entry.slug);
-    if (!base) continue;
-    // Corruption is folded into the item itself, so nothing below needs to know about it.
-    const item = applyCorruption(base, entry);
+    const item = bySlug.get(entry.slug);
+    if (!item) continue;
     const contributing = item.conditional ? entry.active : true;
     const maxStacks = item.maxStacks ?? 0;
     const stacks = maxStacks > 0 ? Math.max(0, Math.min(maxStacks, entry.stacks)) : 0;

@@ -271,339 +271,6 @@ def add(bag, key, value):
     bag[key] = round(bag.get(key, 0) + value, 4)
 
 
-def convert_record(rec, key_to_slug, order=0, unmapped=None, quiet=False):
-    """One ItemCards record -> one seed item. `quiet` silences the
-    per-item warnings, for callers (build_corruption.py) that convert the
-    same record many times over."""
-    if unmapped is None:
-        unmapped = Counter()
-    name = rec["Name"]
-    stats, conditional_stats, per_stack = {}, {}, {}
-    imbued_stats = {}
-    per_spirit, per_boon = {}, {}
-    # (skey, "spirit"|"boon", coefficient, was_conditional) - resolved once
-    # the item's full conditional_stats is known; see the loop below.
-    scale_candidates = []
-    shred, per_stack_shred = {}, {}
-    conditional_is_proc = False
-    conditional_is_held = False
-    shred_is_proc = False
-    stacks_are_proc = False
-    damage_multiplier = None
-    info_blocks = []
-    condition_keys = []
-    max_stacks = None
-
-    for block_name in ("Info1", "Info2", "Info3", "Info4"):
-        block = rec.get(block_name)
-        if not block:
-            continue
-
-        entries = [(lst, s) for lst in ("Main", "Alt") for s in (block.get(lst) or [])]
-        block_has_cooldown = block.get("Cooldown") is not None
-        block_is_innate = (block.get("Type") or "") == "Innate"
-        # See FORCE_CONDITIONAL_ITEMS: a block typed "Active", one gated
-        # behind a ChargeUp, or an item opted in by hand is conditional
-        # even when the export leaves UsageFlags off every entry.
-        block_is_active = (block.get("Type") or "") == "Active"
-        block_is_charge_gated = block.get("ChargeUp") is not None
-        block_forced_conditional = (
-            rec["Key"] in FORCE_CONDITIONAL_ITEMS and not block_is_innate
-        )
-        scoped_to_imbue = bool(rec.get("IsImbue")) and not block_is_innate
-        block_stacks = next(
-            (
-                parse_value(s.get("Value"))
-                for _, s in entries
-                if s["Key"] in ("MaxStacks", "MaxArmorStacks")
-            ),
-            None,
-        )
-        # A conditional bonus is a window you have to open rather than a
-        # state you hold when its block carries its own cooldown or a finite
-        # duration, or when the item is one you have to press at all.
-        block_has_window = (
-            block_has_cooldown
-            or block_is_active
-            or block_is_charge_gated
-            or block_forced_conditional
-            or (rec.get("Activation") or "Passive") != "Passive"
-            or any(
-                s["Key"].endswith("Duration") or s["Key"] == "DamageWindow"
-                for _, s in entries
-            )
-        )
-        if block_stacks:
-            max_stacks = int(block_stacks)
-
-        display_rows = []
-        for lst, entry in entries:
-            gkey = entry["Key"]
-            value = parse_value(entry.get("Value"))
-            scale = entry.get("Scale")
-            scale_value = scale.get("Value") if scale else None
-            scale_kind = SCALE_KIND.get(scale.get("Type")) if scale else None
-            is_conditional = (
-                bool(entry.get("UsageFlags"))
-                or block_is_active
-                or block_is_charge_gated
-                or block_forced_conditional
-            )
-            # Within a stacking block, the headline numbers are per-stack.
-            is_per_stack = bool(block_stacks) and lst == "Main"
-            if gkey.startswith("Stacking"):
-                gkey = gkey[len("Stacking") :]
-                is_per_stack = True
-
-            if gkey in PER_STACK_MAP and value is not None:
-                add(per_stack, PER_STACK_MAP[gkey], value)
-                if is_conditional and block_has_window:
-                    stacks_are_proc = True
-                continue
-
-            if gkey in SHRED_MAP and value is not None:
-                target = per_stack_shred if is_per_stack else shred
-                add(target, SHRED_MAP[gkey], abs(value) / 100)
-                # Per-stack shred has nowhere to carry a spirit coefficient
-                # too (ShredSpec has no perStack-and-perSpirit combo).
-                if scale_kind == "spirit" and scale_value is not None and not is_per_stack:
-                    add(shred, SHRED_SCALE_KEY[SHRED_MAP[gkey]], abs(scale_value) / 100)
-                if is_conditional and not is_per_stack:
-                    condition_keys.append(gkey)
-                    if block_has_window:
-                        shred_is_proc = True
-                continue
-
-            if gkey == "OutgoingDamagePenaltyPercent" and value is not None:
-                if not is_conditional:
-                    # An unconditional penalty is on *you* (Golden Goose Egg).
-                    # The conditional version is a debuff you put on an enemy,
-                    # which does not change your own damage.
-                    damage_multiplier = round(1 + value / 100, 4)
-                    continue
-
-            if gkey in INVERTED and value is not None:
-                skey = INVERTED[gkey]
-                bag = per_stack if is_per_stack else (conditional_stats if is_conditional else stats)
-                add(bag, skey, -value)
-                if is_conditional and not is_per_stack:
-                    condition_keys.append(gkey)
-                    if block_has_window:
-                        conditional_is_proc = True
-                    else:
-                        conditional_is_held = True
-                continue
-
-            if gkey in STAT_MAP and value is not None:
-                skey = STAT_MAP[gkey]
-                if scoped_to_imbue and skey in IMBUED_KEYS:
-                    add(imbued_stats, skey, value)
-                    continue
-                if is_per_stack and is_conditional and block_has_window:
-                    stacks_are_proc = True
-                bag = per_stack if is_per_stack else (conditional_stats if is_conditional else stats)
-                add(bag, skey, value)
-                # Per-stack has no perSpirit/perBoon counterpart to fold
-                # into (Item only carries one flat perSpirit/perBoon bag,
-                # not one scoped per stack), so leave those unhandled -
-                # none of the wiki's Scale entries land on one today.
-                if scale_kind and scale_value is not None and not is_per_stack:
-                    scale_candidates.append((skey, scale_kind, scale_value, is_conditional))
-                if is_conditional and not is_per_stack:
-                    condition_keys.append(gkey)
-                    if block_has_window:
-                        conditional_is_proc = True
-                    else:
-                        conditional_is_held = True
-                continue
-
-            # Quicksilver Reload and Mercurial Magnum's imbued
-            # charge-then-consume bonus (see IMBUED_BONUS_DAMAGE) also
-            # scales with spirit power; the base amount is opted in by
-            # hand below since "Damage" means something different on
-            # almost every other item, but the coefficient can be read
-            # straight off this entry once we know it applies here.
-            if (
-                gkey == "Damage"
-                and rec["Key"] in IMBUED_BONUS_DAMAGE
-                and scale_kind == "spirit"
-                and scale_value is not None
-            ):
-                add(imbued_stats, "abilityBonusDamagePerSpirit", scale_value)
-
-            if gkey not in ("MaxStacks", "MaxArmorStacks"):
-                unmapped[gkey] += 1
-            display_rows.append(
-                {
-                    "key": gkey,
-                    "value": entry.get("Value"),
-                    "type": entry.get("Type"),
-                    "conditional": is_conditional,
-                    "emphasis": lst == "Main",
-                    **({"scale": {"value": scale_value, "kind": scale_kind}} if scale else {}),
-                }
-            )
-
-        if display_rows or block.get("Cooldown"):
-            info_blocks.append(
-                {
-                    "type": block.get("Type") or "Passive",
-                    "cooldown": block.get("Cooldown"),
-                    "chargeUp": block.get("ChargeUp"),
-                    "rows": display_rows,
-                }
-            )
-
-    # Item.perSpirit/perBoon are one flat bag gating every key in them the
-    # same way (r.contributing in engine.ts) - fine when a scaled key's own
-    # base value shares that gate, but wrong if the item also carries some
-    # *other*, unrelated conditional bonus (e.g. Headhunter's unconditional
-    # headshot damage sits next to a separately-gated move speed proc): the
-    # scaling would then silently disable itself with the wrong toggle. Only
-    # fold a candidate in when it can't be misgated - its own base is
-    # conditional (same toggle either way) or the item has no other
-    # conditional stat to collide with.
-    has_other_conditional = bool(conditional_stats)
-    for skey, kind, sval, was_conditional in scale_candidates:
-        if was_conditional or not has_other_conditional:
-            add(per_boon if kind == "boon" else per_spirit, skey, sval)
-        elif not quiet:
-            print(
-                f"  ! {name}: skipping {kind} scaling on {skey} - its base is "
-                "unconditional but the item has an unrelated conditional bonus"
-            )
-
-    item = {
-        "slug": key_to_slug[rec["Key"]],
-        "gameKey": rec["Key"],
-        "name": name,
-        "category": SLOT_TO_CATEGORY[rec["Slot"]],
-        "cost": rec["Cost"],
-        "tier": rec["Tier"],
-        "activation": rec.get("Activation") or "Passive",
-        # Keep an icon that is already downloaded, so re-running this
-        # script on its own does not blank the whole catalogue.
-        "iconUrl": (
-            f"/items/{key_to_slug[rec['Key']]}.png"
-            if os.path.exists(
-                os.path.join(ICON_DIR, f"{key_to_slug[rec['Key']]}.png")
-            )
-            else None
-        ),
-        "description": strip_html(rec.get("Description")),
-        "components": [
-            key_to_slug[c] for c in (rec.get("Components") or []) if c in key_to_slug
-        ],
-        "shopFilters": rec.get("ShopFilters") or [],
-        "isImbue": bool(rec.get("IsImbue")),
-        "stats": stats,
-        "enabled": not rec.get("IsDisabled"),
-        "sortOrder": order,
-    }
-
-    if rec["Key"] in IMBUED_BONUS_DAMAGE:
-        add(imbued_stats, "abilityBonusDamage", IMBUED_BONUS_DAMAGE[rec["Key"]])
-    if rec["Key"] in IGNORES_BULLET_RESIST:
-        item["ignoresBulletResist"] = True
-    if imbued_stats:
-        item["imbuedStats"] = imbued_stats
-    if conditional_stats:
-        item["conditionalStats"] = conditional_stats
-        item["conditional"] = {
-            "label": condition_label(
-                condition_keys,
-                rec.get("Activation") or "Passive",
-                conditional_is_proc and not conditional_is_held,
-            ),
-            # A bonus gated behind its own cooldown is a short proc window,
-            # so it is off until you say otherwise. One you can simply hold
-            # (Spiritual Overflow, Sharpshooter's range bonus) starts on.
-            "defaultActive": conditional_is_held or not conditional_is_proc,
-        }
-    if per_spirit:
-        item["perSpirit"] = per_spirit
-    if per_boon:
-        item["perBoon"] = per_boon
-    if per_stack or per_stack_shred:
-        if per_stack:
-            item["perStack"] = per_stack
-        capped = STACK_CAPS.get(item["slug"])
-        if capped:
-            item["maxStacks"] = capped
-        elif max_stacks:
-            item["maxStacks"] = max_stacks
-        else:
-            # The export carries no cap for per-kill style stacks. Ten is a
-            # workable ceiling; add the real one to STACK_CAPS when known.
-            item["maxStacks"] = 10
-            item["notes"] = (
-                (item.get("notes") + " ") if item.get("notes") else ""
-            ) + "The game data gives no stack cap for this item; 10 is an assumption."
-        item["defaultStacks"] = item["maxStacks"]
-        item["stackLabel"] = "Stacks"
-        # Stacks always have to be earned, so they get the same gate as any
-        # other trigger. The stack slider then says how many you are holding
-        # and the toggle says whether you are holding any at all.
-        item.setdefault("conditional", {"label": "Stacks held", "defaultActive": False})
-        _ = stacks_are_proc
-    if shred_is_proc:
-        item["defaultShredActive"] = False
-    if shred or per_stack_shred:
-        merged = dict(shred)
-        if per_stack_shred.get("bullet"):
-            merged["perStackBullet"] = per_stack_shred["bullet"]
-        if per_stack_shred.get("spirit"):
-            merged["perStackSpirit"] = per_stack_shred["spirit"]
-        item["shred"] = merged
-    if damage_multiplier is not None:
-        item["damageMultiplier"] = damage_multiplier
-    for key, value in SCALING_OVERRIDES.get(item["slug"], {}).items():
-        item[key] = {**item.get(key, {}), **value}
-
-    # Ballistic Enchantment tracks two independent stack counts - hero
-    # hits (WeaponPowerPerStack) and non-hero hits (WeaponPowerPerStack-
-    # NonHero, capped by NonHeroStackLimit) - but neither entry sits in a
-    # block carrying the literal MaxStacks key the generic per-stack
-    # detection above looks for, so both land as a single on/off toggle
-    # and a flat stat instead. Confirmed against the raw export and
-    # deadlock.wiki/Ballistic_Enchantment. The hero cap isn't in the data
-    # at all; 6 mirrors the enemy team size, the practical ceiling.
-    #
-    # Both tracks grant the *same* general weapon damage (it applies to
-    # everything you shoot afterward, hero or not) - a non-hero hit just
-    # earns a smaller bonus per stack than a hero hit does. This is not
-    # "Weapon Damage vs NPCs" (a bonus that only counts while *hitting* a
-    # non-hero, like Monster Rounds/Cultist Sacrifice); the wiki export's
-    # STAT_MAP entry for WeaponPowerPerStackNonHero is misleading here,
-    # confirmed against the user's own in-game knowledge of the item.
-    if rec["Key"] == "upgrade_bulletshredimbue":
-        hero_pct = conditional_stats.pop("weaponDamagePct", 20.0)
-        non_hero_pct = stats.pop("weaponDamageVsNpcPct", 5.0)
-        item["stats"] = stats
-        if conditional_stats:
-            item["conditionalStats"] = conditional_stats
-        else:
-            item.pop("conditionalStats", None)
-            item.pop("conditional", None)
-        item["perStack"] = {"weaponDamagePct": hero_pct}
-        item["maxStacks"] = 6
-        item["defaultStacks"] = 6
-        item["stackLabel"] = "Hero stacks"
-        item["perStackSecondary"] = {"weaponDamagePct": non_hero_pct}
-        item["maxStacksSecondary"] = 8
-        item["defaultStacksSecondary"] = 8
-        item["stackLabelSecondary"] = "Non-hero stacks"
-        # Stacks always have to be earned - same convention as every
-        # other stacking item (see seed.test.ts "never assumes stacks
-        # are already held").
-        item["conditional"] = {"label": "Stacks held", "defaultActive": False}
-
-    if info_blocks:
-        item["info"] = info_blocks
-
-    return item
-
-
 def main():
     raw = json.load(open(SRC, encoding="utf-8"))
     # Disabled and unreleased entries are dead weight in the shop and in admin.
@@ -637,7 +304,331 @@ def main():
     for order, rec in enumerate(
         sorted(records, key=lambda r: (r["Slot"], r["Cost"], r["Name"]))
     ):
-        items.append(convert_record(rec, key_to_slug, order, unmapped))
+        name = rec["Name"]
+        stats, conditional_stats, per_stack = {}, {}, {}
+        imbued_stats = {}
+        per_spirit, per_boon = {}, {}
+        # (skey, "spirit"|"boon", coefficient, was_conditional) - resolved once
+        # the item's full conditional_stats is known; see the loop below.
+        scale_candidates = []
+        shred, per_stack_shred = {}, {}
+        conditional_is_proc = False
+        conditional_is_held = False
+        shred_is_proc = False
+        stacks_are_proc = False
+        damage_multiplier = None
+        info_blocks = []
+        condition_keys = []
+        max_stacks = None
+
+        for block_name in ("Info1", "Info2", "Info3", "Info4"):
+            block = rec.get(block_name)
+            if not block:
+                continue
+
+            entries = [(lst, s) for lst in ("Main", "Alt") for s in (block.get(lst) or [])]
+            block_has_cooldown = block.get("Cooldown") is not None
+            block_is_innate = (block.get("Type") or "") == "Innate"
+            # See FORCE_CONDITIONAL_ITEMS: a block typed "Active", one gated
+            # behind a ChargeUp, or an item opted in by hand is conditional
+            # even when the export leaves UsageFlags off every entry.
+            block_is_active = (block.get("Type") or "") == "Active"
+            block_is_charge_gated = block.get("ChargeUp") is not None
+            block_forced_conditional = (
+                rec["Key"] in FORCE_CONDITIONAL_ITEMS and not block_is_innate
+            )
+            scoped_to_imbue = bool(rec.get("IsImbue")) and not block_is_innate
+            block_stacks = next(
+                (
+                    parse_value(s.get("Value"))
+                    for _, s in entries
+                    if s["Key"] in ("MaxStacks", "MaxArmorStacks")
+                ),
+                None,
+            )
+            # A conditional bonus is a window you have to open rather than a
+            # state you hold when its block carries its own cooldown or a finite
+            # duration, or when the item is one you have to press at all.
+            block_has_window = (
+                block_has_cooldown
+                or block_is_active
+                or block_is_charge_gated
+                or block_forced_conditional
+                or (rec.get("Activation") or "Passive") != "Passive"
+                or any(
+                    s["Key"].endswith("Duration") or s["Key"] == "DamageWindow"
+                    for _, s in entries
+                )
+            )
+            if block_stacks:
+                max_stacks = int(block_stacks)
+
+            display_rows = []
+            for lst, entry in entries:
+                gkey = entry["Key"]
+                value = parse_value(entry.get("Value"))
+                scale = entry.get("Scale")
+                scale_value = scale.get("Value") if scale else None
+                scale_kind = SCALE_KIND.get(scale.get("Type")) if scale else None
+                is_conditional = (
+                    bool(entry.get("UsageFlags"))
+                    or block_is_active
+                    or block_is_charge_gated
+                    or block_forced_conditional
+                )
+                # Within a stacking block, the headline numbers are per-stack.
+                is_per_stack = bool(block_stacks) and lst == "Main"
+                if gkey.startswith("Stacking"):
+                    gkey = gkey[len("Stacking") :]
+                    is_per_stack = True
+
+                if gkey in PER_STACK_MAP and value is not None:
+                    add(per_stack, PER_STACK_MAP[gkey], value)
+                    if is_conditional and block_has_window:
+                        stacks_are_proc = True
+                    continue
+
+                if gkey in SHRED_MAP and value is not None:
+                    target = per_stack_shred if is_per_stack else shred
+                    add(target, SHRED_MAP[gkey], abs(value) / 100)
+                    # Per-stack shred has nowhere to carry a spirit coefficient
+                    # too (ShredSpec has no perStack-and-perSpirit combo).
+                    if scale_kind == "spirit" and scale_value is not None and not is_per_stack:
+                        add(shred, SHRED_SCALE_KEY[SHRED_MAP[gkey]], abs(scale_value) / 100)
+                    if is_conditional and not is_per_stack:
+                        condition_keys.append(gkey)
+                        if block_has_window:
+                            shred_is_proc = True
+                    continue
+
+                if gkey == "OutgoingDamagePenaltyPercent" and value is not None:
+                    if not is_conditional:
+                        # An unconditional penalty is on *you* (Golden Goose Egg).
+                        # The conditional version is a debuff you put on an enemy,
+                        # which does not change your own damage.
+                        damage_multiplier = round(1 + value / 100, 4)
+                        continue
+
+                if gkey in INVERTED and value is not None:
+                    skey = INVERTED[gkey]
+                    bag = per_stack if is_per_stack else (conditional_stats if is_conditional else stats)
+                    add(bag, skey, -value)
+                    if is_conditional and not is_per_stack:
+                        condition_keys.append(gkey)
+                        if block_has_window:
+                            conditional_is_proc = True
+                        else:
+                            conditional_is_held = True
+                    continue
+
+                if gkey in STAT_MAP and value is not None:
+                    skey = STAT_MAP[gkey]
+                    if scoped_to_imbue and skey in IMBUED_KEYS:
+                        add(imbued_stats, skey, value)
+                        continue
+                    if is_per_stack and is_conditional and block_has_window:
+                        stacks_are_proc = True
+                    bag = per_stack if is_per_stack else (conditional_stats if is_conditional else stats)
+                    add(bag, skey, value)
+                    # Per-stack has no perSpirit/perBoon counterpart to fold
+                    # into (Item only carries one flat perSpirit/perBoon bag,
+                    # not one scoped per stack), so leave those unhandled -
+                    # none of the wiki's Scale entries land on one today.
+                    if scale_kind and scale_value is not None and not is_per_stack:
+                        scale_candidates.append((skey, scale_kind, scale_value, is_conditional))
+                    if is_conditional and not is_per_stack:
+                        condition_keys.append(gkey)
+                        if block_has_window:
+                            conditional_is_proc = True
+                        else:
+                            conditional_is_held = True
+                    continue
+
+                # Quicksilver Reload and Mercurial Magnum's imbued
+                # charge-then-consume bonus (see IMBUED_BONUS_DAMAGE) also
+                # scales with spirit power; the base amount is opted in by
+                # hand below since "Damage" means something different on
+                # almost every other item, but the coefficient can be read
+                # straight off this entry once we know it applies here.
+                if (
+                    gkey == "Damage"
+                    and rec["Key"] in IMBUED_BONUS_DAMAGE
+                    and scale_kind == "spirit"
+                    and scale_value is not None
+                ):
+                    add(imbued_stats, "abilityBonusDamagePerSpirit", scale_value)
+
+                if gkey not in ("MaxStacks", "MaxArmorStacks"):
+                    unmapped[gkey] += 1
+                display_rows.append(
+                    {
+                        "key": gkey,
+                        "value": entry.get("Value"),
+                        "type": entry.get("Type"),
+                        "conditional": is_conditional,
+                        "emphasis": lst == "Main",
+                        **({"scale": {"value": scale_value, "kind": scale_kind}} if scale else {}),
+                    }
+                )
+
+            if display_rows or block.get("Cooldown"):
+                info_blocks.append(
+                    {
+                        "type": block.get("Type") or "Passive",
+                        "cooldown": block.get("Cooldown"),
+                        "chargeUp": block.get("ChargeUp"),
+                        "rows": display_rows,
+                    }
+                )
+
+        # Item.perSpirit/perBoon are one flat bag gating every key in them the
+        # same way (r.contributing in engine.ts) - fine when a scaled key's own
+        # base value shares that gate, but wrong if the item also carries some
+        # *other*, unrelated conditional bonus (e.g. Headhunter's unconditional
+        # headshot damage sits next to a separately-gated move speed proc): the
+        # scaling would then silently disable itself with the wrong toggle. Only
+        # fold a candidate in when it can't be misgated - its own base is
+        # conditional (same toggle either way) or the item has no other
+        # conditional stat to collide with.
+        has_other_conditional = bool(conditional_stats)
+        for skey, kind, sval, was_conditional in scale_candidates:
+            if was_conditional or not has_other_conditional:
+                add(per_boon if kind == "boon" else per_spirit, skey, sval)
+            else:
+                print(
+                    f"  ! {name}: skipping {kind} scaling on {skey} - its base is "
+                    "unconditional but the item has an unrelated conditional bonus"
+                )
+
+        item = {
+            "slug": key_to_slug[rec["Key"]],
+            "gameKey": rec["Key"],
+            "name": name,
+            "category": SLOT_TO_CATEGORY[rec["Slot"]],
+            "cost": rec["Cost"],
+            "tier": rec["Tier"],
+            "activation": rec.get("Activation") or "Passive",
+            # Keep an icon that is already downloaded, so re-running this
+            # script on its own does not blank the whole catalogue.
+            "iconUrl": (
+                f"/items/{key_to_slug[rec['Key']]}.png"
+                if os.path.exists(
+                    os.path.join(ICON_DIR, f"{key_to_slug[rec['Key']]}.png")
+                )
+                else None
+            ),
+            "description": strip_html(rec.get("Description")),
+            "components": [
+                key_to_slug[c] for c in (rec.get("Components") or []) if c in key_to_slug
+            ],
+            "shopFilters": rec.get("ShopFilters") or [],
+            "isImbue": bool(rec.get("IsImbue")),
+            "stats": stats,
+            "enabled": not rec.get("IsDisabled"),
+            "sortOrder": order,
+        }
+
+        if rec["Key"] in IMBUED_BONUS_DAMAGE:
+            add(imbued_stats, "abilityBonusDamage", IMBUED_BONUS_DAMAGE[rec["Key"]])
+        if rec["Key"] in IGNORES_BULLET_RESIST:
+            item["ignoresBulletResist"] = True
+        if imbued_stats:
+            item["imbuedStats"] = imbued_stats
+        if conditional_stats:
+            item["conditionalStats"] = conditional_stats
+            item["conditional"] = {
+                "label": condition_label(
+                    condition_keys,
+                    rec.get("Activation") or "Passive",
+                    conditional_is_proc and not conditional_is_held,
+                ),
+                # A bonus gated behind its own cooldown is a short proc window,
+                # so it is off until you say otherwise. One you can simply hold
+                # (Spiritual Overflow, Sharpshooter's range bonus) starts on.
+                "defaultActive": conditional_is_held or not conditional_is_proc,
+            }
+        if per_spirit:
+            item["perSpirit"] = per_spirit
+        if per_boon:
+            item["perBoon"] = per_boon
+        if per_stack or per_stack_shred:
+            if per_stack:
+                item["perStack"] = per_stack
+            capped = STACK_CAPS.get(item["slug"])
+            if capped:
+                item["maxStacks"] = capped
+            elif max_stacks:
+                item["maxStacks"] = max_stacks
+            else:
+                # The export carries no cap for per-kill style stacks. Ten is a
+                # workable ceiling; add the real one to STACK_CAPS when known.
+                item["maxStacks"] = 10
+                item["notes"] = (
+                    (item.get("notes") + " ") if item.get("notes") else ""
+                ) + "The game data gives no stack cap for this item; 10 is an assumption."
+            item["defaultStacks"] = item["maxStacks"]
+            item["stackLabel"] = "Stacks"
+            # Stacks always have to be earned, so they get the same gate as any
+            # other trigger. The stack slider then says how many you are holding
+            # and the toggle says whether you are holding any at all.
+            item.setdefault("conditional", {"label": "Stacks held", "defaultActive": False})
+            _ = stacks_are_proc
+        if shred_is_proc:
+            item["defaultShredActive"] = False
+        if shred or per_stack_shred:
+            merged = dict(shred)
+            if per_stack_shred.get("bullet"):
+                merged["perStackBullet"] = per_stack_shred["bullet"]
+            if per_stack_shred.get("spirit"):
+                merged["perStackSpirit"] = per_stack_shred["spirit"]
+            item["shred"] = merged
+        if damage_multiplier is not None:
+            item["damageMultiplier"] = damage_multiplier
+        for key, value in SCALING_OVERRIDES.get(item["slug"], {}).items():
+            item[key] = {**item.get(key, {}), **value}
+
+        # Ballistic Enchantment tracks two independent stack counts - hero
+        # hits (WeaponPowerPerStack) and non-hero hits (WeaponPowerPerStack-
+        # NonHero, capped by NonHeroStackLimit) - but neither entry sits in a
+        # block carrying the literal MaxStacks key the generic per-stack
+        # detection above looks for, so both land as a single on/off toggle
+        # and a flat stat instead. Confirmed against the raw export and
+        # deadlock.wiki/Ballistic_Enchantment. The hero cap isn't in the data
+        # at all; 6 mirrors the enemy team size, the practical ceiling.
+        #
+        # Both tracks grant the *same* general weapon damage (it applies to
+        # everything you shoot afterward, hero or not) - a non-hero hit just
+        # earns a smaller bonus per stack than a hero hit does. This is not
+        # "Weapon Damage vs NPCs" (a bonus that only counts while *hitting* a
+        # non-hero, like Monster Rounds/Cultist Sacrifice); the wiki export's
+        # STAT_MAP entry for WeaponPowerPerStackNonHero is misleading here,
+        # confirmed against the user's own in-game knowledge of the item.
+        if rec["Key"] == "upgrade_bulletshredimbue":
+            hero_pct = conditional_stats.pop("weaponDamagePct", 20.0)
+            non_hero_pct = stats.pop("weaponDamageVsNpcPct", 5.0)
+            item["stats"] = stats
+            if conditional_stats:
+                item["conditionalStats"] = conditional_stats
+            else:
+                item.pop("conditionalStats", None)
+                item.pop("conditional", None)
+            item["perStack"] = {"weaponDamagePct": hero_pct}
+            item["maxStacks"] = 6
+            item["defaultStacks"] = 6
+            item["stackLabel"] = "Hero stacks"
+            item["perStackSecondary"] = {"weaponDamagePct": non_hero_pct}
+            item["maxStacksSecondary"] = 8
+            item["defaultStacksSecondary"] = 8
+            item["stackLabelSecondary"] = "Non-hero stacks"
+            # Stacks always have to be earned - same convention as every
+            # other stacking item (see seed.test.ts "never assumes stacks
+            # are already held").
+            item["conditional"] = {"label": "Stacks held", "defaultActive": False}
+
+        if info_blocks:
+            item["info"] = info_blocks
+
+        items.append(item)
 
     json.dump(items, open(OUT, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
 

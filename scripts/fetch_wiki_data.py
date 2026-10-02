@@ -4,7 +4,6 @@ Run this after a Deadlock patch:
 
     python scripts/fetch_wiki_data.py     # pull Data:ItemCards.json
     python scripts/convert_items.py       # rebuild data/seed-items.json
-    python scripts/build_corruption.py    # add each T3/T4 item's Broker corruption
     python scripts/fetch_icons.py         # download any new icons
 
 Then `npm test` to confirm the guards in src/lib/data/seed.test.ts still pass —

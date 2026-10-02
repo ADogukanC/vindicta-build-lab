@@ -1001,44 +1001,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "Health"
-      ],
-      "stats": {
-        "outOfCombatHealthRegen": 15.0
-      },
-      "conditionalStats": {
-        "bulletResistPct": 20.0
-      },
-      "rows": [
-        {
-          "key": "OutOfCombatHealthRegen",
-          "label": "Out of Combat Regen",
-          "unit": "",
-          "base": 3,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "BulletResist",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": 30,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "BulletResistBelowThreshold",
-          "label": "Bullet Resist Below Threshold",
-          "unit": "",
-          "base": 15,
-          "bonus": 5,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "counterspell",
@@ -1100,84 +1063,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 200.0,
-        "spiritPowerFlat": 17.0
-      },
-      "conditionalStats": {
-        "spiritPowerFlat": 20.0,
-        "moveSpeedFlat": 1.25
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 50,
-          "bonus": 200,
-          "variance": "full"
-        },
-        {
-          "key": "SpiritPowerInnate",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 5,
-          "bonus": 17,
-          "variance": "full"
-        },
-        {
-          "key": "SpiritPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 20,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "HealOnSuccess",
-          "label": "Healing",
-          "unit": "",
-          "base": 150,
-          "bonus": 250,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 1.75,
-          "bonus": 1.25,
-          "variance": "full"
-        },
-        {
-          "key": "BuffDuration",
-          "label": "Buff Duration",
-          "unit": "s",
-          "base": 6,
-          "bonus": 3,
-          "variance": "full"
-        },
-        {
-          "key": "SpellParryDuration",
-          "label": "Spell Parry Duration",
-          "unit": "s",
-          "base": 0.8,
-          "bonus": 0.2,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 23,
-          "bonus": -10,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "dispel-magic",
@@ -1227,56 +1113,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "conditionalStats": {
-        "spiritResistPct": 12.0,
-        "moveSpeedFlat": 1.5
-      },
-      "rows": [
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 10,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "HealOnActivate",
-          "label": "HP Healed On Activate",
-          "unit": "",
-          "base": 250,
-          "bonus": 400,
-          "variance": "full"
-        },
-        {
-          "key": "ActiveBonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 2,
-          "bonus": 1.5,
-          "variance": "full"
-        },
-        {
-          "key": "BuffDuration",
-          "label": "Buff Duration",
-          "unit": "s",
-          "base": 3,
-          "bonus": 2,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 45,
-          "bonus": -23,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "fortitude",
@@ -1332,60 +1169,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "MoveSpeed"
-      ],
-      "stats": {
-        "bonusHealthFlat": 625.0
-      },
-      "conditionalStats": {
-        "moveSpeedFlat": 1.5
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 375,
-          "bonus": 625,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 1.5,
-          "bonus": 1.5,
-          "variance": "full"
-        },
-        {
-          "key": "HealLifePercentOutOfCombat",
-          "label": "Max Health Regen",
-          "unit": " %",
-          "base": 2.25,
-          "bonus": 2,
-          "variance": "full"
-        },
-        {
-          "key": "RestoreDelay",
-          "label": "Restore Delay",
-          "unit": " s",
-          "base": 10,
-          "bonus": -3,
-          "variance": "full"
-        },
-        {
-          "key": "HealthThreshold",
-          "label": "Health Threshold",
-          "unit": "",
-          "base": 75,
-          "bonus": -15,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "fury-trance",
@@ -1438,89 +1222,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "FireRate",
-        "MoveSpeed"
-      ],
-      "stats": {
-        "bulletLifestealPct": 21.0,
-        "bonusHealthFlat": 150.0,
-        "weaponDamagePct": 12.0
-      },
-      "conditionalStats": {
-        "fireRatePct": 23.0,
-        "spiritResistPct": 20.0,
-        "moveSpeedFlat": 1.5
-      },
-      "rows": [
-        {
-          "key": "BulletLifestealPercent",
-          "label": "Bullet Lifesteal",
-          "unit": "%",
-          "base": 14,
-          "bonus": 21,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 100,
-          "bonus": 150,
-          "variance": "full"
-        },
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 6,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "ActiveBonusFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 32,
-          "bonus": 23,
-          "variance": "full"
-        },
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 40,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "ActiveBonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 1,
-          "bonus": 1.5,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 6.5,
-          "bonus": 1.5,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 18,
-          "bonus": -5,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "healing-nova",
@@ -1578,56 +1280,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "spiritPowerFlat": 22.0,
-        "abilityRangePct": 13.0
-      },
-      "rows": [
-        {
-          "key": "SpiritPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 8,
-          "bonus": 22,
-          "variance": "full"
-        },
-        {
-          "key": "TechRadiusMultiplier",
-          "label": "Radius",
-          "unit": "%",
-          "base": 5,
-          "bonus": 13,
-          "variance": "full"
-        },
-        {
-          "key": "TechRangeMultiplier",
-          "label": "Ability Range",
-          "unit": "%",
-          "base": 5,
-          "bonus": 13,
-          "variance": "full"
-        },
-        {
-          "key": "TotalHealthRegen",
-          "label": "Total HP Regen",
-          "unit": "",
-          "base": 325,
-          "bonus": 325,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 60,
-          "bonus": -25,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "lifestrike",
@@ -1698,72 +1351,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 175.0,
-        "meleeDamagePct": 24.0
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 125,
-          "bonus": 175,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMeleeDamagePercent",
-          "label": "Melee Damage",
-          "unit": "%",
-          "base": 16,
-          "bonus": 24,
-          "variance": "full"
-        },
-        {
-          "key": "SlowPercent",
-          "label": "Move Speed",
-          "unit": "%",
-          "base": 48,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "SlowDuration",
-          "label": "Slow Duration",
-          "unit": "s",
-          "base": 2.5,
-          "bonus": 1,
-          "variance": "full"
-        },
-        {
-          "key": "LifestealHeal",
-          "label": "Heal on Melee Hit",
-          "unit": "",
-          "base": 120,
-          "bonus": 205,
-          "variance": "full"
-        },
-        {
-          "key": "LifestealHealPercent",
-          "label": "Melee Hit Heal",
-          "unit": "%",
-          "base": 35,
-          "bonus": 30,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 4,
-          "bonus": -1,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "majestic-leap",
@@ -1822,71 +1410,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "conditionalStats": {
-        "combatBarrierFlat": 300.0
-      },
-      "rows": [
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 45,
-          "bonus": -30,
-          "variance": "full"
-        },
-        {
-          "key": "CombatBarrier",
-          "label": "Barrier",
-          "unit": "",
-          "base": 200,
-          "bonus": 300,
-          "variance": "full"
-        },
-        {
-          "key": "BarrierDuration",
-          "label": "Barrier Duration",
-          "unit": "s",
-          "base": 8,
-          "bonus": 2,
-          "variance": "full"
-        },
-        {
-          "key": "InterruptCooldown",
-          "label": "Interrupt Cooldown",
-          "unit": "s",
-          "base": 5,
-          "bonus": -1.5,
-          "variance": "full"
-        },
-        {
-          "key": "AirControlPercent",
-          "label": "Air Control",
-          "unit": "%",
-          "base": 100,
-          "bonus": 90,
-          "variance": "full"
-        },
-        {
-          "key": "AirControlPercentBarrier",
-          "label": "Air Control",
-          "unit": "%",
-          "base": 50,
-          "bonus": 50,
-          "variance": "full"
-        },
-        {
-          "key": "SlowPercent",
-          "label": "Move Speed",
-          "unit": "%",
-          "base": 32,
-          "bonus": 28,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "metal-skin",
@@ -1938,42 +1462,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "Health",
-        "TechDuration"
-      ],
-      "stats": {
-        "bulletResistPct": 21.0
-      },
-      "rows": [
-        {
-          "key": "BulletResist",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": 12,
-          "bonus": 21,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 5,
-          "bonus": 1,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 24,
-          "bonus": -6,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "rescue-beam",
@@ -2037,64 +1526,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "sprintSpeedFlat": 2.25,
-        "abilityRangePct": 12.0
-      },
-      "rows": [
-        {
-          "key": "BonusSprintSpeed",
-          "label": "Sprint Speed",
-          "unit": "m",
-          "base": 0.75,
-          "bonus": 2.25,
-          "variance": "full"
-        },
-        {
-          "key": "TechRangeMultiplier",
-          "label": "Ability Range",
-          "unit": "%",
-          "base": 6,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "TechRadiusMultiplier",
-          "label": "Radius",
-          "unit": "%",
-          "base": 6,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "HealPercentAmount",
-          "label": "Heal Amount",
-          "unit": "%",
-          "base": 20,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCastRange",
-          "label": "Cast Range",
-          "unit": "m",
-          "base": 35,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 60,
-          "bonus": -32,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "spirit-resilience",
@@ -2138,52 +1570,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "Health"
-      ],
-      "stats": {
-        "outOfCombatHealthRegen": 15.0
-      },
-      "conditionalStats": {
-        "spiritResistPct": 20.0
-      },
-      "rows": [
-        {
-          "key": "OutOfCombatHealthRegen",
-          "label": "Out of Combat Regen",
-          "unit": "",
-          "base": 3,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 30,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "TechResistBelowThreshold",
-          "label": "Tech Resist Below Threshold",
-          "unit": "",
-          "base": 15,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "HealthThreshold",
-          "label": "Health Threshold",
-          "unit": "",
-          "base": 50,
-          "bonus": 15,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "stamina-mastery",
@@ -2225,44 +1612,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "staminaRecoveryPct": 27.0
-      },
-      "fixed": {
-        "stats": {
-          "staminaFlat": 2.0
-        }
-      },
-      "rows": [
-        {
-          "key": "Stamina",
-          "label": "Stamina",
-          "unit": "",
-          "base": 2,
-          "bonus": 2,
-          "variance": "fixed"
-        },
-        {
-          "key": "StaminaCooldownReduction",
-          "label": "Stamina Recovery",
-          "unit": "%",
-          "base": 18,
-          "bonus": 27,
-          "variance": "full"
-        },
-        {
-          "key": "AirMoveIncreasePercent",
-          "label": "Air Jump/Dash Distance",
-          "unit": "%",
-          "base": 23,
-          "bonus": 27,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "veil-walker",
@@ -2326,85 +1676,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "MoveSpeed"
-      ],
-      "stats": {
-        "bonusHealthFlat": 175.0,
-        "spiritPowerFlat": 15.0
-      },
-      "conditionalStats": {
-        "moveSpeedFlat": 2.5
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 125,
-          "bonus": 175,
-          "variance": "full"
-        },
-        {
-          "key": "SpiritPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 6,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "BonusSprintSpeed",
-          "label": "Sprint Speed",
-          "unit": "m",
-          "base": 0,
-          "bonus": 2,
-          "variance": "full"
-        },
-        {
-          "key": "OutOfCombatHealthRegen",
-          "label": "Out of Combat Regen",
-          "unit": "",
-          "base": 0,
-          "bonus": 3,
-          "variance": "full"
-        },
-        {
-          "key": "HealOnVeil",
-          "label": "Heal On Veil",
-          "unit": "",
-          "base": 85,
-          "bonus": 165,
-          "variance": "full"
-        },
-        {
-          "key": "InvisDuration",
-          "label": "Invisibility Duration",
-          "unit": "s",
-          "base": 8,
-          "bonus": 3,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 3.5,
-          "bonus": 2.5,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 15,
-          "bonus": -5,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "warp-stone",
@@ -2454,49 +1726,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechRange"
-      ],
-      "conditionalStats": {
-        "bulletResistPct": 20.0
-      },
-      "rows": [
-        {
-          "key": "BulletResist",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": 30,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "CasterBuffDuration",
-          "label": "Buff Duration",
-          "unit": "s",
-          "base": 6,
-          "bonus": 2,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCastRange",
-          "label": "Cast Range",
-          "unit": "m",
-          "base": 11,
-          "bonus": 2,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 16,
-          "bonus": -8,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "cheat-death",
@@ -2546,50 +1776,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 300.0
-      },
-      "conditionalStats": {
-        "bulletResistPct": 10.0
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 200,
-          "bonus": 300,
-          "variance": "full"
-        },
-        {
-          "key": "BulletResist",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": 15,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 90,
-          "bonus": -40,
-          "variance": "full"
-        },
-        {
-          "key": "DeathImmunityDuration",
-          "label": "Death Immunity Duration",
-          "unit": "s",
-          "base": 4.5,
-          "bonus": 1.5,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "colossus",
@@ -2672,108 +1859,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "weaponDamagePct": 15.0
-      },
-      "conditionalStats": {
-        "bulletResistPct": 10.0,
-        "spiritResistPct": 10.0,
-        "meleeDamagePct": 15.0
-      },
-      "rows": [
-        {
-          "key": "BonusBaseHealth",
-          "label": "Base Health",
-          "unit": "%",
-          "base": 25,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 15,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "BuffBulletResist",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": 35,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "BuffTechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 35,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMeleeDamagePercent",
-          "label": "Melee Damage",
-          "unit": "%",
-          "base": 30,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "ModelScaleGrowth",
-          "label": "Model Scale Growth",
-          "unit": "",
-          "base": 1.2,
-          "bonus": 0.05,
-          "variance": "full"
-        },
-        {
-          "key": "ModelScaleGrowthTooltip",
-          "label": "Model Scale",
-          "unit": "%",
-          "base": 20,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "SlowPercent",
-          "label": "Move Speed",
-          "unit": "%",
-          "base": 24,
-          "bonus": 8,
-          "variance": "full"
-        },
-        {
-          "key": "GroundDashReductionPercent",
-          "label": "Dash Distance",
-          "unit": "%",
-          "base": -22,
-          "bonus": -6,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 37,
-          "bonus": -15,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 7,
-          "bonus": 2,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "divine-barrier",
@@ -2829,68 +1915,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "conditionalStats": {
-        "combatBarrierFlat": 250.0,
-        "moveSpeedFlat": 1.25
-      },
-      "stats": {
-        "outOfCombatHealthRegen": 8.5,
-        "abilityRangePct": 5.0
-      },
-      "rows": [
-        {
-          "key": "CombatBarrier",
-          "label": "Barrier",
-          "unit": "",
-          "base": 600,
-          "bonus": 250,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 2.75,
-          "bonus": 1.25,
-          "variance": "full"
-        },
-        {
-          "key": "OutOfCombatHealthRegen",
-          "label": "Out of Combat Regen",
-          "unit": "",
-          "base": 1.5,
-          "bonus": 8.5,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 45,
-          "bonus": -21,
-          "variance": "full"
-        },
-        {
-          "key": "TechRangeMultiplier",
-          "label": "Ability Range",
-          "unit": "%",
-          "base": 10,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "TechRadiusMultiplier",
-          "label": "Radius",
-          "unit": "%",
-          "base": 10,
-          "bonus": 5,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "diviners-kevlar",
@@ -2938,60 +1963,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "conditionalStats": {
-        "combatBarrierFlat": 700.0,
-        "spiritPowerFlat": 30.0
-      },
-      "stats": {
-        "abilityDurationPct": 15.0,
-        "ultimateCooldownReductionPct": 5.0
-      },
-      "rows": [
-        {
-          "key": "CombatBarrier",
-          "label": "Barrier",
-          "unit": "",
-          "base": 1000,
-          "bonus": 700,
-          "variance": "full"
-        },
-        {
-          "key": "TechPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 40,
-          "bonus": 30,
-          "variance": "full"
-        },
-        {
-          "key": "BonusAbilityDurationPercent",
-          "label": "Ability Duration",
-          "unit": "%",
-          "base": 15,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "UltimateCooldownReduction",
-          "label": "Ultimate Cooldown Reduction",
-          "unit": "%",
-          "base": 10,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 40,
-          "bonus": -15,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "healing-tempo",
@@ -3055,69 +2027,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "outOfCombatHealthRegen": 6.0,
-        "spiritResistPct": 5.0,
-        "healthRegenFlat": 4.0
-      },
-      "conditionalStats": {
-        "fireRatePct": 25.0,
-        "moveSpeedFlat": 1.25
-      },
-      "rows": [
-        {
-          "key": "OutOfCombatHealthRegen",
-          "label": "Out of Combat Regen",
-          "unit": "",
-          "base": 4,
-          "bonus": 6,
-          "variance": "full"
-        },
-        {
-          "key": "BonusFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 35,
-          "bonus": 25,
-          "variance": "full"
-        },
-        {
-          "key": "HealAmpCastPercent",
-          "label": "Outgoing Healing",
-          "unit": "%",
-          "base": 25,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 10,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealthRegen",
-          "label": "Health Regen",
-          "unit": "",
-          "base": 6,
-          "bonus": 4,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 1.25,
-          "bonus": 1.25,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "indomitable",
@@ -3168,60 +2078,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "outOfCombatHealthRegen": 6.0,
-        "bulletResistPct": 5.0,
-        "spiritResistPct": 5.0
-      },
-      "conditionalStats": {
-        "combatBarrierFlat": 275.0
-      },
-      "rows": [
-        {
-          "key": "OutOfCombatHealthRegen",
-          "label": "Out of Combat Regen",
-          "unit": "",
-          "base": 2,
-          "bonus": 6,
-          "variance": "full"
-        },
-        {
-          "key": "VexBarrierCombatBarrier",
-          "label": "Barrier",
-          "unit": "",
-          "base": 325,
-          "bonus": 275,
-          "variance": "full"
-        },
-        {
-          "key": "BulletResist",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": 10,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 10,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 55,
-          "bonus": -30,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "infuser",
@@ -3284,81 +2141,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "spiritPowerFlat": 14.0,
-        "bonusHealthFlat": 100.0
-      },
-      "conditionalStats": {
-        "spiritResistPct": 5.0,
-        "spiritPowerFlat": 10.0
-      },
-      "fixed": {
-        "conditionalStats": {
-          "spiritLifestealPct": 30.0
-        }
-      },
-      "rows": [
-        {
-          "key": "AbilityLifestealPercentHero",
-          "label": "Spirit Lifesteal",
-          "unit": "%",
-          "base": 70,
-          "bonus": 30,
-          "variance": "fixed"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 30,
-          "bonus": -10,
-          "variance": "full"
-        },
-        {
-          "key": "TechPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 6,
-          "bonus": 14,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 100,
-          "bonus": 100,
-          "variance": "full"
-        },
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 10,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityLifestealPercentHeroPassive",
-          "label": "Spirit Lifesteal",
-          "unit": "%",
-          "base": 13,
-          "bonus": 7,
-          "variance": "full"
-        },
-        {
-          "key": "BonusSpirit",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 30,
-          "bonus": 10,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "inhibitor",
@@ -3419,59 +2202,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 300.0,
-        "weaponDamagePct": 15.0
-      },
-      "conditionalStats": {
-        "healingReceivedPct": -15.0
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 150,
-          "bonus": 300,
-          "variance": "full"
-        },
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 10,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "OutgoingDamagePenaltyPercent",
-          "label": "Damage Penalty",
-          "unit": "%",
-          "base": -30,
-          "bonus": -15,
-          "variance": "full"
-        },
-        {
-          "key": "HealAmpReceivePenaltyPercent",
-          "label": "Incoming Healing",
-          "unit": "%",
-          "base": -40,
-          "bonus": -15,
-          "variance": "full"
-        },
-        {
-          "key": "BuildUpDuration",
-          "label": "Build Up Duration",
-          "unit": "",
-          "base": 5,
-          "bonus": 4,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "juggernaut",
@@ -3520,58 +2251,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "slowResistPct": 25.0,
-        "meleeResistPct": 35.0,
-        "moveSpeedFlat": 1.5,
-        "healthRegenFlat": 8.0
-      },
-      "rows": [
-        {
-          "key": "SlowResistancePercent",
-          "label": "Slow Resist",
-          "unit": "%",
-          "base": 50,
-          "bonus": 25,
-          "variance": "full"
-        },
-        {
-          "key": "FireRateSlow",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 40,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "MeleeResistPercent",
-          "label": "Melee Resist",
-          "unit": "%",
-          "base": 25,
-          "bonus": 35,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 2.5,
-          "bonus": 1.5,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealthRegen",
-          "label": "Health Regen",
-          "unit": "",
-          "base": 8,
-          "bonus": 8,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "leech",
@@ -3600,59 +2280,7 @@
       "spiritPowerFlat": 12.0
     },
     "enabled": true,
-    "sortOrder": 46,
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 220.0,
-        "spiritLifestealPct": 22.0,
-        "bulletLifestealPct": 22.0,
-        "weaponDamagePct": 23.0,
-        "spiritPowerFlat": 23.0
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 180,
-          "bonus": 220,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityLifestealPercentHero",
-          "label": "Spirit Lifesteal",
-          "unit": "%",
-          "base": 28,
-          "bonus": 22,
-          "variance": "full"
-        },
-        {
-          "key": "BulletLifestealPercent",
-          "label": "Bullet Lifesteal",
-          "unit": "%",
-          "base": 28,
-          "bonus": 22,
-          "variance": "full"
-        },
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 12,
-          "bonus": 23,
-          "variance": "full"
-        },
-        {
-          "key": "TechPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 12,
-          "bonus": 23,
-          "variance": "full"
-        }
-      ]
-    }
+    "sortOrder": 46
   },
   {
     "slug": "phantom-strike",
@@ -3725,64 +2353,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "weaponDamagePct": 20.0,
-        "spiritPowerFlat": 12.0
-      },
-      "rows": [
-        {
-          "key": "SlowPercent",
-          "label": "Move Speed",
-          "unit": "%",
-          "base": 40,
-          "bonus": 16,
-          "variance": "full"
-        },
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 15,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCastRange",
-          "label": "Cast Range",
-          "unit": "m",
-          "base": 25,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "TechPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 8,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 35,
-          "bonus": -23,
-          "variance": "full"
-        },
-        {
-          "key": "ImpactDamage",
-          "label": "Impact Damage",
-          "unit": "",
-          "base": 75,
-          "bonus": 31.4,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "plated-armor",
@@ -3827,41 +2398,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "BulletResist"
-      ],
-      "stats": {
-        "bonusHealthFlat": 370.0
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 130,
-          "bonus": 370,
-          "variance": "full"
-        },
-        {
-          "key": "DeflectionPercent",
-          "label": "Deflection Percent",
-          "unit": "%",
-          "base": 30,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "BulletProcDeflectionPercent",
-          "label": "On-Hit Prevention Percent",
-          "unit": "%",
-          "base": 50,
-          "bonus": 15,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "siphon-bullets",
@@ -3913,52 +2450,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "Health"
-      ],
-      "stats": {
-        "weaponDamagePct": 25.0
-      },
-      "conditionalStats": {
-        "bulletResistPct": 10.0
-      },
-      "rows": [
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 15,
-          "bonus": 25,
-          "variance": "full"
-        },
-        {
-          "key": "BulletResist",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": 10,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "HealthStealPctHero",
-          "label": "Hero Lifesteal",
-          "unit": "%",
-          "base": 2.5,
-          "bonus": 1.5,
-          "variance": "full"
-        },
-        {
-          "key": "StealDuration",
-          "label": "Steal Duration",
-          "unit": "s",
-          "base": 17,
-          "bonus": 8,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "spellbreaker",
@@ -4006,57 +2498,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 160.0,
-        "debuffResistPct": 10.0,
-        "spiritResistPct": 12.0
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 90,
-          "bonus": 160,
-          "variance": "full"
-        },
-        {
-          "key": "StatusResistancePercent",
-          "label": "Debuff Resist",
-          "unit": "%",
-          "base": 25,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 18,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "SpiritDamageReductionProc",
-          "label": "Spirit Damage Reduction",
-          "unit": "%",
-          "base": 65,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 9,
-          "bonus": -4,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "unstoppable",
@@ -4097,50 +2539,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechDuration"
-      ],
-      "stats": {
-        "bonusHealthFlat": 175.0,
-        "debuffResistPct": 10.0
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 125,
-          "bonus": 175,
-          "variance": "full"
-        },
-        {
-          "key": "StatusResistancePercent",
-          "label": "Debuff Resist",
-          "unit": "%",
-          "base": 25,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 60,
-          "bonus": -30,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 5.5,
-          "bonus": 1,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "vampiric-burst",
@@ -4206,87 +2605,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "FireRate"
-      ],
-      "stats": {
-        "weaponDamagePct": 9.0,
-        "bonusHealthFlat": 75.0,
-        "bulletLifestealPct": 7.0
-      },
-      "conditionalStats": {
-        "bulletResistPct": 5.0,
-        "fireRatePct": 11.0
-      },
-      "rows": [
-        {
-          "key": "ActiveBonusLifesteal",
-          "label": "Bullet Lifesteal",
-          "unit": "%",
-          "base": 70,
-          "bonus": 30,
-          "variance": "fixed"
-        },
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 6,
-          "bonus": 9,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 100,
-          "bonus": 75,
-          "variance": "full"
-        },
-        {
-          "key": "BulletLifestealPercent",
-          "label": "Bullet Lifesteal",
-          "unit": "%",
-          "base": 13,
-          "bonus": 7,
-          "variance": "full"
-        },
-        {
-          "key": "BulletResist",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": 10,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "ActiveBonusFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 34,
-          "bonus": 11,
-          "variance": "full"
-        },
-        {
-          "key": "ActiveReloadPercent",
-          "label": "Ammo",
-          "unit": "%",
-          "base": 75,
-          "bonus": 25,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 30,
-          "bonus": -10,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "witchmail",
@@ -4332,50 +2651,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "Health"
-      ],
-      "stats": {
-        "spiritResistPct": 13.0,
-        "spiritPowerFlat": 21.0
-      },
-      "rows": [
-        {
-          "key": "CooldownReduction",
-          "label": "Ability Cooldown Reduction",
-          "unit": "%",
-          "base": 7,
-          "bonus": 3,
-          "variance": "full"
-        },
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 22,
-          "bonus": 13,
-          "variance": "full"
-        },
-        {
-          "key": "TechPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 14,
-          "bonus": 21,
-          "variance": "full"
-        },
-        {
-          "key": "CooldownReductionPerHit",
-          "label": "Cooldown Reduction per Hit",
-          "unit": "s",
-          "base": 4,
-          "bonus": 1,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "extra-charge",
@@ -5313,77 +3589,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechDuration"
-      ],
-      "conditionalStats": {
-        "healingReceivedPct": -25.0
-      },
-      "stats": {
-        "bonusHealthFlat": 195.0,
-        "spiritPowerFlat": 22.0
-      },
-      "rows": [
-        {
-          "key": "DotHealthPercent",
-          "label": "Bleed Damage",
-          "unit": "% DPS",
-          "base": 1.95,
-          "bonus": 1.05,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 30,
-          "bonus": -13,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCastRange",
-          "label": "Cast Range",
-          "unit": "m",
-          "base": 20,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "HealAmpReceivePenaltyPercent",
-          "label": "Incoming Healing",
-          "unit": "%",
-          "base": -50,
-          "bonus": -25,
-          "variance": "full"
-        },
-        {
-          "key": "HealAmpRegenPenaltyPercent",
-          "label": "Incoming Healing",
-          "unit": "%",
-          "base": -50,
-          "bonus": -25,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 65,
-          "bonus": 195,
-          "variance": "full"
-        },
-        {
-          "key": "TechPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 8,
-          "bonus": 22,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "disarming-hex",
@@ -5442,61 +3648,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechDuration"
-      ],
-      "stats": {
-        "sprintSpeedFlat": 2.2,
-        "bonusHealthFlat": 175.0
-      },
-      "shred": {
-        "bullet": 0.07
-      },
-      "rows": [
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 16,
-          "bonus": -4,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 4.25,
-          "bonus": 1.25,
-          "variance": "full"
-        },
-        {
-          "key": "BonusSprintSpeed",
-          "label": "Sprint Speed",
-          "unit": "m",
-          "base": 0.75,
-          "bonus": 2.2,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 75,
-          "bonus": 175,
-          "variance": "full"
-        },
-        {
-          "key": "BulletArmorReduction",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": -13,
-          "bonus": -7,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "greater-expansion",
@@ -5527,41 +3679,6 @@
     "conditional": {
       "label": "Condition met",
       "defaultActive": true
-    },
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "abilityRangePct": 20.0
-      },
-      "conditionalStats": {
-        "spiritResistPct": 10.0
-      },
-      "rows": [
-        {
-          "key": "TechRangeMultiplier",
-          "label": "Ability Range",
-          "unit": "%",
-          "base": 30,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "TechRadiusMultiplier",
-          "label": "Radius",
-          "unit": "%",
-          "base": 30,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 10,
-          "bonus": 10,
-          "variance": "full"
-        }
-      ]
     }
   },
   {
@@ -5615,56 +3732,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 150.0,
-        "abilityRangePct": 9.0
-      },
-      "rows": [
-        {
-          "key": "StunDuration",
-          "label": "Stun Duration",
-          "unit": "s",
-          "base": 0.5,
-          "bonus": 0.5,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 35,
-          "bonus": -19,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 75,
-          "bonus": 150,
-          "variance": "full"
-        },
-        {
-          "key": "TechRangeMultiplier",
-          "label": "Ability Range",
-          "unit": "%",
-          "base": 5,
-          "bonus": 9,
-          "variance": "full"
-        },
-        {
-          "key": "TechRadiusMultiplier",
-          "label": "Radius",
-          "unit": "%",
-          "base": 5,
-          "bonus": 9,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "radiant-regeneration",
@@ -5748,58 +3816,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "conditionalStats": {
-        "moveSpeedFlat": 2.25
-      },
-      "stats": {
-        "bonusHealthFlat": 230.0
-      },
-      "rows": [
-        {
-          "key": "HealingPerCast",
-          "label": "Healing on Ability Cast",
-          "unit": "",
-          "base": 65,
-          "bonus": 65,
-          "variance": "full"
-        },
-        {
-          "key": "Regeneration",
-          "label": "Regeneration",
-          "unit": " HP/s",
-          "base": 4,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 1.75,
-          "bonus": 2.25,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 90,
-          "bonus": 230,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 6,
-          "bonus": -2,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "rapid-recharge",
@@ -5844,52 +3861,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "cooldownReductionPct": 6.0
-      },
-      "fixed": {
-        "stats": {
-          "chargesFlat": 1.0
-        }
-      },
-      "rows": [
-        {
-          "key": "CooldownBetweenChargeReduction",
-          "label": "Faster Time Between Charges",
-          "unit": "%",
-          "base": 30,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "BonusSpiritForChargedAbilities",
-          "label": "Bonus Spirit Power for Charged Abilities",
-          "unit": "",
-          "base": 14,
-          "bonus": 11,
-          "variance": "full"
-        },
-        {
-          "key": "CooldownReductionOnChargedAbilities",
-          "label": "Cooldown Reduction For Charged Abilities",
-          "unit": "%",
-          "base": 14,
-          "bonus": 6,
-          "variance": "full"
-        },
-        {
-          "key": "BonusAbilityCharges",
-          "label": "Bonus Ability Charges",
-          "unit": "",
-          "base": 2,
-          "bonus": 1,
-          "variance": "fixed"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "silence-wave",
@@ -5952,65 +3924,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechDuration"
-      ],
-      "stats": {
-        "bonusHealthFlat": 225.0
-      },
-      "rows": [
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 3,
-          "bonus": 1.25,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 42,
-          "bonus": -22,
-          "variance": "full"
-        },
-        {
-          "key": "CooldownOnMiss",
-          "label": "Cooldown On Miss",
-          "unit": "",
-          "base": 30,
-          "bonus": -22,
-          "variance": "full"
-        },
-        {
-          "key": "Damage",
-          "label": "Damage",
-          "unit": "",
-          "base": 75,
-          "bonus": 175,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCastRange",
-          "label": "Cast Range",
-          "unit": "m",
-          "base": 40,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 50,
-          "bonus": 225,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "spirit-snatch",
@@ -6070,76 +3984,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "conditionalStats": {
-        "spiritPowerFlat": 25.0,
-        "spiritResistPct": 8.0
-      },
-      "stats": {
-        "bonusHealthFlat": 175.0,
-        "meleeDamagePct": 18.0
-      },
-      "rows": [
-        {
-          "key": "TechPowerReduction",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": -25,
-          "bonus": -25,
-          "variance": "full"
-        },
-        {
-          "key": "TechPowerGain",
-          "label": "Spirit Power Steal",
-          "unit": "",
-          "base": 25,
-          "bonus": 25,
-          "variance": "full"
-        },
-        {
-          "key": "TechArmorDamageReduction",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": -12,
-          "bonus": -8,
-          "variance": "full"
-        },
-        {
-          "key": "TechArmorGain",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 12,
-          "bonus": 8,
-          "variance": "full"
-        },
-        {
-          "key": "SpiritDamage",
-          "label": "Spirit Damage",
-          "unit": "",
-          "base": 50,
-          "bonus": 100,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 75,
-          "bonus": 175,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMeleeDamagePercent",
-          "label": "Melee Damage",
-          "unit": "%",
-          "base": 7,
-          "bonus": 18,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "superior-cooldown",
@@ -6163,32 +4008,7 @@
       "cooldownReductionPct": 20.0
     },
     "enabled": true,
-    "sortOrder": 82,
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "cooldownReductionPct": 17.0,
-        "outOfCombatHealthRegen": 6.0
-      },
-      "rows": [
-        {
-          "key": "CooldownReduction",
-          "label": "Ability Cooldown Reduction",
-          "unit": "%",
-          "base": 20,
-          "bonus": 17,
-          "variance": "full"
-        },
-        {
-          "key": "OutOfCombatHealthRegen",
-          "label": "Out of Combat Regen",
-          "unit": "",
-          "base": 4,
-          "bonus": 6,
-          "variance": "full"
-        }
-      ]
-    }
+    "sortOrder": 82
   },
   {
     "slug": "superior-duration",
@@ -6216,33 +4036,6 @@
     "conditional": {
       "label": "Condition met",
       "defaultActive": true
-    },
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "abilityDurationPct": 17.0
-      },
-      "conditionalStats": {
-        "bulletResistPct": 10.0
-      },
-      "rows": [
-        {
-          "key": "BonusAbilityDurationPercent",
-          "label": "Ability Duration",
-          "unit": "%",
-          "base": 28,
-          "bonus": 17,
-          "variance": "full"
-        },
-        {
-          "key": "BulletResist",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": 8,
-          "bonus": 10,
-          "variance": "full"
-        }
-      ]
     }
   },
   {
@@ -6292,61 +4085,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "FireRate"
-      ],
-      "imbuedStats": {
-        "spiritPowerFlat": 37.0
-      },
-      "conditionalStats": {
-        "fireRatePct": 25.0,
-        "moveSpeedFlat": 2.3
-      },
-      "rows": [
-        {
-          "key": "MoveWhileShootingSpeedPenaltyReductionPercent",
-          "label": "Move While Shooting Speed Penalty Reduction Percent",
-          "unit": "",
-          "base": 100,
-          "bonus": 120,
-          "variance": "full"
-        },
-        {
-          "key": "MoveWhileZoomedSpeedPenaltyReductionPercent",
-          "label": "Move While Zoomed Speed Penalty Reduction Percent",
-          "unit": "",
-          "base": 100,
-          "bonus": 120,
-          "variance": "full"
-        },
-        {
-          "key": "ImbuedTechPower",
-          "label": "Imbued Ability Spirit Power",
-          "unit": "",
-          "base": 28,
-          "bonus": 37,
-          "variance": "full"
-        },
-        {
-          "key": "FireRateBonus",
-          "label": "Fire Rate Bonus",
-          "unit": "%",
-          "base": 20,
-          "bonus": 25,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 1.75,
-          "bonus": 2.3,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "tankbuster",
@@ -6393,55 +4132,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 75.0
-      },
-      "rows": [
-        {
-          "key": "CurrentHealthDamage",
-          "label": "Current Health Damage",
-          "unit": "%",
-          "base": 7.5,
-          "bonus": 4.5,
-          "variance": "full"
-        },
-        {
-          "key": "Damage",
-          "label": "Damage",
-          "unit": "",
-          "base": 40,
-          "bonus": 30,
-          "variance": "full"
-        },
-        {
-          "key": "MinimumDamage",
-          "label": "Minimum Damage",
-          "unit": "",
-          "base": 165,
-          "bonus": -65,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityChargeUpTime",
-          "label": "Charge-Up Time",
-          "unit": "s",
-          "base": 14,
-          "bonus": -5,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 50,
-          "bonus": 75,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "torment-pulse",
@@ -6491,58 +4182,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechRange"
-      ],
-      "stats": {
-        "bonusHealthFlat": 150.0,
-        "meleeResistPct": 17.0
-      },
-      "rows": [
-        {
-          "key": "DamagePulseAmount",
-          "label": "Pulse Damage",
-          "unit": "",
-          "base": 25,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "DamagePulseRadius",
-          "label": "Pulse Radius",
-          "unit": "m",
-          "base": 9,
-          "bonus": 4,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 100,
-          "bonus": 150,
-          "variance": "full"
-        },
-        {
-          "key": "MeleeResistPercent",
-          "label": "Melee Resist",
-          "unit": "%",
-          "base": 18,
-          "bonus": 17,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 1.4,
-          "bonus": -0.5,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "arctic-blast",
@@ -6601,65 +4241,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechRange"
-      ],
-      "stats": {
-        "spiritResistPct": 15.0
-      },
-      "rows": [
-        {
-          "key": "SlowPercent",
-          "label": "Move Speed",
-          "unit": "%",
-          "base": 48,
-          "bonus": 30,
-          "variance": "full"
-        },
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 10,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "Damage",
-          "label": "Damage",
-          "unit": "",
-          "base": 175,
-          "bonus": 125,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 24,
-          "bonus": -10,
-          "variance": "full"
-        },
-        {
-          "key": "FreezeDuration",
-          "label": "Freeze Duration",
-          "unit": "s",
-          "base": 1,
-          "bonus": 0.5,
-          "variance": "full"
-        },
-        {
-          "key": "EndRadius",
-          "label": "End Radius",
-          "unit": "m",
-          "base": 16,
-          "bonus": 4,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "boundless-spirit",
@@ -6687,50 +4269,7 @@
       "outOfCombatHealthRegen": 4.0
     },
     "enabled": true,
-    "sortOrder": 88,
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "spiritPowerFlat": 20.0,
-        "bonusHealthFlat": 125.0,
-        "spiritPowerPct": 10.0,
-        "outOfCombatHealthRegen": 4.0
-      },
-      "rows": [
-        {
-          "key": "TechPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 30,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 75,
-          "bonus": 125,
-          "variance": "full"
-        },
-        {
-          "key": "TechPowerPercent",
-          "label": "Spirit Power",
-          "unit": "%",
-          "base": 15,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "OutOfCombatHealthRegen",
-          "label": "Out of Combat Regen",
-          "unit": "",
-          "base": 4,
-          "bonus": 4,
-          "variance": "full"
-        }
-      ]
-    }
+    "sortOrder": 88
   },
   {
     "slug": "cursed-relic",
@@ -6794,47 +4333,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechCooldown",
-        "TechDuration"
-      ],
-      "rows": [
-        {
-          "key": "SkipFrames",
-          "label": "Skip Frames",
-          "unit": "",
-          "base": 6,
-          "bonus": 2,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCastRange",
-          "label": "Cast Range",
-          "unit": "m",
-          "base": 20,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 55,
-          "bonus": -30,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 3.25,
-          "bonus": 0.25,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "echo-shard",
@@ -6870,48 +4369,7 @@
         "chargeUp": null,
         "rows": []
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "conditionalStats": {
-        "bulletResistPct": 15.0,
-        "spiritResistPct": 15.0
-      },
-      "rows": [
-        {
-          "key": "BulletResist",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": 5,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 5,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 30,
-          "bonus": -15,
-          "variance": "full"
-        },
-        {
-          "key": "ImbuedCooldownMultiplier",
-          "label": "Imbued Ability Cooldown",
-          "unit": "%",
-          "base": 100,
-          "bonus": -50,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "escalating-exposure",
@@ -6971,45 +4429,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "spiritResistPct": 13.0
-      },
-      "shred": {
-        "spirit": 0.04
-      },
-      "perStack": {
-        "spiritAmpPct": 1.5
-      },
-      "rows": [
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 17,
-          "bonus": 13,
-          "variance": "full"
-        },
-        {
-          "key": "TechArmorDamageReduction",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": -8,
-          "bonus": -4,
-          "variance": "full"
-        },
-        {
-          "key": "MagicIncreasePerStack",
-          "label": "Spirit Amp per Stack",
-          "unit": "%",
-          "base": 4.5,
-          "bonus": 1.5,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "ethereal-shift",
@@ -7060,59 +4480,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechDuration"
-      ],
-      "conditionalStats": {
-        "spiritResistPct": 15.0,
-        "spiritPowerFlat": 10.0,
-        "moveSpeedFlat": 1.0
-      },
-      "rows": [
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 30,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "BonusSpirit",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 20,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 3,
-          "bonus": 1,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 37,
-          "bonus": -15,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 4,
-          "bonus": 1,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "focus-lens",
@@ -7184,76 +4552,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechDuration"
-      ],
-      "stats": {
-        "fireRatePct": 5.0
-      },
-      "shred": {
-        "spirit": 0.06
-      },
-      "rows": [
-        {
-          "key": "BonusFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 10,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "MagicResistReduction",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": -9,
-          "bonus": -6,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCastRange",
-          "label": "Cast Range",
-          "unit": "m",
-          "base": 25,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 45,
-          "bonus": -10,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 4.5,
-          "bonus": 0.5,
-          "variance": "full"
-        },
-        {
-          "key": "PercentDamage",
-          "label": "Damage On Expire",
-          "unit": "%",
-          "base": 35,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "TechPowerReduction",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": -30,
-          "bonus": -20,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "lightning-scroll",
@@ -7329,74 +4628,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechDuration"
-      ],
-      "stats": {
-        "bonusHealthFlat": 275.0,
-        "sprintSpeedFlat": 2.25
-      },
-      "rows": [
-        {
-          "key": "SlowPercent",
-          "label": "Move Speed",
-          "unit": "%",
-          "base": 64,
-          "bonus": 60,
-          "variance": "full"
-        },
-        {
-          "key": "MovementSpeedSlow",
-          "label": "Move Speed",
-          "unit": "%",
-          "base": 24,
-          "bonus": 16,
-          "variance": "full"
-        },
-        {
-          "key": "GroundDashReductionPercent",
-          "label": "Dash Distance",
-          "unit": "%",
-          "base": -10,
-          "bonus": -10,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 50,
-          "bonus": 275,
-          "variance": "full"
-        },
-        {
-          "key": "BonusSprintSpeed",
-          "label": "Sprint Speed",
-          "unit": "m",
-          "base": 0.75,
-          "bonus": 2.25,
-          "variance": "full"
-        },
-        {
-          "key": "StunDuration",
-          "label": "Stun Duration",
-          "unit": "s",
-          "base": 0.75,
-          "bonus": 0.65,
-          "variance": "full"
-        },
-        {
-          "key": "Damage",
-          "label": "Damage",
-          "unit": "",
-          "base": 150,
-          "bonus": 100,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "magic-carpet",
@@ -7470,76 +4702,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 100.0,
-        "abilityDurationPct": 15.0,
-        "spiritPowerFlat": 16.0
-      },
-      "conditionalStats": {
-        "moveSpeedFlat": 5.0
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 125,
-          "bonus": 100,
-          "variance": "full"
-        },
-        {
-          "key": "AirControlPercent",
-          "label": "Air Control",
-          "unit": "%",
-          "base": 25,
-          "bonus": 35,
-          "variance": "full"
-        },
-        {
-          "key": "BonusAbilityDurationPercent",
-          "label": "Ability Duration",
-          "unit": "%",
-          "base": 15,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "TechPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 14,
-          "bonus": 16,
-          "variance": "full"
-        },
-        {
-          "key": "GravityScale",
-          "label": "Gravity Scale",
-          "unit": "%",
-          "base": -15,
-          "bonus": -10,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 32,
-          "bonus": -15,
-          "variance": "full"
-        },
-        {
-          "key": "FlyMoveSpeed",
-          "label": "Bonus Fly Speed",
-          "unit": "m",
-          "base": 7,
-          "bonus": 5,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "mercurial-magnum",
@@ -7606,45 +4769,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "FireRate"
-      ],
-      "conditionalStats": {
-        "fireRatePct": 28.0
-      },
-      "stats": {
-        "ammoPct": 40.0,
-        "spiritPowerFlat": 23.0
-      },
-      "rows": [
-        {
-          "key": "BonusFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 22,
-          "bonus": 28,
-          "variance": "full"
-        },
-        {
-          "key": "BonusClipSizePercent",
-          "label": "Max Ammo",
-          "unit": "%",
-          "base": 20,
-          "bonus": 40,
-          "variance": "full"
-        },
-        {
-          "key": "TechPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 7,
-          "bonus": 23,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "mystic-reverb",
@@ -7711,58 +4836,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "imbuedStats": {
-        "abilityDamagePct": 15.0
-      },
-      "conditionalStats": {
-        "spiritLifestealPct": 12.0
-      },
-      "rows": [
-        {
-          "key": "MovementSpeedSlow",
-          "label": "Move Speed",
-          "unit": "%",
-          "base": 32,
-          "bonus": 24,
-          "variance": "full"
-        },
-        {
-          "key": "ImbueAbilityLifesteal",
-          "label": "Imbued Lifesteal",
-          "unit": "%",
-          "base": 22,
-          "bonus": 28,
-          "variance": "full"
-        },
-        {
-          "key": "TechDamagePercent",
-          "label": "Damage",
-          "unit": "",
-          "base": 50,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityLifestealPercentHero",
-          "label": "Spirit Lifesteal",
-          "unit": "%",
-          "base": 8,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "Radius",
-          "label": "Radius",
-          "unit": "m",
-          "base": 16,
-          "bonus": 4,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "refresher",
@@ -7787,22 +4861,7 @@
         "chargeUp": null,
         "rows": []
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechCooldown"
-      ],
-      "rows": [
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 300,
-          "bonus": -160,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "scourge",
@@ -7870,61 +4929,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechDuration"
-      ],
-      "conditionalStats": {
-        "spiritResistPct": 15.0,
-        "debuffResistPct": 15.0
-      },
-      "stats": {
-        "bonusHealthFlat": 200.0
-      },
-      "rows": [
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 40,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 100,
-          "bonus": 200,
-          "variance": "full"
-        },
-        {
-          "key": "StatusResistancePercent",
-          "label": "Debuff Resist",
-          "unit": "%",
-          "base": 20,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 35,
-          "bonus": -10,
-          "variance": "full"
-        },
-        {
-          "key": "MaxHealthPercentAsDPS",
-          "label": "Max Health per second",
-          "unit": "%",
-          "base": 2.3,
-          "bonus": 0.7,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "spirit-burn",
@@ -8001,76 +5006,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechDuration"
-      ],
-      "stats": {
-        "abilityRangePct": 12.0
-      },
-      "conditionalStats": {
-        "healingReceivedPct": -15.0
-      },
-      "rows": [
-        {
-          "key": "TechRadiusMultiplier",
-          "label": "Radius",
-          "unit": "%",
-          "base": 6,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "TechRangeMultiplier",
-          "label": "Ability Range",
-          "unit": "%",
-          "base": 6,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "DamagePctVsNonHeroes",
-          "label": "Damage Pct Vs Non Heroes",
-          "unit": "",
-          "base": 50,
-          "bonus": 55,
-          "variance": "full"
-        },
-        {
-          "key": "ExplosionDamage",
-          "label": "Explosion Damage",
-          "unit": "",
-          "base": 50,
-          "bonus": 100,
-          "variance": "full"
-        },
-        {
-          "key": "DPS",
-          "label": "Damage Per Second",
-          "unit": "",
-          "base": 24,
-          "bonus": 31,
-          "variance": "full"
-        },
-        {
-          "key": "ImmunityDuration",
-          "label": "Immunity Duration",
-          "unit": "s",
-          "base": 20,
-          "bonus": -8,
-          "variance": "full"
-        },
-        {
-          "key": "HealAmpReceivePenaltyPercent",
-          "label": "Incoming Healing",
-          "unit": "%",
-          "base": -70,
-          "bonus": -15,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "transcendent-cooldown",
@@ -8094,40 +5030,7 @@
       "cooldownReductionPct": 50.0
     },
     "enabled": true,
-    "sortOrder": 101,
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "cooldownReductionPct": 27.0,
-        "outOfCombatHealthRegen": 6.0
-      },
-      "rows": [
-        {
-          "key": "CooldownReduction",
-          "label": "Ability Cooldown Reduction",
-          "unit": "%",
-          "base": 25,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "ItemCooldownReduction",
-          "label": "Item Cooldown Reduction",
-          "unit": "%",
-          "base": 25,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "OutOfCombatHealthRegen",
-          "label": "Out of Combat Regen",
-          "unit": "",
-          "base": 4,
-          "bonus": 6,
-          "variance": "full"
-        }
-      ]
-    }
+    "sortOrder": 101
   },
   {
     "slug": "vortex-web",
@@ -8186,72 +5089,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "abilityRangePct": 12.0,
-        "sprintSpeedFlat": 4.25
-      },
-      "rows": [
-        {
-          "key": "GroundDashReductionPercent",
-          "label": "Dash Distance",
-          "unit": "%",
-          "base": -36,
-          "bonus": -9,
-          "variance": "full"
-        },
-        {
-          "key": "SlowPercent",
-          "label": "Move Speed",
-          "unit": "%",
-          "base": 28,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "TechRadiusMultiplier",
-          "label": "Radius",
-          "unit": "%",
-          "base": 8,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "TechRangeMultiplier",
-          "label": "Ability Range",
-          "unit": "%",
-          "base": 8,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "BonusSprintSpeed",
-          "label": "Sprint Speed",
-          "unit": "m",
-          "base": 0.75,
-          "bonus": 4.25,
-          "variance": "full"
-        },
-        {
-          "key": "CaptureRadius",
-          "label": "Capture Radius",
-          "unit": "m",
-          "base": 12,
-          "bonus": 2.17,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 42,
-          "bonus": -22,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "close-quarters",
@@ -9305,84 +6143,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechRange"
-      ],
-      "stats": {
-        "spiritPowerFlat": 20.0
-      },
-      "shred": {
-        "bullet": 0.05
-      },
-      "rows": [
-        {
-          "key": "SpiritPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 10,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "DPS",
-          "label": "Damage Per Second",
-          "unit": "",
-          "base": 45,
-          "bonus": 40,
-          "variance": "full"
-        },
-        {
-          "key": "DPSMax",
-          "label": "Max DPS",
-          "unit": "",
-          "base": 95,
-          "bonus": 80,
-          "variance": "full"
-        },
-        {
-          "key": "DPSIncrease",
-          "label": "DPSIncrease",
-          "unit": "",
-          "base": 7,
-          "bonus": 5.5,
-          "variance": "full"
-        },
-        {
-          "key": "BulletArmorReduction",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": -7,
-          "bonus": -5,
-          "variance": "full"
-        },
-        {
-          "key": "Radius",
-          "label": "Radius",
-          "unit": "m",
-          "base": 10,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 5,
-          "bonus": 3,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 30,
-          "bonus": -11,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "ballistic-enchantment",
@@ -9446,72 +6207,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechRange"
-      ],
-      "perStack": {
-        "weaponDamagePct": 15.0
-      },
-      "perStackSecondary": {
-        "weaponDamagePct": 5.0
-      },
-      "imbuedStats": {
-        "abilityRangePct": 18.0
-      },
-      "maxStacksSecondaryDelta": 4,
-      "rows": [
-        {
-          "key": "WeaponPowerPerStack",
-          "label": "Weapon Damage per Stack",
-          "unit": "%",
-          "base": 20,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "WeaponPowerPerStackNonHero",
-          "label": "Non-Hero Weapon Damage",
-          "unit": "%",
-          "base": 5,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "TechRangeMultiplier",
-          "label": "Ability Range",
-          "unit": "%",
-          "base": 22,
-          "bonus": 18,
-          "variance": "full"
-        },
-        {
-          "key": "TechRadiusMultiplier",
-          "label": "Radius",
-          "unit": "%",
-          "base": 22,
-          "bonus": 18,
-          "variance": "full"
-        },
-        {
-          "key": "NonHeroStackLimit",
-          "label": "Non-Hero Stack Limit",
-          "unit": "",
-          "base": 8,
-          "bonus": 4,
-          "variance": "rounded"
-        },
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 20,
-          "bonus": 6,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "berserker",
@@ -9574,51 +6270,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bulletResistPct": 12.0
-      },
-      "perStack": {
-        "weaponDamagePct": 7.0
-      },
-      "maxStacksDelta": 3,
-      "rows": [
-        {
-          "key": "BulletResist",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": 8,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "WeaponPowerPerStack",
-          "label": "Weapon Damage per Stack",
-          "unit": "%",
-          "base": 7,
-          "bonus": 7,
-          "variance": "full"
-        },
-        {
-          "key": "MaxStacks",
-          "label": "Max Stacks",
-          "unit": "",
-          "base": 10,
-          "bonus": 3,
-          "variance": "rounded"
-        },
-        {
-          "key": "DamageDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 10,
-          "bonus": 5,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "blood-tribute",
@@ -9679,72 +6331,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "FireRate",
-        "MoveSpeed"
-      ],
-      "stats": {
-        "spiritResistPct": 12.0,
-        "outOfCombatHealthRegen": 6.0
-      },
-      "conditionalStats": {
-        "fireRatePct": 35.0,
-        "debuffResistPct": 15.0,
-        "moveSpeedFlat": 2.0
-      },
-      "rows": [
-        {
-          "key": "InnateStatusResistancePercent",
-          "label": "Debuff Resist",
-          "unit": "%",
-          "base": 8,
-          "bonus": 8,
-          "variance": "full"
-        },
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 8,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "OutOfCombatHealthRegen",
-          "label": "Out of Combat Regen",
-          "unit": "",
-          "base": 4,
-          "bonus": 6,
-          "variance": "full"
-        },
-        {
-          "key": "BonusFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 35,
-          "bonus": 35,
-          "variance": "full"
-        },
-        {
-          "key": "StatusResistancePercent",
-          "label": "Debuff Resist",
-          "unit": "%",
-          "base": 35,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 2,
-          "bonus": 2,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "burst-fire",
@@ -9805,59 +6392,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "fireRatePct": 10.0
-      },
-      "conditionalStats": {
-        "fireRatePct": 33.0,
-        "moveSpeedFlat": 1.25
-      },
-      "rows": [
-        {
-          "key": "BonusFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 10,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "SlideScale",
-          "label": "Slide Distance",
-          "unit": "%",
-          "base": 50,
-          "bonus": 40,
-          "variance": "full"
-        },
-        {
-          "key": "ActivatedFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 32,
-          "bonus": 33,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 1.25,
-          "bonus": 1.25,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 9,
-          "bonus": -2.5,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "cultist-sacrifice",
@@ -9913,102 +6448,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "outOfCombatHealthRegen": 6.0
-      },
-      "conditionalStats": {
-        "weaponDamageVsNpcPct": 45.0,
-        "bulletResistVsNpcPct": 20.0,
-        "weaponDamagePct": 40.0,
-        "bonusHealthFlat": 450.0,
-        "abilityRangePct": 13.0
-      },
-      "rows": [
-        {
-          "key": "OutOfCombatHealthRegen",
-          "label": "Out of Combat Regen",
-          "unit": "",
-          "base": 2,
-          "bonus": 6,
-          "variance": "full"
-        },
-        {
-          "key": "NonPlayerBonusWeaponPower",
-          "label": "Weapon Damage vs. NPCs",
-          "unit": "%",
-          "base": 30,
-          "bonus": 45,
-          "variance": "full"
-        },
-        {
-          "key": "NonPlayerBulletResist",
-          "label": "Bullet Resist vs. NPCs",
-          "unit": "%",
-          "base": 30,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 10,
-          "bonus": 40,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 50,
-          "bonus": 450,
-          "variance": "full"
-        },
-        {
-          "key": "TechRangeMultiplier",
-          "label": "Ability Range",
-          "unit": "%",
-          "base": 12,
-          "bonus": 13,
-          "variance": "full"
-        },
-        {
-          "key": "TechRadiusMultiplier",
-          "label": "Radius",
-          "unit": "%",
-          "base": 12,
-          "bonus": 13,
-          "variance": "full"
-        },
-        {
-          "key": "BonusSoulsPct",
-          "label": "Bonus Souls",
-          "unit": "%",
-          "base": 170,
-          "bonus": 70,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 160,
-          "bonus": 40,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 270,
-          "bonus": -210,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "escalating-resilience",
@@ -10068,69 +6508,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 200.0,
-        "weaponDamagePct": 32.0,
-        "ammoPct": 55.0
-      },
-      "perStack": {
-        "bulletResistPct": 3.0
-      },
-      "maxStacksDelta": 25,
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 75,
-          "bonus": 200,
-          "variance": "full"
-        },
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 18,
-          "bonus": 32,
-          "variance": "full"
-        },
-        {
-          "key": "BonusClipSizePercent",
-          "label": "Max Ammo",
-          "unit": "%",
-          "base": 35,
-          "bonus": 55,
-          "variance": "full"
-        },
-        {
-          "key": "BulletResistPerStack",
-          "label": "Bullet Resist per Stack",
-          "unit": "%",
-          "base": 2,
-          "bonus": 3,
-          "variance": "full"
-        },
-        {
-          "key": "MaxArmorStacks",
-          "label": "Max Bullet Resist",
-          "unit": "%",
-          "base": 30,
-          "bonus": 25,
-          "variance": "full"
-        },
-        {
-          "key": "BulletResistDuration",
-          "label": "Stack Duration",
-          "unit": "s",
-          "base": 24,
-          "bonus": 11,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "express-shot",
@@ -10198,67 +6576,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "weaponDamagePct": 22.0,
-        "bulletVelocityPct": 60.0
-      },
-      "conditionalStats": {
-        "procWeaponDamagePct": 105.0
-      },
-      "rows": [
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 8,
-          "bonus": 22,
-          "variance": "full"
-        },
-        {
-          "key": "BonusBulletSpeedPercent",
-          "label": "Bullet Velocity",
-          "unit": "%",
-          "base": 60,
-          "bonus": 60,
-          "variance": "full"
-        },
-        {
-          "key": "ProcBaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "",
-          "base": 125,
-          "bonus": 105,
-          "variance": "full"
-        },
-        {
-          "key": "ProcBaseAttackDamagePercentAltFire",
-          "label": "Secondary Fire Weapon Damage",
-          "unit": "",
-          "base": 40,
-          "bonus": 30,
-          "variance": "full"
-        },
-        {
-          "key": "ProcBulletVelocity",
-          "label": "Bullet Velocity",
-          "unit": "",
-          "base": 100,
-          "bonus": 50,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 8,
-          "bonus": -4,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "headhunter",
@@ -10317,76 +6635,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 200.0,
-        "weaponDamagePct": 15.0,
-        "headshotDamagePct": 150.0
-      },
-      "conditionalStats": {
-        "moveSpeedFlat": 0.75
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 50,
-          "bonus": 200,
-          "variance": "full"
-        },
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 5,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "HeadShotBonusDamage",
-          "label": "Head Shot Bonus Damage",
-          "unit": "",
-          "base": 75,
-          "bonus": 150,
-          "variance": "full"
-        },
-        {
-          "key": "HealPercentPerHeadshot",
-          "label": "Heal Per Headshot",
-          "unit": "%",
-          "base": 4,
-          "bonus": 3,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 1.75,
-          "bonus": 0.75,
-          "variance": "full"
-        },
-        {
-          "key": "MovementSpeedBonusDuration",
-          "label": "Move Speed Duration",
-          "unit": "s",
-          "base": 3,
-          "bonus": 1.5,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 8,
-          "bonus": -3,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "heroic-aura",
@@ -10455,87 +6704,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "FireRate",
-        "MoveSpeed"
-      ],
-      "stats": {
-        "sprintSpeedFlat": 1.5,
-        "bulletResistPct": 11.0
-      },
-      "conditionalStats": {
-        "fireRatePct": 24.0,
-        "moveSpeedFlat": 1.25
-      },
-      "rows": [
-        {
-          "key": "BonusSprintSpeed",
-          "label": "Sprint Speed",
-          "unit": "m",
-          "base": 1.5,
-          "bonus": 1.5,
-          "variance": "full"
-        },
-        {
-          "key": "BulletResist",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": 17,
-          "bonus": 11,
-          "variance": "full"
-        },
-        {
-          "key": "BonusFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 26,
-          "bonus": 24,
-          "variance": "full"
-        },
-        {
-          "key": "ActiveBonusMoveSpeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 2.25,
-          "bonus": 1.25,
-          "variance": "full"
-        },
-        {
-          "key": "Radius",
-          "label": "Radius",
-          "unit": "m",
-          "base": 35,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "ActiveRadius",
-          "label": "Active Radius",
-          "unit": "m",
-          "base": 35,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 7,
-          "bonus": 2,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 22,
-          "bonus": -8,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "hollow-point",
@@ -10585,70 +6754,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "outOfCombatHealthRegen": 5.5,
-        "bonusHealthFlat": 175.0
-      },
-      "conditionalStats": {
-        "weaponDamagePct": 30.0
-      },
-      "shred": {
-        "bullet": 0.11
-      },
-      "rows": [
-        {
-          "key": "OutOfCombatHealthRegen",
-          "label": "Out of Combat Regen",
-          "unit": "",
-          "base": 4.5,
-          "bonus": 5.5,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 125,
-          "bonus": 175,
-          "variance": "full"
-        },
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 35,
-          "bonus": 30,
-          "variance": "full"
-        },
-        {
-          "key": "BulletArmorReduction",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": -10,
-          "bonus": -11,
-          "variance": "full"
-        },
-        {
-          "key": "DebuffDuration",
-          "label": "Debuff Duration",
-          "unit": "s",
-          "base": 8,
-          "bonus": 4,
-          "variance": "full"
-        },
-        {
-          "key": "LifeThreshold",
-          "label": "Life Threshold",
-          "unit": "%",
-          "base": 65,
-          "bonus": -15,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "hunters-aura",
@@ -10698,53 +6804,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechRange"
-      ],
-      "stats": {
-        "bonusHealthFlat": 200.0,
-        "sprintSpeedFlat": 4.25
-      },
-      "shred": {
-        "bullet": 0.08
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 100,
-          "bonus": 200,
-          "variance": "full"
-        },
-        {
-          "key": "BonusSprintSpeed",
-          "label": "Sprint Speed",
-          "unit": "m",
-          "base": 0.75,
-          "bonus": 4.25,
-          "variance": "full"
-        },
-        {
-          "key": "BulletArmorReduction",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": -10,
-          "bonus": -8,
-          "variance": "full"
-        },
-        {
-          "key": "FireRateSlow",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 15,
-          "bonus": 15,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "point-blank",
@@ -10801,57 +6861,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 175.0,
-        "meleeResistPct": 40.0,
-        "weaponDamagePct": 50.0
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 75,
-          "bonus": 175,
-          "variance": "full"
-        },
-        {
-          "key": "MeleeResistPercent",
-          "label": "Melee Resist",
-          "unit": "%",
-          "base": 30,
-          "bonus": 40,
-          "variance": "full"
-        },
-        {
-          "key": "CloseRangeBonusWeaponPower",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 50,
-          "bonus": 50,
-          "variance": "full"
-        },
-        {
-          "key": "SlowPercent",
-          "label": "Move Speed",
-          "unit": "%",
-          "base": 20,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "SlowDuration",
-          "label": "Slow Duration",
-          "unit": "s",
-          "base": 2,
-          "bonus": 1,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "shadow-weave",
@@ -10937,104 +6947,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechDuration",
-        "WeaponDamage"
-      ],
-      "stats": {
-        "outOfCombatHealthRegen": 7.0,
-        "sprintSpeedFlat": 0.5
-      },
-      "conditionalStats": {
-        "fireRatePct": 35.0,
-        "spiritPowerFlat": 35.0,
-        "meleeDamagePct": 35.0
-      },
-      "rows": [
-        {
-          "key": "OutOfCombatHealthRegen",
-          "label": "Out of Combat Regen",
-          "unit": "",
-          "base": 5,
-          "bonus": 7,
-          "variance": "full"
-        },
-        {
-          "key": "BonusSprintSpeed",
-          "label": "Sprint Speed",
-          "unit": "m",
-          "base": 2,
-          "bonus": 0.5,
-          "variance": "full"
-        },
-        {
-          "key": "InvisMoveSpeedMod",
-          "label": "Invis Sprint Speed",
-          "unit": "m",
-          "base": 5,
-          "bonus": 3,
-          "variance": "full"
-        },
-        {
-          "key": "AmbushBonusFireRate",
-          "label": "Ambush Fire Rate",
-          "unit": "%",
-          "base": 25,
-          "bonus": 35,
-          "variance": "full"
-        },
-        {
-          "key": "AmbushBonusTechPower",
-          "label": "Ambush Spirit Power",
-          "unit": "",
-          "base": 25,
-          "bonus": 35,
-          "variance": "full"
-        },
-        {
-          "key": "AmbushBonusMeleeDamage",
-          "label": "Ambush Melee Damage",
-          "unit": "%",
-          "base": 25,
-          "bonus": 35,
-          "variance": "full"
-        },
-        {
-          "key": "AmbushDuration",
-          "label": "Ambush Duration",
-          "unit": "s",
-          "base": 5,
-          "bonus": 3,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityDuration",
-          "label": "Duration",
-          "unit": "s",
-          "base": 13,
-          "bonus": 7,
-          "variance": "full"
-        },
-        {
-          "key": "SpottedRadius",
-          "label": "Spot Radius",
-          "unit": "m",
-          "base": 20,
-          "bonus": -6,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 37,
-          "bonus": -15,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "sharpshooter",
@@ -11100,69 +7013,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "weaponDamagePct": 20.0,
-        "bulletVelocityPct": 60.0,
-        "sprintSpeedFlat": 3.0,
-        "falloffRangePct": 10.0
-      },
-      "conditionalStats": {
-        "weaponDamagePct": 40.0
-      },
-      "rows": [
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 10,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "BonusBulletSpeedPercent",
-          "label": "Bullet Velocity",
-          "unit": "%",
-          "base": 60,
-          "bonus": 60,
-          "variance": "full"
-        },
-        {
-          "key": "BonusSprintSpeed",
-          "label": "Sprint Speed",
-          "unit": "m",
-          "base": 1,
-          "bonus": 3,
-          "variance": "full"
-        },
-        {
-          "key": "BonusAttackRangePercent",
-          "label": "Weapon Fall-off Range",
-          "unit": "%",
-          "base": 20,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "BonusZoomPercent",
-          "label": "Weapon Zoom",
-          "unit": "%",
-          "base": 25,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "LongRangeBonusWeaponPower",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 60,
-          "bonus": 40,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "spirit-rend",
@@ -11223,79 +7074,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 175.0
-      },
-      "conditionalStats": {
-        "spiritLifestealPct": 15.0
-      },
-      "shred": {
-        "perStackSpirit": 0.04,
-        "spirit": 0.06
-      },
-      "maxStacksDelta": 1,
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 75,
-          "bonus": 175,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityLifestealPercentHero",
-          "label": "Spirit Lifesteal",
-          "unit": "%",
-          "base": 10,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "MagicResistReduction",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": -7,
-          "bonus": -4,
-          "variance": "full"
-        },
-        {
-          "key": "TechArmorDamageReduction",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": -8,
-          "bonus": -6,
-          "variance": "full"
-        },
-        {
-          "key": "MaxStacks",
-          "label": "Max Stacks",
-          "unit": "",
-          "base": 4,
-          "bonus": 1,
-          "variance": "fixed"
-        },
-        {
-          "key": "DebuffDuration",
-          "label": "Debuff Duration",
-          "unit": "s",
-          "base": 8,
-          "bonus": 2,
-          "variance": "full"
-        },
-        {
-          "key": "ProcCooldown",
-          "label": "Max Frequency",
-          "unit": "s",
-          "base": 2,
-          "bonus": -0.5,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "tesla-bullets",
@@ -11344,64 +7123,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "procSpiritDamageFlat": 47.0,
-        "procChancePct": 5.0
-      },
-      "rows": [
-        {
-          "key": "DamagePerChain",
-          "label": "Shock Damage",
-          "unit": "",
-          "base": 33,
-          "bonus": 47,
-          "variance": "full"
-        },
-        {
-          "key": "BonusPerChain",
-          "label": "Damage on Jump",
-          "unit": "",
-          "base": 33,
-          "bonus": 47,
-          "variance": "full"
-        },
-        {
-          "key": "ProcChance",
-          "label": "Proc Chance",
-          "unit": "%",
-          "base": 15,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "ProcCooldown",
-          "label": "Max Frequency",
-          "unit": "s",
-          "base": 0.2,
-          "bonus": -0.03,
-          "variance": "full"
-        },
-        {
-          "key": "ChainCount",
-          "label": "Max Jumps",
-          "unit": "",
-          "base": 4,
-          "bonus": 4,
-          "variance": "rounded"
-        },
-        {
-          "key": "ChainRadius",
-          "label": "Jump Radius",
-          "unit": "m",
-          "base": 8,
-          "bonus": 7,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "toxic-bullets",
@@ -11462,63 +7184,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "conditionalStats": {
-        "healingReceivedPct": -25.0
-      },
-      "rows": [
-        {
-          "key": "DotHealthPercent",
-          "label": "Bleed Damage",
-          "unit": "% DPS",
-          "base": 1.9,
-          "bonus": 1.1,
-          "variance": "full"
-        },
-        {
-          "key": "DotDuration",
-          "label": "Dot Duration",
-          "unit": "",
-          "base": 4,
-          "bonus": 2,
-          "variance": "full"
-        },
-        {
-          "key": "BuildUpPerShot",
-          "label": "Build Up Per Shot",
-          "unit": "",
-          "base": 1.28,
-          "bonus": 0.72,
-          "variance": "full"
-        },
-        {
-          "key": "HealAmpReceivePenaltyPercent",
-          "label": "Incoming Healing",
-          "unit": "%",
-          "base": -35,
-          "bonus": -25,
-          "variance": "full"
-        },
-        {
-          "key": "HealAmpRegenPenaltyPercent",
-          "label": "Incoming Healing",
-          "unit": "%",
-          "base": -35,
-          "bonus": -25,
-          "variance": "full"
-        },
-        {
-          "key": "DotMultiplerTroopers",
-          "label": "Dot Multipler Troopers",
-          "unit": "",
-          "base": 0.5,
-          "bonus": 0.5,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "weighted-shots",
@@ -11581,64 +7247,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "weaponDamagePct": 40.0,
-        "debuffResistPct": 23.0
-      },
-      "rows": [
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 30,
-          "bonus": 40,
-          "variance": "full"
-        },
-        {
-          "key": "StatusResistancePercent",
-          "label": "Debuff Resist",
-          "unit": "%",
-          "base": 22,
-          "bonus": 23,
-          "variance": "full"
-        },
-        {
-          "key": "SlowPercent",
-          "label": "Move Speed",
-          "unit": "%",
-          "base": 24,
-          "bonus": 12,
-          "variance": "full"
-        },
-        {
-          "key": "GroundDashReductionPercent",
-          "label": "Dash Distance",
-          "unit": "%",
-          "base": -20,
-          "bonus": -12,
-          "variance": "full"
-        },
-        {
-          "key": "SlowDuration",
-          "label": "Slow Duration",
-          "unit": "s",
-          "base": 3.5,
-          "bonus": 1.5,
-          "variance": "full"
-        },
-        {
-          "key": "BuildUpPerShot",
-          "label": "Build Up Per Shot",
-          "unit": "",
-          "base": 0.7,
-          "bonus": 0.3,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "armor-piercing-rounds",
@@ -11665,41 +7274,7 @@
     },
     "enabled": true,
     "sortOrder": 145,
-    "ignoresBulletResist": true,
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bulletVelocityPct": 60.0,
-        "weaponDamagePct": 32.0,
-        "procChancePct": 15.0
-      },
-      "rows": [
-        {
-          "key": "BonusBulletSpeedPercent",
-          "label": "Bullet Velocity",
-          "unit": "%",
-          "base": 60,
-          "bonus": 60,
-          "variance": "full"
-        },
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 8,
-          "bonus": 32,
-          "variance": "full"
-        },
-        {
-          "key": "ProcChance",
-          "label": "Proc Chance",
-          "unit": "%",
-          "base": 55,
-          "bonus": 15,
-          "variance": "full"
-        }
-      ]
-    }
+    "ignoresBulletResist": true
   },
   {
     "slug": "capacitor",
@@ -11779,88 +7354,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "fireRatePct": 15.0,
-        "procSpiritDamageFlat": 37.0
-      },
-      "rows": [
-        {
-          "key": "BonusFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 5,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "ChainRadius",
-          "label": "Jump Radius",
-          "unit": "m",
-          "base": 10,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "DamagePerChain",
-          "label": "Shock Damage",
-          "unit": "",
-          "base": 43,
-          "bonus": 37,
-          "variance": "full"
-        },
-        {
-          "key": "BonusPerChain",
-          "label": "Damage on Jump",
-          "unit": "",
-          "base": 43,
-          "bonus": 37,
-          "variance": "full"
-        },
-        {
-          "key": "ChainCount",
-          "label": "Max Jumps",
-          "unit": "",
-          "base": 6,
-          "bonus": 2,
-          "variance": "rounded"
-        },
-        {
-          "key": "ProcCooldown",
-          "label": "Max Frequency",
-          "unit": "s",
-          "base": 0.2,
-          "bonus": -0.03,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityCooldown",
-          "label": "Cooldown",
-          "unit": "s",
-          "base": 40,
-          "bonus": -15,
-          "variance": "full"
-        },
-        {
-          "key": "SlowDuration",
-          "label": "Slow Duration",
-          "unit": "s",
-          "base": 3,
-          "bonus": 1,
-          "variance": "full"
-        },
-        {
-          "key": "Damage",
-          "label": "Damage",
-          "unit": "",
-          "base": 100,
-          "bonus": 100,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "crippling-headshot",
@@ -11912,59 +7406,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "bonusHealthFlat": 225.0
-      },
-      "shred": {
-        "bullet": 0.09,
-        "spirit": 0.09
-      },
-      "rows": [
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 125,
-          "bonus": 225,
-          "variance": "full"
-        },
-        {
-          "key": "BulletResistReduction",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": -16,
-          "bonus": -9,
-          "variance": "full"
-        },
-        {
-          "key": "MagicResistReduction",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": -16,
-          "bonus": -9,
-          "variance": "full"
-        },
-        {
-          "key": "HealAmpReceivePenaltyPercent",
-          "label": "Incoming Healing",
-          "unit": "%",
-          "base": -35,
-          "bonus": -20,
-          "variance": "full"
-        },
-        {
-          "key": "HealAmpRegenPenaltyPercent",
-          "label": "Incoming Healing",
-          "unit": "%",
-          "base": -35,
-          "bonus": -20,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "crushing-fists",
@@ -12056,78 +7498,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "Health"
-      ],
-      "stats": {
-        "meleeDamagePct": 18.0,
-        "bulletResistPct": 13.0,
-        "heavyMeleeDamagePct": 5.0
-      },
-      "shred": {
-        "perStackBullet": 0.02
-      },
-      "rows": [
-        {
-          "key": "MeleeDistanceScale",
-          "label": "Heavy Melee Distance",
-          "unit": "%",
-          "base": 60,
-          "bonus": 40,
-          "variance": "full"
-        },
-        {
-          "key": "BonusMeleeDamagePercent",
-          "label": "Melee Damage",
-          "unit": "%",
-          "base": 22,
-          "bonus": 18,
-          "variance": "full"
-        },
-        {
-          "key": "BulletResist",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": 12,
-          "bonus": 13,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHeavyMeleeDamage",
-          "label": "Bonus Heavy Damage",
-          "unit": "%",
-          "base": 25,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "BulletResistReduction",
-          "label": "Bullet Resist",
-          "unit": "%",
-          "base": -5,
-          "bonus": -2,
-          "variance": "full"
-        },
-        {
-          "key": "LightMeleeAmmo",
-          "label": "Ammo",
-          "unit": "%",
-          "base": 15,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "StunDuration",
-          "label": "Stun Duration",
-          "unit": "s",
-          "base": 0.75,
-          "bonus": 0.5,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "frenzy",
@@ -12178,72 +7549,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "MoveSpeed"
-      ],
-      "stats": {
-        "fireRatePct": 10.0,
-        "bulletLifestealPct": 15.0,
-        "bonusHealthFlat": 240.0
-      },
-      "conditionalStats": {
-        "moveSpeedFlat": 2.0,
-        "fireRatePct": 25.0,
-        "debuffResistPct": 20.0
-      },
-      "rows": [
-        {
-          "key": "BonusFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 15,
-          "bonus": 10,
-          "variance": "full"
-        },
-        {
-          "key": "BulletLifestealPercent",
-          "label": "Bullet Lifesteal",
-          "unit": "%",
-          "base": 10,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 160,
-          "bonus": 240,
-          "variance": "full"
-        },
-        {
-          "key": "FervorMovespeed",
-          "label": "Move Speed",
-          "unit": "m",
-          "base": 4,
-          "bonus": 2,
-          "variance": "full"
-        },
-        {
-          "key": "FervorFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 40,
-          "bonus": 25,
-          "variance": "full"
-        },
-        {
-          "key": "FervorStatusResistancePercent",
-          "label": "Debuff Resist",
-          "unit": "%",
-          "base": 40,
-          "bonus": 20,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "glass-cannon",
@@ -12277,41 +7583,6 @@
     "conditional": {
       "label": "Stacks held",
       "defaultActive": false
-    },
-    "corruption": {
-      "excludedPenalties": [],
-      "stats": {
-        "weaponDamagePct": 70.0
-      },
-      "perStack": {
-        "fireRatePct": 7.0
-      },
-      "rows": [
-        {
-          "key": "SlowPercent",
-          "label": "Move Speed",
-          "unit": "%",
-          "base": 30,
-          "bonus": 32,
-          "variance": "full"
-        },
-        {
-          "key": "BaseAttackDamagePercent",
-          "label": "Weapon Damage",
-          "unit": "%",
-          "base": 80,
-          "bonus": 70,
-          "variance": "full"
-        },
-        {
-          "key": "FireRatePerKill",
-          "label": "Fire Rate per Kill",
-          "unit": "%",
-          "base": 7,
-          "bonus": 7,
-          "variance": "full"
-        }
-      ]
     }
   },
   {
@@ -12336,51 +7607,7 @@
       "procChancePct": 25.0
     },
     "enabled": true,
-    "sortOrder": 151,
-    "corruption": {
-      "excludedPenalties": [
-        "WeaponDamage"
-      ],
-      "stats": {
-        "ammoPct": 45.0,
-        "procWeaponDamagePct": 20.0,
-        "procChancePct": 10.0
-      },
-      "rows": [
-        {
-          "key": "BonusClipSizePercent",
-          "label": "Max Ammo",
-          "unit": "%",
-          "base": 30,
-          "bonus": 45,
-          "variance": "full"
-        },
-        {
-          "key": "Radius",
-          "label": "Radius",
-          "unit": "m",
-          "base": 1,
-          "bonus": 0.27,
-          "variance": "full"
-        },
-        {
-          "key": "CritDamagePercent",
-          "label": "Bonus Weapon Damage",
-          "unit": "%",
-          "base": 100,
-          "bonus": 20,
-          "variance": "full"
-        },
-        {
-          "key": "ProcChance",
-          "label": "Proc Chance",
-          "unit": "%",
-          "base": 25,
-          "bonus": 10,
-          "variance": "full"
-        }
-      ]
-    }
+    "sortOrder": 151
   },
   {
     "slug": "ricochet",
@@ -12419,55 +7646,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechRange"
-      ],
-      "stats": {
-        "fireRatePct": 22.0,
-        "ricochetDamagePct": 15.0
-      },
-      "fixed": {
-        "stats": {
-          "ricochetTargets": 1.0
-        }
-      },
-      "rows": [
-        {
-          "key": "BonusFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 18,
-          "bonus": 22,
-          "variance": "full"
-        },
-        {
-          "key": "RicochetRadius",
-          "label": "Ricochet Range",
-          "unit": "m",
-          "base": 13,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "RicochetDamagePercent",
-          "label": "Ricochet Damage",
-          "unit": "%",
-          "base": 65,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "RicochetTargets",
-          "label": "Ricochet Targets",
-          "unit": "",
-          "base": 2,
-          "bonus": 1,
-          "variance": "fixed"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "silencer",
@@ -12552,41 +7731,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "TechDuration"
-      ],
-      "conditionalStats": {
-        "spiritResistPct": 14.0
-      },
-      "rows": [
-        {
-          "key": "TechDamageReduction",
-          "label": "Spirit Damage Reduction",
-          "unit": "%",
-          "base": -25,
-          "bonus": -13,
-          "variance": "full"
-        },
-        {
-          "key": "TechResist",
-          "label": "Spirit Resist",
-          "unit": "%",
-          "base": 12,
-          "bonus": 14,
-          "variance": "full"
-        },
-        {
-          "key": "SilenceDuration",
-          "label": "Silence Duration",
-          "unit": "s",
-          "base": 2.5,
-          "bonus": 0.6,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "spellslinger",
@@ -12642,51 +7787,7 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [],
-      "perStack": {
-        "fireRatePct": 7.0
-      },
-      "stats": {
-        "cooldownReductionPct": 13.0
-      },
-      "maxStacksDelta": 2,
-      "rows": [
-        {
-          "key": "BonusFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 11,
-          "bonus": 7,
-          "variance": "full"
-        },
-        {
-          "key": "CooldownReduction",
-          "label": "Ability Cooldown Reduction",
-          "unit": "%",
-          "base": 5,
-          "bonus": 13,
-          "variance": "full"
-        },
-        {
-          "key": "BuffDuration",
-          "label": "Buff Duration",
-          "unit": "s",
-          "base": 18,
-          "bonus": 7,
-          "variance": "full"
-        },
-        {
-          "key": "MaxStacks",
-          "label": "Max Stacks",
-          "unit": "",
-          "base": 6,
-          "bonus": 2,
-          "variance": "rounded"
-        }
-      ]
-    }
+    ]
   },
   {
     "slug": "spiritual-overflow",
@@ -12745,80 +7846,6 @@
           }
         ]
       }
-    ],
-    "corruption": {
-      "excludedPenalties": [
-        "FireRate"
-      ],
-      "conditionalStats": {
-        "spiritLifestealPct": 15.0,
-        "spiritPowerFlat": 25.0,
-        "fireRatePct": 20.0
-      },
-      "stats": {
-        "bonusHealthFlat": 85.0,
-        "abilityDurationPct": 5.0,
-        "spiritLifestealPct": 5.0,
-        "spiritPowerFlat": 6.0
-      },
-      "rows": [
-        {
-          "key": "BonusSpiritLifesteal",
-          "label": "Spirit Lifesteal",
-          "unit": "%",
-          "base": 10,
-          "bonus": 15,
-          "variance": "full"
-        },
-        {
-          "key": "BonusHealth",
-          "label": "Bonus Health",
-          "unit": "",
-          "base": 90,
-          "bonus": 85,
-          "variance": "full"
-        },
-        {
-          "key": "BonusSpirit",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 30,
-          "bonus": 25,
-          "variance": "full"
-        },
-        {
-          "key": "BonusAbilityDurationPercent",
-          "label": "Ability Duration",
-          "unit": "%",
-          "base": 13,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "AbilityLifestealPercentHero",
-          "label": "Spirit Lifesteal",
-          "unit": "%",
-          "base": 13,
-          "bonus": 5,
-          "variance": "full"
-        },
-        {
-          "key": "TechPower",
-          "label": "Spirit Power",
-          "unit": "",
-          "base": 6,
-          "bonus": 6,
-          "variance": "full"
-        },
-        {
-          "key": "BonusFireRate",
-          "label": "Fire Rate",
-          "unit": "%",
-          "base": 25,
-          "bonus": 20,
-          "variance": "full"
-        }
-      ]
-    }
+    ]
   }
 ]

@@ -7,8 +7,6 @@ import type { CalcResult } from "@/lib/calc/engine";
 import { MAX_ITEM_SLOTS } from "@/lib/calc/timeline";
 import { sameTierAlternatives, type StackAssumption } from "@/lib/calc/metrics";
 import { CATEGORY_COLOR, fmtDelta, fmtInt, fmtSouls } from "@/lib/format";
-import { corruptedMaxStacks, corruptedMaxStacksSecondary, isCorruptible } from "@/lib/corruption";
-import { CorruptionControls } from "./CorruptionControls";
 import { ItemIcon } from "./ItemIcon";
 
 interface Row {
@@ -449,7 +447,6 @@ export function LoadoutPanel({
                   item={item}
                   size="sm"
                   dimmed={Boolean(item.conditional) && !entry.active}
-                  corrupted={entry.corrupted}
                 />
 
                 <div className="min-w-0 flex-1">
@@ -552,29 +549,29 @@ export function LoadoutPanel({
                           label="Shred applied"
                         />
                       )}
-                      {corruptedMaxStacks(item, entry) > 1 && (
+                      {(item.maxStacks ?? 0) > 1 && (
                         <label className="flex items-center gap-1.5 text-[10px] text-ink-300">
                           <span>{item.stackLabel ?? "Stacks"}</span>
                           <input
                             type="range"
                             min={0}
-                            max={corruptedMaxStacks(item, entry)}
+                            max={item.maxStacks}
                             value={entry.stacks}
                             onChange={(e) => onPatch(item.slug, { stacks: Number(e.target.value) })}
                             className="h-1 w-20 accent-[var(--color-amber-brand)]"
                           />
                           <span className="tnum w-6 text-right text-ink-100">
-                            {entry.stacks}/{corruptedMaxStacks(item, entry)}
+                            {entry.stacks}/{item.maxStacks}
                           </span>
                         </label>
                       )}
-                      {corruptedMaxStacksSecondary(item, entry) > 1 && (
+                      {(item.maxStacksSecondary ?? 0) > 1 && (
                         <label className="flex items-center gap-1.5 text-[10px] text-ink-300">
                           <span>{item.stackLabelSecondary ?? "Stacks"}</span>
                           <input
                             type="range"
                             min={0}
-                            max={corruptedMaxStacksSecondary(item, entry)}
+                            max={item.maxStacksSecondary}
                             value={entry.stacksSecondary}
                             onChange={(e) =>
                               onPatch(item.slug, { stacksSecondary: Number(e.target.value) })
@@ -582,18 +579,11 @@ export function LoadoutPanel({
                             className="h-1 w-20 accent-[var(--color-amber-brand)]"
                           />
                           <span className="tnum w-6 text-right text-ink-100">
-                            {entry.stacksSecondary}/{corruptedMaxStacksSecondary(item, entry)}
+                            {entry.stacksSecondary}/{item.maxStacksSecondary}
                           </span>
                         </label>
                       )}
                     </div>
-                  )}
-                  {held && isCorruptible(item) && (
-                    <CorruptionControls
-                      item={item}
-                      entry={entry}
-                      onPatch={(patch) => onPatch(item.slug, patch)}
-                    />
                   )}
                   {held && item.warning && (
                     <p className="mt-1 flex items-start gap-1 text-[10px] leading-snug text-amber-brand">
