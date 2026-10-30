@@ -73,10 +73,11 @@ describe("item catalogue", () => {
   });
 
   it("keeps the spirit power the workbook independently derived", () => {
-    // Spiritual Overflow: 6 innate + 30 while charged, nerfed from 40 in the
-    // patch that also slowed its buildup and cut its fire rate bonus.
+    // Spiritual Overflow: 8 innate (inherited from Spirit Lifesteal, buffed
+    // from 6) + 30 while charged, nerfed from 40 in the patch that also slowed
+    // its buildup and cut its fire rate bonus.
     const overflow = bySlug.get("spiritual-overflow")!;
-    expect(overflow.stats.spiritPowerFlat).toBe(6);
+    expect(overflow.stats.spiritPowerFlat).toBe(8);
     expect(overflow.conditionalStats?.spiritPowerFlat).toBe(30);
     expect(bySlug.get("improved-spirit")!.stats.spiritPowerFlat).toBe(18);
     expect(bySlug.get("boundless-spirit")!.stats.spiritPowerFlat).toBe(30);
@@ -226,8 +227,8 @@ describe("item catalogue", () => {
     // Escalating Exposure: 4.5% spirit amp per stack.
     expect(bySlug.get("escalating-exposure")!.perStack?.spiritAmpPct).toBe(4.5);
 
-    // Golden Goose Egg costs you 15% of your outgoing damage, up from 10%.
-    expect(bySlug.get("golden-goose-egg")!.damageMultiplier).toBe(0.85);
+    // Golden Goose Egg costs you 12% of your outgoing damage (15% last patch).
+    expect(bySlug.get("golden-goose-egg")!.damageMultiplier).toBe(0.88);
   });
 
   it("stores resist shred as a positive fraction", () => {

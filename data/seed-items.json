@@ -241,7 +241,7 @@
         "rows": [
           {
             "key": "ParryCooldownReduction",
-            "value": 1.75,
+            "value": 1.25,
             "type": "cooldown",
             "conditional": false,
             "emphasis": false
@@ -318,7 +318,7 @@
     "enabled": true,
     "sortOrder": 8,
     "conditionalStats": {
-      "weaponDamagePct": 18.0,
+      "weaponDamagePct": 22,
       "fireRatePct": 7.0
     },
     "conditional": {
@@ -343,9 +343,9 @@
     ],
     "isImbue": false,
     "stats": {
-      "bulletLifestealPct": 13.0,
+      "bulletLifestealPct": 15,
       "bonusHealthFlat": 90.0,
-      "weaponDamagePct": 6.0
+      "weaponDamagePct": 10
     },
     "enabled": true,
     "sortOrder": 9
@@ -522,10 +522,14 @@
         "rows": [
           {
             "key": "HealOnKill",
-            "value": 275,
+            "value": 170,
             "type": "healing",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 3,
+              "kind": "boon"
+            }
           },
           {
             "key": "AbilityDuration",
@@ -536,7 +540,8 @@
           }
         ]
       }
-    ]
+    ],
+    "notes": "Multiple sources now stack on the enemy with diminishing returns."
   },
   {
     "slug": "healing-booster",
@@ -548,16 +553,13 @@
     "activation": "Passive",
     "iconUrl": "/items/healing-booster.png",
     "description": "Increases the effectiveness of your healing.",
-    "components": [
-      "extra-regen"
-    ],
+    "components": [],
     "shopFilters": [
       "Healing"
     ],
     "isImbue": false,
     "stats": {
-      "healthRegenFlat": 3.0,
-      "outOfCombatHealthRegen": 1.0
+      "outOfCombatHealthRegen": 2
     },
     "enabled": true,
     "sortOrder": 15,
@@ -761,9 +763,9 @@
     ],
     "isImbue": false,
     "stats": {
-      "spiritLifestealPct": 13.0,
+      "spiritLifestealPct": 15,
       "bonusHealthFlat": 90.0,
-      "spiritPowerFlat": 6.0
+      "spiritPowerFlat": 8
     },
     "enabled": true,
     "sortOrder": 19
@@ -792,7 +794,7 @@
     "sortOrder": 20,
     "conditionalStats": {
       "combatBarrierFlat": 300.0,
-      "spiritResistPct": 18.0
+      "spiritResistPct": 15
     },
     "conditional": {
       "label": "Barrier up",
@@ -975,12 +977,12 @@
     ],
     "isImbue": false,
     "stats": {
-      "outOfCombatHealthRegen": 3.0
+      "outOfCombatHealthRegen": 5
     },
     "enabled": true,
     "sortOrder": 23,
     "conditionalStats": {
-      "bulletResistPct": 45.0
+      "bulletResistPct": 50
     },
     "conditional": {
       "label": "Condition met",
@@ -1192,15 +1194,15 @@
     ],
     "isImbue": false,
     "stats": {
-      "bulletLifestealPct": 14.0,
+      "bulletLifestealPct": 15,
       "bonusHealthFlat": 100.0,
-      "weaponDamagePct": 6.0
+      "weaponDamagePct": 10
     },
     "enabled": true,
     "sortOrder": 27,
     "conditionalStats": {
       "fireRatePct": 32.0,
-      "moveSpeedFlat": 1.0,
+      "moveSpeedFlat": 1.5,
       "spiritResistPct": 40.0
     },
     "conditional": {
@@ -1260,8 +1262,8 @@
             "conditional": true,
             "emphasis": true,
             "scale": {
-              "value": 6,
-              "kind": "boon"
+              "value": 1.1,
+              "kind": "spirit"
             }
           },
           {
@@ -1446,6 +1448,13 @@
         "cooldown": 24,
         "chargeUp": null,
         "rows": [
+          {
+            "key": "GravityScale",
+            "value": 20,
+            "type": null,
+            "conditional": true,
+            "emphasis": false
+          },
           {
             "key": "GroundDashReductionPercent",
             "value": -20,
@@ -1896,7 +1905,7 @@
     "info": [
       {
         "type": "Active",
-        "cooldown": 45,
+        "cooldown": 55,
         "chargeUp": null,
         "rows": [
           {
@@ -2099,13 +2108,13 @@
     "isImbue": false,
     "stats": {
       "bonusHealthFlat": 100.0,
-      "spiritPowerFlat": 6.0
+      "spiritPowerFlat": 8
     },
     "enabled": true,
     "sortOrder": 43,
     "conditionalStats": {
       "spiritResistPct": 10.0,
-      "spiritLifestealPct": 70.0,
+      "spiritLifestealPct": 75,
       "spiritPowerFlat": 30.0
     },
     "conditional": {
@@ -2120,7 +2129,7 @@
         "rows": [
           {
             "key": "AbilityLifestealPercentHeroPassive",
-            "value": 13,
+            "value": 15,
             "type": "healing",
             "conditional": false,
             "emphasis": false
@@ -2225,7 +2234,7 @@
       "slowResistPct": 50.0,
       "moveSpeedFlat": 2.5,
       "meleeResistPct": 25.0,
-      "healthRegenFlat": 8.0
+      "healthRegenFlat": 15
     },
     "enabled": true,
     "sortOrder": 45,
@@ -2273,8 +2282,8 @@
     ],
     "isImbue": false,
     "stats": {
-      "spiritLifestealPct": 28.0,
-      "bulletLifestealPct": 28.0,
+      "spiritLifestealPct": 30,
+      "bulletLifestealPct": 30,
       "bonusHealthFlat": 180.0,
       "weaponDamagePct": 12.0,
       "spiritPowerFlat": 12.0
@@ -2562,9 +2571,9 @@
     ],
     "isImbue": false,
     "stats": {
-      "bulletLifestealPct": 13.0,
+      "bulletLifestealPct": 15,
       "bonusHealthFlat": 100.0,
-      "weaponDamagePct": 6.0
+      "weaponDamagePct": 10
     },
     "enabled": true,
     "sortOrder": 52,
@@ -2584,7 +2593,7 @@
         "rows": [
           {
             "key": "ActiveBonusLifesteal",
-            "value": 70,
+            "value": 75,
             "type": "healing",
             "conditional": true,
             "emphasis": true
@@ -2733,7 +2742,7 @@
     },
     "enabled": true,
     "sortOrder": 56,
-    "damageMultiplier": 0.85,
+    "damageMultiplier": 0.88,
     "notes": "Stored, uncollected souls now count towards net worth for comeback bounty calculations — not modelled by this tool, which only counts spent-on-items net worth (see the app's own Economy convention).",
     "info": [
       {
@@ -3438,7 +3447,7 @@
     "info": [
       {
         "type": "Active",
-        "cooldown": 18,
+        "cooldown": 22,
         "chargeUp": null,
         "rows": [
           {
@@ -3457,7 +3466,7 @@
           },
           {
             "key": "AbilityCastRange",
-            "value": "40m",
+            "value": "35m",
             "type": "range",
             "conditional": true,
             "emphasis": false
@@ -3535,7 +3544,7 @@
     "enabled": true,
     "sortOrder": 74,
     "conditionalStats": {
-      "healingReceivedPct": -50.0
+      "healingReceivedPct": -55
     },
     "conditional": {
       "label": "Debuff applied to target",
@@ -3778,7 +3787,7 @@
             "conditional": false,
             "emphasis": true,
             "scale": {
-              "value": 0.04,
+              "value": 0.025,
               "kind": "spirit"
             }
           },
@@ -3798,12 +3807,12 @@
         "rows": [
           {
             "key": "HealingPerCast",
-            "value": 65,
+            "value": 40,
             "type": "healing",
             "conditional": false,
             "emphasis": true,
             "scale": {
-              "value": 1.7,
+              "value": 1.4,
               "kind": "boon"
             }
           },
@@ -3816,7 +3825,8 @@
           }
         ]
       }
-    ]
+    ],
+    "notes": "Heal on Ability Cast only triggers while in combat (like Spellslinger)."
   },
   {
     "slug": "rapid-recharge",
@@ -3880,7 +3890,7 @@
     ],
     "isImbue": false,
     "stats": {
-      "bonusHealthFlat": 50.0
+      "bonusHealthFlat": 90
     },
     "enabled": true,
     "sortOrder": 80,
@@ -4152,7 +4162,7 @@
     "isImbue": false,
     "stats": {
       "bonusHealthFlat": 100.0,
-      "meleeResistPct": 18.0
+      "meleeResistPct": 22
     },
     "enabled": true,
     "sortOrder": 86,
@@ -4512,7 +4522,7 @@
     "info": [
       {
         "type": "Active",
-        "cooldown": 45,
+        "cooldown": 40,
         "chargeUp": null,
         "rows": [
           {
@@ -4617,7 +4627,11 @@
             "value": 150,
             "type": "tech_damage",
             "conditional": false,
-            "emphasis": true
+            "emphasis": true,
+            "scale": {
+              "value": 0.35,
+              "kind": "spirit"
+            }
           },
           {
             "key": "DelayBeforeStun",
@@ -5206,7 +5220,7 @@
     ],
     "isImbue": false,
     "stats": {
-      "bulletVelocityPct": 60.0,
+      "bulletVelocityPct": 45,
       "weaponDamagePct": 8.0
     },
     "enabled": true,
@@ -6551,12 +6565,12 @@
         "rows": [
           {
             "key": "ProcBaseAttackDamagePercentAltFire",
-            "value": 40,
+            "value": 38,
             "type": "bullet_damage",
             "conditional": true,
             "emphasis": true,
             "scale": {
-              "value": 1.3,
+              "value": 1.24,
               "kind": "boon"
             }
           },
@@ -6847,7 +6861,7 @@
           },
           {
             "key": "SlowDuration",
-            "value": 2,
+            "value": 2.5,
             "type": "duration",
             "conditional": false,
             "emphasis": false
@@ -6889,9 +6903,8 @@
     "enabled": true,
     "sortOrder": 139,
     "conditionalStats": {
-      "fireRatePct": 25.0,
-      "spiritPowerFlat": 25.0,
-      "meleeDamagePct": 25.0
+      "weaponDamagePct": 50,
+      "spiritPowerFlat": 25
     },
     "conditional": {
       "label": "Active effect running",
@@ -6944,10 +6957,18 @@
             "type": "duration",
             "conditional": true,
             "emphasis": false
+          },
+          {
+            "key": "AmbushBuildUpDuration",
+            "value": 6,
+            "type": "duration",
+            "conditional": true,
+            "emphasis": false
           }
         ]
       }
-    ]
+    ],
+    "notes": "Ambush bonuses build up over 6s of being stealthed before reaching full power; abilities used to break stealth now get the Ambush bonus on their own damage."
   },
   {
     "slug": "sharpshooter",
@@ -7145,7 +7166,7 @@
     "enabled": true,
     "sortOrder": 143,
     "conditionalStats": {
-      "healingReceivedPct": -35.0
+      "healingReceivedPct": -40
     },
     "conditional": {
       "label": "Debuff applied to target",
@@ -7270,7 +7291,7 @@
     "stats": {
       "bulletVelocityPct": 60.0,
       "weaponDamagePct": 8.0,
-      "procChancePct": 55.0
+      "procChancePct": 60
     },
     "enabled": true,
     "sortOrder": 145,
@@ -7392,7 +7413,7 @@
         "rows": [
           {
             "key": "HealAmpRegenPenaltyPercent",
-            "value": -35,
+            "value": -40,
             "type": "damage",
             "conditional": true,
             "emphasis": true
@@ -7569,7 +7590,7 @@
     ],
     "isImbue": false,
     "stats": {
-      "weaponDamagePct": 80.0,
+      "weaponDamagePct": 85,
       "bonusHealthPct": -13.0
     },
     "enabled": true,
@@ -7809,9 +7830,9 @@
     "isImbue": false,
     "stats": {
       "abilityDurationPct": 13.0,
-      "spiritLifestealPct": 13.0,
+      "spiritLifestealPct": 15,
       "bonusHealthFlat": 90.0,
-      "spiritPowerFlat": 6.0
+      "spiritPowerFlat": 8
     },
     "enabled": true,
     "sortOrder": 155,
