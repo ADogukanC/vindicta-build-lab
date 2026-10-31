@@ -3232,7 +3232,7 @@
         "rows": [
           {
             "key": "MovementSpeedSlow",
-            "value": 30,
+            "value": 24,
             "type": "slow",
             "conditional": true,
             "emphasis": true
@@ -3787,7 +3787,7 @@
             "conditional": false,
             "emphasis": true,
             "scale": {
-              "value": 0.025,
+              "value": 0.25,
               "kind": "spirit"
             }
           },
@@ -4596,7 +4596,14 @@
         "rows": [
           {
             "key": "MovementSpeedSlow",
-            "value": 30,
+            "value": 24,
+            "type": "slow",
+            "conditional": true,
+            "emphasis": false
+          },
+          {
+            "key": "GroundDashReductionPercent",
+            "value": -12,
             "type": "slow",
             "conditional": true,
             "emphasis": false
@@ -6854,7 +6861,7 @@
         "rows": [
           {
             "key": "SlowPercent",
-            "value": 25,
+            "value": 20,
             "type": "slow",
             "conditional": true,
             "emphasis": true
@@ -7830,7 +7837,7 @@
     "isImbue": false,
     "stats": {
       "abilityDurationPct": 13.0,
-      "spiritLifestealPct": 15,
+      "spiritLifestealPct": 13,
       "bonusHealthFlat": 90.0,
       "spiritPowerFlat": 8
     },
@@ -7853,7 +7860,7 @@
         "rows": [
           {
             "key": "BuildUpPerShot",
-            "value": 0.4875,
+            "value": 1.08,
             "type": null,
             "conditional": false,
             "emphasis": false
